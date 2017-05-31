@@ -81,15 +81,15 @@
 <link rel="stylesheet" href="/resources/css/stylesheet_min.css">
 <c:choose>
     <c:when test="${folder != null}">
-        <link rel="stylesheet" href="/resources/css/with_folder.css">
-        <link rel="stylesheet" href="/resources/css/buttons.css">
+        <link rel="stylesheet" href="/resources/css/with_folder_min.css">
+        <link rel="stylesheet" href="/resources/css/buttons_min.css">
     </c:when>
     <c:otherwise>
-        <link rel="stylesheet" href="/resources/css/without_folder.css">
+        <link rel="stylesheet" href="/resources/css/without_folder_min.css">
         <c:choose>
             <c:when test="${key != null}">
                 <link rel="stylesheet" href="/resources/css/with_image_min.css">
-                <link rel="stylesheet" href="/resources/css/buttons.css">
+                <link rel="stylesheet" href="/resources/css/buttons_min.css">
             </c:when>
             <c:otherwise>
                 <link rel="stylesheet" href="/resources/css/without_image_min.css">
