@@ -1,0 +1,27 @@
+.name {
+    font-size: 14px;
+}
+
+.file {
+    width: 200px;
+    height: 158px;
+    margin: 5px;
+    text-align: center;
+    background-color: #e67e39;
+    box-shadow: 0 0 1px;
+    border-radius: 3px;
+}
+
+.image-folder {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.file:hover{
+    background-color: #a95000;
+}
+
+.main {
+    flex-wrap: wrap;
+    align-content: flex-start;
+}

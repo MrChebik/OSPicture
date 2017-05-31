@@ -1,0 +1,15 @@
+.header{display:flex;position:fixed;left:0;right:0;}
+.main{position:absolute;top:59px;bottom:37px;left:0;right:0;display:flex;padding:12px 10px;background-color:whitesmoke;}
+.file-input{display:none;}
+.footer{position:fixed;bottom:0;left:0;right:0;}
+body{margin:0;font-family:"DejaVu Sans", monospace;}
+.header{color:white;background-color:#022222;justify-content:center;z-index:6;box-shadow:0 0 4px black;padding:10px;}
+.nav-header{margin-left:10px;padding:11px 8px 0 8px;background-color:#e67e39;border-radius:2px;cursor:pointer;}
+.nav-header:nth-child(1){margin-left:0;}
+.nav-header:nth-child(2){border-top-right-radius:0;border-bottom-right-radius:0;}
+.nav-header:nth-child(3){margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0;padding:0;}
+.footer{box-shadow:0 0 4px black;text-align:center;padding:10px;color:white;background-color:#022222;font-weight:lighter;}
+.key-input{outline:none;font-family:monospace;border:none;padding:12.4px;border-top-right-radius:2px;border-bottom-right-radius:2px;width:85px;}
+.file-input + label{color:white;background-color:#e67e39;display:inline-block;}
+.file-input + label *{pointer-events:none;}
+.icon{margin-top:-3px;padding-bottom:3.5px;}
