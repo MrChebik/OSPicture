@@ -12,7 +12,7 @@
 <head>
     <title>OSPicture</title>
     <meta name="description" content="To download or upload an image to the Internet. The maximum size of uploads is 10Mb. Supported formats: JPEG, PNG, WebP, BMP, GIF.">
-    <meta name="keywords" content="jpg, jpeg, webp, gif, png, image, images, download, free, upload, image, скачать, загрузить, бесплатно, картинка, картинки, фото, изображение, picture, format, облако, cloud, downloads, pictures, фотки, изображения, share, раздать, osp, ospicture">
+    <meta name="keywords" content="хостинг, hosting, jpg, jpeg, webp, gif, png, image, images, download, free, upload, image, скачать, загрузить, бесплатно, картинка, картинки, фото, изображение, picture, format, облако, cloud, downloads, pictures, фотки, изображения, share, раздать, osp, ospicture">
     <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter44795542 = new Ya.Metrika({ id:44795542, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/44795542" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <script async src="/resources/js/ajax_min.js"></script>
     <script async src="/resources/js/actions_min.js"></script>
@@ -26,18 +26,16 @@
     <div class="nav-header" onclick="actionLogo()">
         OSPicture
     </div>
-    <div class="nav-header" onclick="actionGet()">Get:</div>
-    <div class="nav-header">
-        <input class="key-input" value="${key}" type="text" placeholder="Key" onkeydown="actionGetFromInput(event)">
-    </div>
-    <input class="file-input" multiple="true" type="file" id="file" onchange="ajax_uploads(this.files)"><label class="nav-header" for="file"><img class="icon" src="/resources/img/upload.png" alt="Upload"></label>
+    <div class="toolbox">
+    <input class="file-input" multiple="true" type="file" id="file" onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)"><label class="nav-header" for="file"><img class="icon" src="/resources/img/upload.png" alt="Upload"></label>
     <c:if test="${key != null}">
         <c:if test="${folder == null}">
             <a id="download-picture" href='/img/${key}' download="${name}${format.equals('octet-stream') ? '' : '.'}${format.equals('octet-stream') ? '' : format}"></a>
-            <div class="nav-header download-link" onclick="actionDownload()"><img class="icon tool" class="download-img" src="/resources/img/download.png" alt="Download"></div>
+            <div class="nav-header" onclick="actionDownload()"><img class="icon tool download-img" src="/resources/img/download.png" alt="Download"></div>
         </c:if>
-        <div class="nav-header copy-link" onclick="copyToClipboard('http://ospicture.xyz/${folder != null ? '/folder/' : ''}${key}')"><img class="icon tool" class="link-img" src="/resources/img/link.png" alt="Copy link"></div>
+        <div class="nav-header" onclick="copyToClipboard('http://ospicture.xyz/${folder != null ? '/folder/' : ''}${key}')"><img class="icon tool link-img" src="/resources/img/link.png" alt="Copy link"></div>
     </c:if>
+    </div>
 </div>
 <div class="main">
     <c:choose>
@@ -61,10 +59,8 @@
                              ondragleave="dropLeave();" ondrop="return doDrop(event);">
                         </div>
                     </form>
-                    <div class="info">
-                        <p class="bold">Upload Image</p>
-                        <span>Drag file to these section</span>
-                    </div>
+                    <p class="bold">Upload Image</p>
+                    <span class="drag-info">Drag files to this page</span>
                 </c:otherwise>
             </c:choose>
         </c:otherwise>
@@ -72,8 +68,13 @@
 </div>
 <div class="footer">
     <c:choose>
-        <c:when test="${folder == null && key != null}">File: ${name} || Size: ${size} || Resolution: ${resolution} || Format: ${format}</c:when>
-        <c:otherwise>@ 2017 OSPicture</c:otherwise>
+        <c:when test="${folder == null && key != null}">
+            <span>File: ${name}</span>
+            <span>Size: ${size}</span>
+            <span>Resolution: ${resolution}</span>
+            <span>Format: ${format}</span>
+        </c:when>
+        <c:otherwise><span>Email: ospicture@yandex.ru</span><span>@ 2017 OSPicture</span></c:otherwise>
     </c:choose>
 </div>
 </body>
@@ -82,14 +83,12 @@
 <c:choose>
     <c:when test="${folder != null}">
         <link rel="stylesheet" href="/resources/css/with_folder_min.css">
-        <link rel="stylesheet" href="/resources/css/buttons_min.css">
     </c:when>
     <c:otherwise>
         <link rel="stylesheet" href="/resources/css/without_folder_min.css">
         <c:choose>
             <c:when test="${key != null}">
                 <link rel="stylesheet" href="/resources/css/with_image_min.css">
-                <link rel="stylesheet" href="/resources/css/buttons_min.css">
             </c:when>
             <c:otherwise>
                 <link rel="stylesheet" href="/resources/css/without_image_min.css">

@@ -1,1 +1,1 @@
-.picture{border-radius:5px;-webkit-box-shadow:1px 1px 16px black;box-shadow:1px 1px 16px black;max-width:100%;max-height:100%;}
+.picture{border-radius:5px;max-width:100%;max-height:100%}a{display:none}@media screen and (max-width: 1024px){.picture{border-radius:20px}}
