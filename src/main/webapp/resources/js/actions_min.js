@@ -1,1 +1,1 @@
-function actionLogo(){"/"!=window.location.pathname&&(window.location.href="/")}function actionDownload(){$("#download-picture")[0].click()}function actionClickInFolder(o){window.location.href=site+o}var site="http://localhost:8446/"/*"http://ospicture.xyz/"*/;
+function actionLogo(){"/"!=window.location.pathname&&(window.location.href="/")}function actionDownload(){$("#download-picture")[0].click()}function actionClickInFolder(o){window.location.href=site+o}function actionImitationClick(){$("#label-upload")[0].click()}var site="http://ospicture.xyz/";

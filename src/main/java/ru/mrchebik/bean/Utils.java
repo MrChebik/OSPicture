@@ -68,6 +68,6 @@ public class Utils {
     }
 
     public String getPATH() {
-        return "/home/mrchebik/OSPicture/";
+        return "/home/ospicture/";
     }
 }

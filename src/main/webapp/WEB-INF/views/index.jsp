@@ -28,7 +28,7 @@
         OSPicture
     </div>
     <div class="toolbox">
-    <label class="nav-header" for="file"><img class="icon" src="/resources/img/upload.png" alt="Upload"></label>
+    <label id="label-upload" class="nav-header" for="file"><img class="icon" src="/resources/img/upload.png" alt="Upload"></label>
     <c:if test="${key != null}">
         <c:if test="${folder == null}">
             <a id="download-picture" href='/img/${key}' download="${name}${format.equals('octet-stream') ? '' : '.'}${format.equals('octet-stream') ? '' : format}"></a>
@@ -60,8 +60,9 @@
                              ondragleave="dropLeave();" ondrop="return doDrop(event);">
                         </div>
                     </form>
-                    <label for="file" class="bold">Upload Image</label>
+                    <p class="bold" onclick="actionImitationClick()">Upload Image</p>
                     <span class="drag-info">Drag files to this page</span>
+                    <span class="click-info">Сlick on the button above</span>
                 </c:otherwise>
             </c:choose>
         </c:otherwise>
