@@ -22,12 +22,13 @@
     <meta name="msvalidate.01" content="16BF0EEBCF3387D9C22D717D9FA90F69">
 </head>
 <body>
+<input class="file-input" multiple="true" type="file" id="file" onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
 <div class="header">
     <div class="nav-header" onclick="actionLogo()">
         OSPicture
     </div>
     <div class="toolbox">
-    <input class="file-input" multiple="true" type="file" id="file" onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)"><label class="nav-header" for="file"><img class="icon" src="/resources/img/upload.png" alt="Upload"></label>
+    <label class="nav-header" for="file"><img class="icon" src="/resources/img/upload.png" alt="Upload"></label>
     <c:if test="${key != null}">
         <c:if test="${folder == null}">
             <a id="download-picture" href='/img/${key}' download="${name}${format.equals('octet-stream') ? '' : '.'}${format.equals('octet-stream') ? '' : format}"></a>
@@ -59,7 +60,7 @@
                              ondragleave="dropLeave();" ondrop="return doDrop(event);">
                         </div>
                     </form>
-                    <p class="bold">Upload Image</p>
+                    <label for="file" class="bold">Upload Image</label>
                     <span class="drag-info">Drag files to this page</span>
                 </c:otherwise>
             </c:choose>
