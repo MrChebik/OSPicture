@@ -77,27 +77,26 @@ body {
     font-family: "Uni Sans Heavy";
     padding: 16px 16px 4px;
     background-color: transparent;
-    border-radius: 2px;
+    border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
     -webkit-transition: .2s;
     transition: .2s
 }
 
-.nav-header:nth-child(1) {
-    padding-top: 18px
+.toolbox > .nav-header {
+    padding: 16px 16px 4px 18px;
 }
 
 .nav-header:nth-child(n + 2) {
     padding: 16px 16px 4px 18px
 }
 
-.nav-header:last-child, .nav-header:first-child {
+.nav-header:last-child, .header > .nav-header:first-child {
     margin-right: 0
 }
 
 .footer {
-    background-color: #34495E;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -161,6 +160,10 @@ p {
     .nav-header:last-child {
         margin-right: 0
     }
+
+    .header > .nav-header {
+        padding-top:40px;
+    }
 }
 
 @media screen and (max-device-width: 1024px) {
@@ -171,6 +174,9 @@ p {
 @media screen and (min-device-width: 1200px) and (max-device-width: 2600px) and (-webkit-min-device-pixel-ratio: 1) {
     .nav-header:hover {
         background-color: #16A085
+    }
+    .header > .nav-header {
+        padding-top: 18px
     }
 }
 .nav-header:active {
