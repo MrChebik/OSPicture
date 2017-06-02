@@ -108,6 +108,10 @@ p {
     color: #BDC3C7
 }
 
+.icon {
+    width: 40px;
+}
+
 @media screen and (max-device-width: 480px) and (orientation: portrait) {
     .header {
         height: 130px;
@@ -124,7 +128,7 @@ p {
     }
 
     .toolbox > .nav-header:last-child {
-        padding: 16px 26px 4px 22px
+        padding: 16px 22px 4px 22px
     }
 
     .drag-info {
@@ -132,7 +136,7 @@ p {
     }
 
     body > div.header > div.nav-header {
-        padding: 38px;
+        padding: 40px;
         margin-right: 25px;
     }
 
@@ -159,10 +163,6 @@ p {
 
     .nav-header:last-child {
         margin-right: 0
-    }
-
-    .header > .nav-header {
-        padding-top:40px;
     }
 }
 
