@@ -73,7 +73,7 @@ public class UploadController {
         optimization.waitFor();
         String resolution = utils.getResolution(ImageIO.read(sourceFile));
 
-        return new ResponseEntity<>(dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], utils.getSize(new File(sourceFile.getPath()).length()), resolution, new Date())), HttpStatus.CREATED);
+        return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], utils.getSize(new File(sourceFile.getPath()).length()), resolution, new Date())), HttpStatus.CREATED);
     }
 
     @PutMapping("/upload/images")
@@ -111,11 +111,9 @@ public class UploadController {
             if (formats[1].equals("octet-stream") || formats[1].equals("png")) {
                 pngOptimization = new ProcessBuilder("optipng", "-o2", "-strip", "all", sourceFile.getPath());
                 optimization = pngOptimization.start();
-                System.out.println(2);
             } else if (formats[1].equals("jpg") || formats[1].equals("jpeg")) {
                 jpegOptimization = new ProcessBuilder("mozjpeg", "-copy", "none", "-outfile", sourceFile.getPath(), sourceFile.getPath());
                 optimization = jpegOptimization.start();
-                System.out.println(1);
             }
 
             String fileName = utils.getFilename(multipartFiles.get(j).getOriginalFilename().split("\\."));

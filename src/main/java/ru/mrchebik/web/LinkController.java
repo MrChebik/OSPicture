@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.mrchebik.bean.Utils;
 import ru.mrchebik.model.DataKeyFile;
 import ru.mrchebik.service.DataKeyFileService;
@@ -33,10 +34,14 @@ public class LinkController {
         return "index";
     }
 
-    @GetMapping("/{key}")
+    @GetMapping("/image/{key}")
     public String handleGetImage(Model model,
-                                   @PathVariable String key) throws IOException {
+                                 @PathVariable String key) throws IOException {
         DataKeyFile dataKeyFile = dataKeyFileService.get(key);
+
+        if (dataKeyFile == null) {
+            return "redirect:/";
+        }
 
         model.addAttribute("key", dataKeyFile.getKeyFile());
         model.addAttribute("name", dataKeyFile.getOriginalFilename());
@@ -64,7 +69,7 @@ public class LinkController {
 
             return "index";
         } else {
-            return null;
+            return "redirect:/";
         }
     }
 }
