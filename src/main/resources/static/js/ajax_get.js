@@ -3,25 +3,18 @@ var notifDownload = 0;
 function ajax_get(path, element) {
     var xhr = new XMLHttpRequest();
     if (element.hasClass('picture')) {
-        xhr.addEventListener('progress', function (evt) {
-            if (evt.lengthComputable) {
-                if (notifDownload == 0) {
-                    setPartDwnldUpld('dwnld');
-                    notifDownload = 1;
-                }
-                percentComplete = Math.ceil(evt.loaded / evt.total * 100);
-
-                optimizeSpeedColor();
+        xhr.onprogress = function () {
+            if (notifDownload == 0) {
+                main.append($('<div/>', {'class': 'flowspinner'}), $('<span/>', {'class': 'download-info'}).text('Downloading'));
+                notifDownload = 1;
             }
-        }, false);
+        };
     }
     xhr.onreadystatechange = function(){
         if (this.readyState == 4 && this.status == 200){
             if (element.hasClass('picture')) {
-                if (progress != undefined) {
-                    progress.remove();
-                    $('.download-info').remove();
-                }
+                $('.flowspinner').remove();
+                $('.download-info').remove();
             }
             var url = window.URL || window.webkitURL;
             element.attr('src', url.createObjectURL(this.response));
@@ -43,7 +36,7 @@ function ajax_get(path, element) {
             }, 100);
         }
     };
-    xhr.open('GET', path);
+    xhr.open('GET', path, true);
     xhr.responseType = 'blob';
     xhr.send();
 }

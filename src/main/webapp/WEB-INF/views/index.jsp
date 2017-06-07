@@ -77,6 +77,6 @@
 <link rel="stylesheet" href="/css/stylesheet_min.css">
 <c:choose><c:when test="${folder != null}"><link rel="stylesheet" href="/css/with_folder_min.css"></c:when><c:otherwise><link rel="stylesheet" href="/css/without_folder_min.css"><c:choose><c:when test="${key != null}"><link rel="stylesheet" href="/css/with_image_min.css"></c:when><c:otherwise><link rel="stylesheet" href="/css/without_image_min.css"></c:otherwise></c:choose></c:otherwise></c:choose>
 <%--<script src="/js/jquery.js"></script>--%>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="/js/ready_min.js"></script>
 <c:choose><c:when test="${folder == null && key == null}"><script src="/js/ready_drop_min.js"></script></c:when><c:otherwise><script src="/js/ready_get_min.js"></script></c:otherwise></c:choose>

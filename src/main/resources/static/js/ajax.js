@@ -1,4 +1,4 @@
-var notification, main, picture, maxFileSize;
+var notification, main, picture, maxFileSize, optimizeInterval;
 
 function copyToClipboard(e) {
     var o = $("<input>");
@@ -34,7 +34,30 @@ function ajax_send(e, a) {
             xhr.upload.addEventListener('progress', function (evt) {
                 if (evt.lengthComputable) {
                     if (notif == 0) {
-                        setPartDwnldUpld('upld');
+                        var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svgEl.setAttributeNS(null, "id", "progress-percent");
+                        svgEl.setAttributeNS(null, "width", "200");
+                        svgEl.setAttributeNS(null, "height", "200");
+                        var circleEl = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circleEl.setAttributeNS(null, "id", "circle");
+                        circleEl.setAttributeNS(null, "r", "90");
+                        circleEl.setAttributeNS(null, "cx", "100");
+                        circleEl.setAttributeNS(null, "cy", "100");
+                        var percentEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        percentEl.setAttributeNS(null, "id", "percent");
+                        percentEl.setAttributeNS(null, "x", "100");
+                        percentEl.setAttributeNS(null, "y", "-85");
+
+                        main.append(svgEl, $('<span/>', {'class':'upload-info'}).text('Uploading'));
+
+                        progress = $('#progress-percent');
+                        progress.append(circleEl, percentEl);
+                        percent = $('#percent');
+                        percent.text('0%');
+                        pie = $('#circle');
+
+                        pieOfValue = pie.css('strokeDasharray').split(' ')[1];
+                        dash = pieOfValue.charAt(pieOfValue.length - 1) == 'x' ? pieOfValue.substring(0, pieOfValue.length - 2) : pieOfValue;
 
                         $('.bold').hide();
                         $('.drag-info').hide();
@@ -52,7 +75,34 @@ function ajax_send(e, a) {
                     if (notif != 2) {
                         percentComplete = Math.ceil(evt.loaded / evt.total * 100);
 
-                        optimizeSpeedColor();
+                        if (optimizeInterval == undefined) {
+                            optimizeInterval = setInterval(function () {
+                                console.log(percentComplete + " // " + prevPercent);
+                                if (percentComplete - prevPercent >= 25) {
+                                    pie.css('transition', 'stroke-dasharray .01s ease-in, stroke .01s ease-in');
+                                    percent.css('transition', 'fill .01s ease-in');
+                                } else if (percentComplete - prevPercent >= 10) {
+                                    pie.css('transition', 'stroke-dasharray .1s ease-in, stroke .1s ease-in');
+                                    percent.css('transition', 'fill .1s ease-in');
+                                } else if (percentComplete - prevPercent >= 5) {
+                                    pie.css('transition', 'stroke-dasharray .2s ease-in, stroke .2s ease-in');
+                                    percent.css('transition', 'fill .2s ease-in');
+                                } else {
+                                    pie.css('transition', 'stroke-dasharray .3s ease-in, stroke .3s ease-in');
+                                    percent.css('transition', 'fill .3s ease-in');
+                                }
+
+                                prevPercent = percentComplete;
+                            }, 1000);
+                        }
+
+                        color = percentComplete > 90 ? 0 : percentComplete > 75 ? 1 : percentComplete > 50 ? 2 : percentComplete > 25 ? 3 : 4;
+
+                        pie.css('stroke', colors[color]);
+                        percent.css('fill', colors[color]);
+
+                        pie.css('strokeDasharray', ((percentComplete * dash) / 100) + ' ' + dash);
+                        percent.text(percentComplete + '%');
 
                         if (percentComplete == 100) {
                             notif = 2;
@@ -89,64 +139,4 @@ function ajax_send(e, a) {
             alert("Something was wrong, check the type of file.");
         }
     })
-}
-
-function setPartDwnldUpld(type) {
-    var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgEl.setAttributeNS(null, "id", "progress-percent");
-    svgEl.setAttributeNS(null, "width", "200");
-    svgEl.setAttributeNS(null, "height", "200");
-    var circleEl = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    circleEl.setAttributeNS(null, "id", "circle");
-    circleEl.setAttributeNS(null, "r", "90");
-    circleEl.setAttributeNS(null, "cx", "100");
-    circleEl.setAttributeNS(null, "cy", "100");
-    var percentEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    percentEl.setAttributeNS(null, "id", "percent");
-    percentEl.setAttributeNS(null, "x", "100");
-    percentEl.setAttributeNS(null, "y", "-85");
-
-    main.append(svgEl, $('<span/>', {'class':type == 'dwnld' ? 'download-info' : 'upload-info'}).text(type == 'dwnld' ? 'Downloading' : 'Uploading'));
-
-    progress = $('#progress-percent');
-    progress.append(circleEl, percentEl);
-    percent = $('#percent');
-    percent.text('0%');
-    pie = $('#circle');
-
-    pieOfValue = pie.css('strokeDasharray').split(' ')[1];
-    dash = pieOfValue.charAt(pieOfValue.length - 1) == 'x' ? pieOfValue.substring(0, pieOfValue.length - 2) : pieOfValue;
-}
-
-var optimizeInterval;
-
-function optimizeSpeedColor() {
-    if (optimizeInterval == undefined) {
-        optimizeInterval = setInterval(function () {
-            console.log(percentComplete + " // " + prevPercent);
-            if (percentComplete - prevPercent >= 25) {
-                pie.css('transition', 'stroke-dasharray .01s ease-in, stroke .01s ease-in');
-                percent.css('transition', 'fill .01s ease-in');
-            } else if (percentComplete - prevPercent >= 10) {
-                pie.css('transition', 'stroke-dasharray .1s ease-in, stroke .1s ease-in');
-                percent.css('transition', 'fill .1s ease-in');
-            } else if (percentComplete - prevPercent >= 5) {
-                pie.css('transition', 'stroke-dasharray .2s ease-in, stroke .2s ease-in');
-                percent.css('transition', 'fill .2s ease-in');
-            } else {
-                pie.css('transition', 'stroke-dasharray .3s ease-in, stroke .3s ease-in');
-                percent.css('transition', 'fill .3s ease-in');
-            }
-
-            prevPercent = percentComplete;
-        }, 1000);
-    }
-
-    color = percentComplete > 90 ? 0 : percentComplete > 75 ? 1 : percentComplete > 50 ? 2 : percentComplete > 25 ? 3 : 4;
-
-    pie.css('stroke', colors[color]);
-    percent.css('fill', colors[color]);
-
-    pie.css('strokeDasharray', ((percentComplete * dash) / 100) + ' ' + dash);
-    percent.text(percentComplete + '%');
 }
