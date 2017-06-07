@@ -49,8 +49,6 @@ public class UploadController {
     public ResponseEntity add(@RequestBody MultipartFile file) throws IOException, InterruptedException {
         String formats[] = file.getContentType().split("/");
 
-        System.out.println(formats[0] + " / " + formats[1]);
-
         if (utils.checkFormat(formats[0], formats[1])) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -91,8 +89,6 @@ public class UploadController {
         for (int j = 0; j < multipartFiles.size(); j++) {
             String formats[] = multipartFiles.get(j).getContentType().split("/");
 
-            System.out.println(formats[0] + " / " + formats[1]);
-
             if (utils.checkFormat(formats[0], formats[1])) {
                 col--;
                 continue;
@@ -124,7 +120,7 @@ public class UploadController {
 
             String resolution = utils.getResolution(ImageIO.read(sourceFile));
             String size = utils.getSize(afterOptimization.length());
-            optimization = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "200x130^", "\\", "-gravity", "center", "-extent", "200x130", utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName()).start();
+            optimization = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName()).start();
 
             dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName()));
         }
