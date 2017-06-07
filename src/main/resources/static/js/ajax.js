@@ -149,7 +149,7 @@ function ajax_send(e, a) {
             return xhr;
         },
         success: function (e) {
-            window.location.href = e;
+            window.location.href = site + e;
         },
         error: function () {
             clearInterval(optimizeInterval);
