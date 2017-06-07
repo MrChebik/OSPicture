@@ -15,6 +15,8 @@
     <meta name="keywords" content="хостинг картинок, загрузить картинку, раздать картинку, hosting images, upload image, share image">
     <script type="text/javascript">document.write("<img src='//counter.yadro.ru/hit?t38.6;r"+ escape(document.referrer)+((typeof(screen)=="undefined")?"": ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth? screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+ ";"+Math.random()+ "' alt='' style='display: none; position: absolute; left: -99999px'>")</script>
     <script async src="/js/actions_min.js"></script>
+    <script async src="/js/ajax_min.js"></script>
+    <c:choose><c:when test="${folder == null && key == null}"><script async src="/js/drop_min.js"></script></c:when><c:otherwise><script async src="/js/ajax_get_min.js"></script></c:otherwise></c:choose>
     <meta name="yandex-verification" content="63722a67b19d1b95" />
     <meta name="google-site-verification" content="lPL5nvLypGsZ8ZDIsV_RjeUZ1SRjrHX9bfLkkaEHsJo" />
     <meta name="wmail-verification" content="196a7986855ac910b031fd120a241c18">
@@ -74,6 +76,7 @@
 </html>
 <link rel="stylesheet" href="/css/stylesheet_min.css">
 <c:choose><c:when test="${folder != null}"><link rel="stylesheet" href="/css/with_folder_min.css"></c:when><c:otherwise><link rel="stylesheet" href="/css/without_folder_min.css"><c:choose><c:when test="${key != null}"><link rel="stylesheet" href="/css/with_image_min.css"></c:when><c:otherwise><link rel="stylesheet" href="/css/without_image_min.css"></c:otherwise></c:choose></c:otherwise></c:choose>
-<%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>--%>
-<script src="/js/jquery.js"></script>
-<script src="/js/ajax_min.js"></script>
+<%--<script src="/js/jquery.js"></script>--%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/ready_min.js"></script>
+<c:choose><c:when test="${folder == null && key == null}"><script src="/js/ready_drop_min.js"></script></c:when><c:otherwise><script src="/js/ready_get_min.js"></script></c:otherwise></c:choose>

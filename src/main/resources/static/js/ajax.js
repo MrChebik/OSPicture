@@ -1,38 +1,9 @@
-var notification, main, picture;
+var notification, main, picture, maxFileSize;
 
 function copyToClipboard(e) {
     var o = $("<input>");
     $("body").append(o), o.val(e).select(), document.execCommand("copy"), o.remove()
 }
-function dropEnter(e) {
-    e.stopPropagation(), e.preventDefault(), dropZone.addClass("hover")
-}
-function dropLeave() {
-    dropZone.removeClass("hover")
-}
-function doDrop(e) {
-    e.stopPropagation(), e.preventDefault(), dropZone.removeClass("hover");
-    var o = e.dataTransfer;
-    if (!o && !o.files)return !1;
-    var r = o.files;
-    return o.dropEffect = "copy", r.length < 2 ? ajax_upload(r[0]) : ajax_uploads(r), !1
-}
-var dropZone, maxFileSize;
-$(document).ready(function (e) {
-    notification = $('.notification');
-    main = $('.main');
-    picture = $('.picture');
-    dropZone = e("#dropZone"), maxFileSize = 1e7, void 0 == typeof window.FileReader && (dropZone.clearData(), dropZone.text("Not supported drag files! Sorry, but I still believe, you make update your browser :)"));
-    notification.css("display", "block");
-    if (picture.length) {
-        ajax_get('/img/' + picture.data('key'), picture);
-    } else if ($('.file').length) {
-        var files_pictures = $('.file > .image-folder');
-        for (var i = 0; i < files_pictures.length; i++) {
-            ajax_get('/img_min/' + files_pictures[i].dataset.key, $(files_pictures[i]));
-        }
-    }
-});
 
 function ajax_upload(e) {
     if (e.size > maxFileSize) alert("File size is bigger than 10MB"); else {
@@ -48,55 +19,7 @@ function ajax_uploads(e) {
     }
 }
 
-var notif = 0, wasError = 0, notifDownload = 0, prevPercent = 0, colors = ['#2ECC71', '#1ABC9C', '#F39C12', '#E67E22', '#E74C3C'], color = 0, percent, pie, progress, pieOfValue, dash, percentComplete = 0;
-
-function ajax_get(path, element) {
-    var xhr = new XMLHttpRequest();
-    if (element.hasClass('picture')) {
-        xhr.addEventListener('progress', function (evt) {
-            if (evt.lengthComputable) {
-                if (notifDownload == 0) {
-                    setPartDwnldUpld('dwnld');
-                    notifDownload = 1;
-                }
-                percentComplete = Math.ceil(evt.loaded / evt.total * 100);
-
-                optimizeSpeedColor();
-            }
-        }, false);
-    }
-    xhr.onreadystatechange = function(){
-        if (this.readyState == 4 && this.status == 200){
-            if (element.hasClass('picture')) {
-                if (progress != undefined) {
-                    progress.remove();
-                    $('.download-info').remove();
-                }
-            }
-            var url = window.URL || window.webkitURL;
-            element.attr('src', url.createObjectURL(this.response));
-            setTimeout(function () {
-                if (!element.hasClass('picture')) {
-                    element.css('transition', 'filter .2s ease-in, opacity .2s ease-in, transform .2s ease-in, box-shadow .2s ease-in');
-                }
-                element.css('transform', 'rotateX(0deg)');
-                if (element.hasClass('shadow')) {
-                    element.css('boxShadow', '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)');
-                } else {
-                    element.css('boxShadow', 'none');
-                }
-                element.css('opacity', '1');
-                element.css('filter', 'blur(0px)');
-
-                clearInterval(optimizeInterval);
-                percentComplete = 0;
-            }, 100);
-        }
-    };
-    xhr.open('GET', path);
-    xhr.responseType = 'blob';
-    xhr.send();
-}
+var notif = 0, wasError = 0, prevPercent = 0, colors = ['#2ECC71', '#1ABC9C', '#F39C12', '#E67E22', '#E74C3C'], color = 0, percent, pie, progress, pieOfValue, dash, percentComplete = 0;
 
 function ajax_send(e, a) {
     $.ajax({
