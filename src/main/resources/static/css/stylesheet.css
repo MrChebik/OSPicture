@@ -346,6 +346,10 @@ body {
         color: #BDC3C7;
     }
 
+    .nav-icon:hover {
+        fill: #BDC3C7;
+    }
+
     .drop-down-link:hover {
         padding-top: 15px;
         visibility: visible;
@@ -379,10 +383,6 @@ body {
 
 .copy-link:hover .drop-down-link {
     display: block;
-}
-
-.nav-icon:hover {
-    fill: #BDC3C7;
 }
 
 .nav-drop:hover, #email:hover, #file-info:hover {
