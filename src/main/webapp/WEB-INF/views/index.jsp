@@ -65,11 +65,11 @@
 </c:otherwise></c:choose></c:otherwise></c:choose>
 </div>
 <div class="footer"><c:choose><c:when test="${folder == null && key != null}">
-    <span id="file-info" onclick="actionCopyToClipboard('${name}')">File: ${name}</span>
-    <span>Size: ${size}</span>
-    <span>Resolution: ${resolution}</span>
-    <span>Format: ${format}</span></c:when><c:otherwise>
-    <a id="email" href="mailto:ospicture@yandex.ru">Email: ospicture@yandex.ru</a>
+    <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
+    <span title="Size">${size}</span>
+    <span title="Resolution">${resolution}</span>
+    <span title="Format">${format}</span></c:when><c:otherwise>
+    <a title="Email" id="email" href="mailto:ospicture@yandex.ru">ospicture@yandex.ru</a>
     <span>@ 2017 OSPicture</span></c:otherwise></c:choose>
 </div>
 </body>

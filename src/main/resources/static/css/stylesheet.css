@@ -342,7 +342,11 @@ body {
 }
 
 @media screen and (min-device-width: 1200px) and (max-device-width: 2600px) and (-webkit-min-device-pixel-ratio: 1) {
-    .nav-header:hover, .nav-icon:hover {
+    .nav-header:hover {
+        color: #BDC3C7;
+    }
+
+    .nav-icon:hover {
         fill: #BDC3C7;
     }
 
