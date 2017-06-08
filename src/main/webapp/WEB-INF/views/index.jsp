@@ -136,8 +136,8 @@ ${notFound}
         </c:choose>
     </c:otherwise>
 </c:choose>
-<script src="/js/jquery.js"></script>
-<%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>--%>
+<%--<script src="/js/jquery.js"></script>--%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="/js/ready_min.js"></script>
 <c:choose>
     <c:when test="${folder == null && key == null}">

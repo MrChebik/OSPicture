@@ -19,6 +19,9 @@ function ajax_get(path, element) {
             var url = window.URL || window.webkitURL;
             element.attr('src', url.createObjectURL(this.response));
             setTimeout(function () {
+                if (!element.hasClass('picture')) {
+                    element.css('transition', 'opacity .05s, transform .2s ease-in, box-shadow .2s ease-in');
+                }
                 element.css('transform', 'rotateX(0deg)');
                 element.css('boxShadow', 'none');
                 element.css('opacity', '1');

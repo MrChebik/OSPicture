@@ -43,8 +43,8 @@
 
 .image-folder {
     opacity: 0;
-    filter: blur(1px);
     transform: perspective(600px) rotateX(3deg);
+    box-shadow: 0 14px 23px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
 .footer {
