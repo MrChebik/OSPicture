@@ -1,1 +1,1 @@
-$(document).ready(function(){notification=$(".notification"),main=$(".main"),picture=$(".picture"),maxFileSize=1e7,notification.css("display","block")});
+$(document).ready(function(){main=$(".main"),maxFileSize=1e7});

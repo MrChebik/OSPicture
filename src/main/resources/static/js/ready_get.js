@@ -15,6 +15,9 @@ var timeout = 100, checking = function() {
 checking();
 
 function onreadyCustom() {
+    notification = $('.notification');
+    picture = $('.picture');
+    notification.css("display", "block");
     if (picture.length) {
         ajax_get('/img/' + picture.data('key'), picture);
     } else if ($('.file').length) {

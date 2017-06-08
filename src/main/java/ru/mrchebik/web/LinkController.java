@@ -3,10 +3,12 @@ package ru.mrchebik.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.mrchebik.bean.Utils;
+import ru.mrchebik.exception.ResourceNotFoundException;
 import ru.mrchebik.model.DataKeyFile;
 import ru.mrchebik.service.DataKeyFileService;
 
@@ -29,6 +31,12 @@ public class LinkController {
         this.utils = utils;
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundException(Model model) {
+        model.addAttribute("notFound", "true");
+        return "404";
+    }
+
     @GetMapping("/")
     public String handleAbsolutePath() {
         return "index";
@@ -40,16 +48,16 @@ public class LinkController {
         DataKeyFile dataKeyFile = dataKeyFileService.get(key);
 
         if (dataKeyFile == null) {
-            return "redirect:/";
+            throw new ResourceNotFoundException();
+        } else {
+            model.addAttribute("key", dataKeyFile.getKeyFile());
+            model.addAttribute("name", dataKeyFile.getOriginalFilename());
+            model.addAttribute("size", dataKeyFile.getSize());
+            model.addAttribute("format", dataKeyFile.getMimeType());
+            model.addAttribute("resolution", dataKeyFile.getScale());
+
+            return "index";
         }
-
-        model.addAttribute("key", dataKeyFile.getKeyFile());
-        model.addAttribute("name", dataKeyFile.getOriginalFilename());
-        model.addAttribute("size", dataKeyFile.getSize());
-        model.addAttribute("format", dataKeyFile.getMimeType());
-        model.addAttribute("resolution", dataKeyFile.getScale());
-
-        return "index";
     }
 
     @GetMapping("/folder/{key}")
@@ -69,7 +77,7 @@ public class LinkController {
 
             return "index";
         } else {
-            return "redirect:/";
+            throw new ResourceNotFoundException();
         }
     }
 }
