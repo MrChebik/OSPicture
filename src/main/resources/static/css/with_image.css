@@ -1,6 +1,6 @@
 .picture {
     opacity: 0;
-    filter: blur(3px);
+    filter: blur(1px);
     transition: filter .2s ease-in, opacity .2s ease-in, transform .2s ease-in;
     transform: perspective(600px) rotateX(3deg);
     border-radius: 5px;

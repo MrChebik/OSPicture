@@ -19,17 +19,9 @@ function ajax_get(path, element) {
             var url = window.URL || window.webkitURL;
             element.attr('src', url.createObjectURL(this.response));
             setTimeout(function () {
-                if (!element.hasClass('picture')) {
-                    element.css('transition', 'filter .2s ease-in, opacity .2s ease-in, transform .2s ease-in, box-shadow .2s ease-in');
-                }
                 element.css('transform', 'rotateX(0deg)');
-                if (element.hasClass('shadow')) {
-                    element.css('boxShadow', '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)');
-                } else {
-                    element.css('boxShadow', 'none');
-                }
+                element.css('boxShadow', 'none');
                 element.css('opacity', '1');
-                element.css('filter', 'blur(0px)');
 
                 clearInterval(optimizeInterval);
                 percentComplete = 0;

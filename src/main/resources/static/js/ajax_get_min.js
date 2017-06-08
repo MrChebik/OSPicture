@@ -1,1 +1,37 @@
-function ajax_get(s,e){var a=new XMLHttpRequest;e.hasClass("picture")&&(a.onprogress=function(){0==notifDownload&&(main.append($("<div/>",{class:"flowspinner"}),$("<span/>",{class:"download-info"}).text("Downloading")),notifDownload=1)}),a.onreadystatechange=function(){if(4==this.readyState&&200==this.status){e.hasClass("picture")&&($(".flowspinner").remove(),$(".download-info").remove());var s=window.URL||window.webkitURL;e.attr("src",s.createObjectURL(this.response)),setTimeout(function(){e.hasClass("picture")||e.css("transition","filter .2s ease-in, opacity .2s ease-in, transform .2s ease-in, box-shadow .2s ease-in"),e.css("transform","rotateX(0deg)"),e.hasClass("shadow")?e.css("boxShadow","0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"):e.css("boxShadow","none"),e.css("opacity","1"),e.css("filter","blur(0px)"),clearInterval(optimizeInterval),percentComplete=0},100)}},a.open("GET",s,!0),a.responseType="blob",a.send()}var notifDownload=0;
+var notifDownload = 0;
+
+function ajax_get(path, element) {
+    var xhr = new XMLHttpRequest();
+    if (element.hasClass('picture')) {
+        xhr.onprogress = function () {
+            if (notifDownload == 0) {
+                main.append($('<div/>', {'class': 'flowspinner'}), $('<span/>', {'class': 'download-info'}).text('Downloading'));
+                notifDownload = 1;
+            }
+        };
+    }
+    xhr.onreadystatechange = function(){
+        if (this.readyState == 4 && this.status == 200){
+            if (element.hasClass('picture')) {
+                $('.flowspinner').remove();
+                $('.download-info').remove();
+            }
+            var url = window.URL || window.webkitURL;
+            element.attr('src', url.createObjectURL(this.response));
+            setTimeout(function () {
+                if (!element.hasClass('picture')) {
+                    element.css('transition', 'opacity .05s, transform .2s ease-in, box-shadow .2s ease-in');
+                }
+                element.css('transform', 'rotateX(0deg)');
+                element.css('boxShadow', 'none');
+                element.css('opacity', '1');
+
+                clearInterval(optimizeInterval);
+                percentComplete = 0;
+            }, 100);
+        }
+    };
+    xhr.open('GET', path, true);
+    xhr.responseType = 'blob';
+    xhr.send();
+}

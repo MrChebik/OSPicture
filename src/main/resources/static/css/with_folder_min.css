@@ -43,7 +43,6 @@
 
 .image-folder {
     opacity: 0;
-    filter: blur(3px);
     transform: perspective(600px) rotateX(3deg);
 }
 

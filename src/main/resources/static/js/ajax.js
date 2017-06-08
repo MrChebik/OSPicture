@@ -77,7 +77,6 @@ function ajax_send(e, a) {
 
                         if (optimizeInterval == undefined) {
                             optimizeInterval = setInterval(function () {
-                                console.log(percentComplete + " // " + prevPercent);
                                 if (percentComplete - prevPercent >= 25) {
                                     pie.css('transition', 'stroke-dasharray .01s ease-in, stroke .01s ease-in');
                                     percent.css('transition', 'fill .01s ease-in');
