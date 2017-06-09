@@ -16,10 +16,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +28,9 @@ import java.util.Random;
 @RestController
 public class UploadController {
     private ProcessBuilder pngOptimization, jpegOptimization;
-    private Process optimization;
+    private Process optimization, px500Process, px200Process;
+
+    private File px500File, px200File;
 
     private String key;
 
@@ -71,7 +70,19 @@ public class UploadController {
         optimization.waitFor();
         String resolution = utils.getResolution(ImageIO.read(sourceFile));
 
-        return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], utils.getSize(new File(sourceFile.getPath()).length()), resolution, new Date())), HttpStatus.CREATED);
+        px500Process = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "500x500^", utils.getPATH() + "500_" + sourceFile.getName()).start();
+        px200Process = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "200x200^", utils.getPATH() + "200_" + sourceFile.getName()).start();
+
+        px500Process.waitFor();
+        px200Process.waitFor();
+
+        File px500 = new File(utils.getPATH() + "500_" + sourceFile.getName());
+        File px200 = new File(utils.getPATH() + "200_" + sourceFile.getName());
+
+        dataKeyFileService.add(new DataKeyFile("500_" + key, fileName, px500.getPath(), formats[1], utils.getSize(px500.length()), utils.getResolution(ImageIO.read(px500)), new Date(), key, "200_" + key));
+        dataKeyFileService.add(new DataKeyFile("200_" + key, fileName, px200.getPath(), formats[1], utils.getSize(px200.length()), utils.getResolution(ImageIO.read(px200)), new Date(), "500_" + key, key));
+
+        return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], utils.getSize(new File(sourceFile.getPath()).length()), resolution, new Date(), "500_" + key, "200_" + key)), HttpStatus.CREATED);
     }
 
     @PutMapping("/upload/images")
@@ -113,6 +124,10 @@ public class UploadController {
             }
 
             String fileName = utils.getFilename(multipartFiles.get(j).getOriginalFilename().split("\\."));
+            px500File = new File(utils.getPATH() + keyFolder + "_500/");
+            px200File = new File(utils.getPATH() + keyFolder + "_200/");
+            px500File.mkdir();
+            px200File.mkdir();
 
             optimization.waitFor();
 
@@ -122,7 +137,19 @@ public class UploadController {
             String size = utils.getSize(afterOptimization.length());
             optimization = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName()).start();
 
-            dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName()));
+            px500Process = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "500x500^", utils.getPATH() + keyFolder + "_500/" + afterOptimization.getName()).start();
+            px200Process = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "200x200^", utils.getPATH() + keyFolder + "_200/" + afterOptimization.getName()).start();
+
+            px500Process.waitFor();
+            px200Process.waitFor();
+
+            File px500 = new File(utils.getPATH() + keyFolder + "_500/" + sourceFile.getName());
+            File px200 = new File(utils.getPATH() + keyFolder + "_200/" + sourceFile.getName());
+
+            dataKeyFileService.add(new DataKeyFile("500_" + key, fileName, px500.getPath(), formats[1], utils.getSize(px500.length()), utils.getResolution(ImageIO.read(px500)), new Date(), key, "200_" + key));
+            dataKeyFileService.add(new DataKeyFile("200_" + key, fileName, px200.getPath(), formats[1], utils.getSize(px200.length()), utils.getResolution(ImageIO.read(px200)), new Date(), "500_" + key, key));
+
+            dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName(), "500_" + key, "500_" + key));
         }
 
         optimization.waitFor();

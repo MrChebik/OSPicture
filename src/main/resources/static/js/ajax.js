@@ -33,7 +33,7 @@ function ajax_send(e, a) {
             var xhr = $.ajaxSettings.xhr();
             xhr.upload.addEventListener('progress', function (evt) {
                 if (evt.lengthComputable) {
-                    if (notif == 0) {
+                    if (!$('#progress-percent').length) {
                         var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                         svgEl.setAttributeNS(null, "id", "progress-percent");
                         svgEl.setAttributeNS(null, "width", "200");

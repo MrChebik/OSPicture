@@ -20,8 +20,22 @@ public class DataKeyFile {
     private String size;
     private String resolution;
     private String minPath;
+    private String path500px;
+    private String path200px;
 
     public DataKeyFile() {
+    }
+
+    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate, String path500px, String path200px) {
+        this.keyFile = keyFile;
+        this.originalFilename = originalFilename;
+        this.path = path;
+        this.mimeType = mimeType;
+        this.size = size;
+        this.resolution = resolution;
+        this.startDate = startDate;
+        this.path500px = path500px;
+        this.path200px = path200px;
     }
 
     public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate) {
@@ -34,7 +48,7 @@ public class DataKeyFile {
         this.startDate = startDate;
     }
 
-    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate, String minPath) {
+    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate, String minPath, String path500px, String path200px) {
         this.keyFile = keyFile;
         this.originalFilename = originalFilename;
         this.path = path;
@@ -43,6 +57,8 @@ public class DataKeyFile {
         this.resolution = resolution;
         this.startDate = startDate;
         this.minPath = minPath;
+        this.path500px = path500px;
+        this.path200px = path200px;
     }
 
     public String getPath() {
@@ -115,5 +131,21 @@ public class DataKeyFile {
 
     public void setMinPath(String minPath) {
         this.minPath = minPath;
+    }
+
+    public String getPath500px() {
+        return path500px;
+    }
+
+    public void setPath500px(String path500px) {
+        this.path500px = path500px;
+    }
+
+    public String getPath200px() {
+        return path200px;
+    }
+
+    public void setPath200px(String path200px) {
+        this.path200px = path200px;
     }
 }

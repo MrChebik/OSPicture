@@ -56,6 +56,20 @@ public class LinkController {
             model.addAttribute("format", dataKeyFile.getMimeType());
             model.addAttribute("resolution", dataKeyFile.getScale());
 
+            DataKeyFile px500 = dataKeyFileService.get(dataKeyFile.getPath500px());
+            DataKeyFile px200 = dataKeyFileService.get(dataKeyFile.getPath200px());
+
+            boolean isEqual500 = key.contains("500_"), isEqual200 = key.contains("200_");
+
+            model.addAttribute("px500Path", isEqual500 ? "image/" + px500.getKeyFile() : "image/500_" + (isEqual200 ? px200.getKeyFile() : key));
+            model.addAttribute("px200Path", isEqual200 ? "image/" + px200.getKeyFile() : "image/200_" + (isEqual500 ? px500.getKeyFile() : key));
+
+            if (isEqual500) {
+                model.addAttribute("px500TRUE", 1);
+            } else if (isEqual200) {
+                model.addAttribute("px200TRUE", 1);
+            }
+
             return "index";
         }
     }
@@ -66,10 +80,10 @@ public class LinkController {
         File folder = new File(utils.getPATH() + key);
         if (folder.exists()) {
             File[] files = folder.listFiles();
-            ArrayList keyFiles = new ArrayList();
+            ArrayList<DataKeyFile> keyFiles = new ArrayList<>();
 
-            for (int i = 0; i < files.length; i++) {
-                keyFiles.add(dataKeyFileService.get(files[i].getName().substring(0, 10)));
+            for (File file : files) {
+                keyFiles.add(dataKeyFileService.get(file.getName().substring(0, 10)));
             }
 
             model.addAttribute("files", keyFiles);

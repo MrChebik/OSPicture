@@ -108,10 +108,17 @@ ${notFound}
 </div>
 <div class="footer"><c:choose>
     <c:when test="${folder == null && key != null}">
-        <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
-        <span title="Size">${size}</span>
-        <span title="Resolution">${resolution}</span>
-        <span title="Format">${format}</span></c:when>
+        <div class="types">
+            <span class="type-px" onclick="actionGoTo('${px200Path}')">${px200TRUE == null ? '200px' : 'INITIAL'}</span>
+            <span class="type-px" onclick="actionGoTo('${px500Path}')">${px500TRUE == null ? '500px' : 'INITIAL'}</span>
+        </div>
+        <div class="info">
+            <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
+            <span title="Size">${size}</span>
+            <span title="Resolution">${resolution}</span>
+            <span title="Format">${format}</span>
+        </div>
+    </c:when>
     <c:otherwise>
         <a title="Email" id="email" href="mailto:ospicture@yandex.ru">ospicture@yandex.ru</a>
         <span>@ 2017 OSPicture</span></c:otherwise>
@@ -136,8 +143,8 @@ ${notFound}
         </c:choose>
     </c:otherwise>
 </c:choose>
-<%--<script src="/js/jquery.js"></script>--%>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/js/jquery.js"></script>
+<%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>--%>
 <script src="/js/ready_min.js"></script>
 <c:choose>
     <c:when test="${folder == null && key == null}">

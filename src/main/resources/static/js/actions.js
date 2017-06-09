@@ -19,4 +19,7 @@ function actionCopyToClipboard(text) {
         notification.css("top", "80px");
     }, 2000);
 }
+function actionGoTo(path) {
+    window.location.href = site + path;
+}
 var site = "http://ospicture.xyz/";
