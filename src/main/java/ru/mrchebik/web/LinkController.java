@@ -77,7 +77,7 @@ public class LinkController {
     @GetMapping("/folder/{key}")
     public String handleGetFolder(Model model,
                                    @PathVariable String key) throws IOException {
-        File folder = new File(utils.getPATH() + key);
+        File folder = new File(utils.PATH + key);
         if (folder.exists()) {
             File[] files = folder.listFiles();
             ArrayList<DataKeyFile> keyFiles = new ArrayList<>();
