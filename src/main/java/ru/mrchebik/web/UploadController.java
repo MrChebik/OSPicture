@@ -70,6 +70,11 @@ public class UploadController {
         optimization.waitFor();
         String resolution = utils.getResolution(ImageIO.read(sourceFile));
 
+        if (px500Process != null) {
+            px500Process.waitFor();
+            px200Process.waitFor();
+        }
+
         px500Process = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "500x500^", utils.getPATH() + "500_" + sourceFile.getName()).start();
         px200Process = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "200x200^", utils.getPATH() + "200_" + sourceFile.getName()).start();
 
@@ -136,6 +141,11 @@ public class UploadController {
             String resolution = utils.getResolution(ImageIO.read(sourceFile));
             String size = utils.getSize(afterOptimization.length());
             optimization = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", utils.getPATH() + keyFolder + "_min/" + afterOptimization.getName()).start();
+
+            if (px500Process != null) {
+                px500Process.waitFor();
+                px200Process.waitFor();
+            }
 
             px500Process = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "500x500^", utils.getPATH() + keyFolder + "_500/" + afterOptimization.getName()).start();
             px200Process = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "200x200^", utils.getPATH() + keyFolder + "_200/" + afterOptimization.getName()).start();
