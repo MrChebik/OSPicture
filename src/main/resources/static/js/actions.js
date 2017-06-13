@@ -22,4 +22,8 @@ function actionCopyToClipboard(text) {
 function actionGoTo(path) {
     window.location.href = site + path;
 }
+function actionRotateZ(deg) {
+    rotateDeg += deg;
+    picture.css('transform', 'rotateZ(' + rotateDeg + 'deg)');
+}
 var site = "http://ospicture.xyz/";

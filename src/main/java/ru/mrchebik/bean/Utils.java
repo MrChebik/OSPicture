@@ -26,7 +26,7 @@ import java.util.Random;
  */
 @Component
 public class Utils {
-    public final String PATH = "/home/mrchebik/OSPicture/";
+    public final String PATH = "/home/ospicture/";
     private final BigDecimal kb = new BigDecimal(1024);
     private final Random random = new Random();
     private final DataKeyFileService dataKeyFileService;

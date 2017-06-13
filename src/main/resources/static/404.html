@@ -7,8 +7,7 @@
     <script async src="/js/ajax_min.js"></script>
 </head>
 <body>
-<input class="file-input" multiple type="file" id="file"
-       onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
+<input class="file-input" multiple type="file" id="file" onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
 <div class="header">
     <div class="nav-header" onclick="actionLogo()">OSPicture</div>
     <div class="toolbox">
@@ -21,9 +20,7 @@
 </div>
 <div class="main">
     <form action="/dropImage">
-        <div id="dropZone" ondragenter="dropEnter(event);" ondragover="dropEnter(event);"
-             ondragleave="dropLeave();"
-             ondrop="return doDrop(event);"></div>
+        <div id="dropZone" ondragenter="dropEnter(event);" ondragover="dropEnter(event);" ondragleave="dropLeave();" ondrop="return doDrop(event);"></div>
     </form>
     <p class="bold">404 Error</p>
 </div>

@@ -1,0 +1,40 @@
+.bold {
+    font-size: 75px
+}
+
+#dropZone.hover {
+    background-color: #ddd;
+    border: 15px dashed #aaa;
+    opacity: .4
+}
+
+form {
+    margin-bottom: 0
+}
+
+.footer {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between
+}
+
+#dropZone {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0
+}
+
+.footer {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+@media screen and (max-device-width: 480px) {
+    .bold {
+        font-size: 100px;
+        padding: 50px 50px 35px
+    }
+}

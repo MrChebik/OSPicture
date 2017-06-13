@@ -14,6 +14,8 @@ var timeout = 100, checking = function() {
 
 checking();
 
+var rotateDeg = 0;
+
 function onreadyCustom() {
     notification = $('.notification');
     picture = $('.picture');

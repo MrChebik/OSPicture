@@ -38,16 +38,6 @@ public class DataKeyFile {
         this.path200px = path200px;
     }
 
-    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate) {
-        this.keyFile = keyFile;
-        this.originalFilename = originalFilename;
-        this.path = path;
-        this.mimeType = mimeType;
-        this.size = size;
-        this.resolution = resolution;
-        this.startDate = startDate;
-    }
-
     public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate, String minPath, String path500px, String path200px) {
         this.keyFile = keyFile;
         this.originalFilename = originalFilename;

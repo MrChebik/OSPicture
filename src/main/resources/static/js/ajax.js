@@ -62,7 +62,9 @@ function ajax_send(e, a) {
                         $('.bold').hide();
                         $('.drag-info').hide();
                         $('.click-info').hide();
-                        picture.hide();
+                        if (picture != undefined) {
+                            picture.hide();
+                        }
                         $('.file').hide();
                         main.css('justify-content', 'center');
                         main.css('align-items', 'center');

@@ -1,37 +1,15 @@
-var notifDownload = 0;
-
-function ajax_get(path, element) {
-    var xhr = new XMLHttpRequest();
-    if (element.hasClass('picture')) {
-        xhr.onprogress = function () {
-            if (notifDownload == 0) {
-                main.append($('<div/>', {'class': 'flowspinner'}), $('<span/>', {'class': 'download-info'}).text('Downloading'));
-                notifDownload = 1;
-            }
-        };
-    }
-    xhr.onreadystatechange = function(){
-        if (this.readyState == 4 && this.status == 200){
-            if (element.hasClass('picture')) {
-                $('.flowspinner').remove();
-                $('.download-info').remove();
-            }
-            var url = window.URL || window.webkitURL;
-            element.attr('src', url.createObjectURL(this.response));
-            setTimeout(function () {
-                if (!element.hasClass('picture')) {
-                    element.css('transition', 'opacity .05s, transform .2s ease-in, box-shadow .2s ease-in');
-                }
-                element.css('transform', 'rotateX(0deg)');
-                element.css('boxShadow', 'none');
-                element.css('opacity', '1');
-
-                clearInterval(optimizeInterval);
-                percentComplete = 0;
-            }, 100);
+function ajax_get(e, s) {
+    var n = new XMLHttpRequest;
+    s.hasClass("picture") && (n.onprogress = function () {
+        0 == notifDownload && (main.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading")), notifDownload = 1)
+    }), n.onreadystatechange = function () {
+        if (4 == this.readyState && 200 == this.status) {
+            s.hasClass("picture") && ($(".flowspinner").remove(), $(".download-info").remove());
+            var e = window.URL || window.webkitURL;
+            s.attr("src", e.createObjectURL(this.response)), setTimeout(function () {
+                s.hasClass("picture") || s.css("transition", "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in"), s.css("transform", "rotateX(0deg)"), s.css("boxShadow", "none"), s.css("opacity", "1"), clearInterval(optimizeInterval), percentComplete = 0
+            }, 100)
         }
-    };
-    xhr.open('GET', path, true);
-    xhr.responseType = 'blob';
-    xhr.send();
+    }, n.open("GET", e, !0), n.responseType = "blob", n.send()
 }
+var notifDownload = 0;
