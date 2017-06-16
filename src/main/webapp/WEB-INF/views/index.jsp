@@ -53,18 +53,20 @@ ${notFound}
                     </svg>
                 </div>
             </c:if>
-            <div class="nav-icon" onclick="actionRotateZ(-90)">
-                <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
-                    <polyline points="1 4 1 10 7 10"></polyline>
-                    <path d="M3.51,15A9,9,0,1,0,5.64,5.64L1,10"></path>
-                </svg>
-            </div>
-            <div class="nav-icon" onclick="actionRotateZ(90)">
-                <svg width="38px" height="38px" viewBox="2 0 22 22" class="rotate">
-                    <polyline points="23 4 23 10 17 10"></polyline>
-                    <path d="M20.49,15a9,9,0,1,1-2.12-9.36L23,10"></path>
-                </svg>
-            </div>
+            <c:if test="${folder == null}">
+                <div class="nav-icon" onclick="actionRotateZ(-90)">
+                    <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51,15A9,9,0,1,0,5.64,5.64L1,10"></path>
+                    </svg>
+                </div>
+                <div class="nav-icon" onclick="actionRotateZ(90)">
+                    <svg width="38px" height="38px" viewBox="2 0 22 22" class="rotate">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49,15a9,9,0,1,1-2.12-9.36L23,10"></path>
+                    </svg>
+                </div>
+            </c:if>
             <div title="Link" class="nav-icon copy-link"
                  onclick="actionCopyToClipboard('http://ospicture.xyz/${folder != null ? 'folder/' : 'image/'}${key}')">
                 <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 92 92" class="toolbox-svg">
