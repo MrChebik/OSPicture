@@ -68,21 +68,21 @@ ${notFound}
                 </div>
             </c:if>
             <div title="Link" class="nav-icon copy-link"
-                 onclick="actionCopyToClipboard('http://ospicture.xyz/${folder != null ? 'folder/' : 'image/'}${key}')">
+                 onclick="actionCopyToClipboard(site + '${folder != null ? 'folder/' : 'image/'}${key}')">
                 <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 92 92" class="toolbox-svg">
                     <path d="M77.1,11.6C77.1,5.8,72.3,1,66.4,1c-5.9,0-10.7,4.8-10.7,10.6c0,4.4,2.7,8.2,6.6,9.8c-0.1,1.8-1.2,13-16.9,18.7  C38.3,42.7,33,46.2,30,49.8V21.4c4-1.6,6.4-5.4,6.4-9.8C36.4,5.8,31.5,1,25.7,1c-5.9,0-10.5,4.8-10.5,10.6c0,4.4,2.8,8.2,6.8,9.8  v49.2c-4,1.6-6.9,5.4-6.9,9.8c0,5.8,4.7,10.6,10.5,10.6c5.9,0,10.8-4.8,10.8-10.6c0-4.4-2.5-8.2-6.5-9.8v-3.2  c0-1.1,0.5-13.3,18.3-19.8c21.2-7.7,22.2-24.2,22.2-26.2C74.4,19.8,77.1,16,77.1,11.6z M25.6,7c2.6,0,4.6,2.1,4.6,4.6  s-2.1,4.6-4.6,4.6c-2.6,0-4.6-2.1-4.6-4.6S23,7,25.6,7z M25.6,85c-2.6,0-4.6-2.1-4.6-4.6s2.1-4.6,4.6-4.6c2.6,0,4.6,2.1,4.6,4.6  S28.1,85,25.6,85z M66.4,16.2c-2.6,0-4.6-2.1-4.6-4.6S63.9,7,66.4,7c2.6,0,4.6,2.1,4.6,4.6S69,16.2,66.4,16.2z"></path>
                 </svg>
             </div>
             <c:if test="${folder == null}">
                 <div class="drop-down-link">
-                    <div class="nav-drop" onclick="actionCopyToClipboard('http://ospicture.xyz/img/${key}')">Direct
+                    <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}')">Direct
                     </div>
                     <div class="nav-drop html-link"
-                         onclick="actionCopyToClipboard('<a href=\'http://ospicture.xyz/image/${key}\'><img src=\'http://ospicture.xyz/img/${key}\' alt=\'Image from OSPicture\' style=\'border-radius:5px\'></a>')">
+                         onclick="actionCopyToClipboard('<a href=\'' + site + 'image/${key}\'><img src=\'' + site + 'img/${key}\' alt=\'Image from OSPicture\' style=\'border-radius:5px\'></a>')">
                         HTML
                     </div>
                     <div class="nav-drop bb2-link"
-                         onclick="actionCopyToClipboard('[url=http://ospicture.xyz/image/${key}][img]http://ospicture.xyz/img/${key}[/img][/url]')">
+                         onclick="actionCopyToClipboard('[url=' + site + 'image/${key}][img]' + site + 'img/${key}[/img][/url]')">
                         BBCode
                     </div>
                 </div>
@@ -133,7 +133,7 @@ ${notFound}
         </div>
     </c:when>
     <c:otherwise>
-        <a title="Email" id="email" href="mailto:ospicture@yandex.ru">ospicture@yandex.ru</a>
+        <a title="Email" id="email" href="mailto:mrchebik@yandex.ru">mrchebik@yandex.ru</a>
         <span>@ 2017 OSPicture</span></c:otherwise>
 </c:choose>
 </div>
