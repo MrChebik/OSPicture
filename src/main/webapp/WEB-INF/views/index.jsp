@@ -14,7 +14,7 @@
     <meta name="description"
           content="To upload images to the Internet. The maximum size of uploads is 10Mb. Supported formats: JPEG, PNG, WebP, BMP, GIF.">
     <meta name="keywords"
-          content="хостинг картинок, загрузить картинку, раздать картинку, hosting images, upload image, share image">
+          content="хостинг картинок, загрузить картинку, раздать картинку, hosting images, upload image, share image, ospicture">
     <script async src="/js/actions_min.js"></script>
     <script async src="/js/ajax_min.js"></script>
     <c:choose>
@@ -31,7 +31,6 @@
     <meta name="msvalidate.01" content="16BF0EEBCF3387D9C22D717D9FA90F69">
 </head>
 <body>
-${notFound}
 <div class="notification">Copied to clipboard</div>
 <input class="file-input" multiple type="file" id="file"
        onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
@@ -52,8 +51,6 @@ ${notFound}
                         <path d="M89,58.8V86c0,2.8-2.2,5-5,5H8c-2.8,0-5-2.2-5-5V58.8c0-2.8,2.2-5,5-5s5,2.2,5,5V81h66V58.8  c0-2.8,2.2-5,5-5S89,56,89,58.8z M42.4,65c0.9,1,2.2,1.5,3.6,1.5s2.6-0.5,3.6-1.5l19.9-20.4c1.9-2,1.9-5.1-0.1-7.1  c-2-1.9-5.1-1.9-7.1,0.1L51,49.3V6c0-2.8-2.2-5-5-5s-5,2.2-5,5v43.3L29.6,37.7c-1.9-2-5.1-2-7.1-0.1c-2,1.9-2,5.1-0.1,7.1L42.4,65z"></path>
                     </svg>
                 </div>
-            </c:if>
-            <c:if test="${folder == null}">
                 <div class="nav-icon" onclick="actionRotateZ(-90)">
                     <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
                         <polyline points="1 4 1 10 7 10"></polyline>
@@ -68,7 +65,7 @@ ${notFound}
                 </div>
             </c:if>
             <div title="Link" class="nav-icon copy-link"
-                 onclick="actionCopyToClipboard(site + '${folder != null ? 'folder/' : 'image/'}${key}')">
+                 onclick="actionCopyToClipboard(window.location.href)">
                 <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 92 92" class="toolbox-svg">
                     <path d="M77.1,11.6C77.1,5.8,72.3,1,66.4,1c-5.9,0-10.7,4.8-10.7,10.6c0,4.4,2.7,8.2,6.6,9.8c-0.1,1.8-1.2,13-16.9,18.7  C38.3,42.7,33,46.2,30,49.8V21.4c4-1.6,6.4-5.4,6.4-9.8C36.4,5.8,31.5,1,25.7,1c-5.9,0-10.5,4.8-10.5,10.6c0,4.4,2.8,8.2,6.8,9.8  v49.2c-4,1.6-6.9,5.4-6.9,9.8c0,5.8,4.7,10.6,10.5,10.6c5.9,0,10.8-4.8,10.8-10.6c0-4.4-2.5-8.2-6.5-9.8v-3.2  c0-1.1,0.5-13.3,18.3-19.8c21.2-7.7,22.2-24.2,22.2-26.2C74.4,19.8,77.1,16,77.1,11.6z M25.6,7c2.6,0,4.6,2.1,4.6,4.6  s-2.1,4.6-4.6,4.6c-2.6,0-4.6-2.1-4.6-4.6S23,7,25.6,7z M25.6,85c-2.6,0-4.6-2.1-4.6-4.6s2.1-4.6,4.6-4.6c2.6,0,4.6,2.1,4.6,4.6  S28.1,85,25.6,85z M66.4,16.2c-2.6,0-4.6-2.1-4.6-4.6S63.9,7,66.4,7c2.6,0,4.6,2.1,4.6,4.6S69,16.2,66.4,16.2z"></path>
                 </svg>
@@ -78,11 +75,11 @@ ${notFound}
                     <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}')">Direct
                     </div>
                     <div class="nav-drop html-link"
-                         onclick="actionCopyToClipboard('<a href=\'' + site + 'image/${key}\'><img src=\'' + site + 'img/${key}\' alt=\'Image from OSPicture\' style=\'border-radius:5px\'></a>')">
+                         onclick="actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/${key}\' alt=\'Image from OSPicture\'></a>')">
                         HTML
                     </div>
                     <div class="nav-drop bb2-link"
-                         onclick="actionCopyToClipboard('[url=' + site + 'image/${key}][img]' + site + 'img/${key}[/img][/url]')">
+                         onclick="actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/${key}[/img][/url]')">
                         BBCode
                     </div>
                 </div>
@@ -94,9 +91,8 @@ ${notFound}
     <c:choose>
         <c:when test="${folder != null}">
             <c:forEach items="${files}" var="file">
-                <div class="file" onclick="actionClickInFolder('image/${file.keyFile}')">
-                    <img class="image-folder" alt="Image" data-key="${file.keyFile}">
-                    <span class="name">${file.originalFilename}.${file.mimeType}</span>
+                <div class="file" onclick="actionClickInFolder('image/${file}')">
+                    <img class="image-folder" alt="Image" data-key="${file}">
                 </div>
             </c:forEach>
         </c:when>

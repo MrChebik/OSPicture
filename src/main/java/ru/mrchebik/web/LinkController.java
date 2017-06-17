@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.mrchebik.bean.Utils;
 import ru.mrchebik.exception.ResourceNotFoundException;
 import ru.mrchebik.model.DataKeyFile;
@@ -77,13 +76,13 @@ public class LinkController {
     @GetMapping("/folder/{key}")
     public String handleGetFolder(Model model,
                                    @PathVariable String key) throws IOException {
-        File folder = new File(utils.PATH + key);
+        File folder = new File(utils.PATH_PICTURES + key);
         if (folder.exists()) {
             File[] files = folder.listFiles();
-            ArrayList<DataKeyFile> keyFiles = new ArrayList<>();
+            ArrayList<String> keyFiles = new ArrayList<>();
 
             for (File file : files) {
-                keyFiles.add(dataKeyFileService.get(file.getName().substring(0, 10)));
+                keyFiles.add(dataKeyFileService.get(file.getName().substring(0, 10)).getKeyFile());
             }
 
             model.addAttribute("files", keyFiles);

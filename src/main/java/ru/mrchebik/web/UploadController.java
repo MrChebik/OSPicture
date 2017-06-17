@@ -34,10 +34,10 @@ public class UploadController {
     public ResponseEntity add(@RequestBody List<MultipartFile> multipartFiles) throws IOException, InterruptedException {
         String keyFolder = utils.getKey();
 
-        File folder = new File(utils.PATH + keyFolder);
+        File folder = new File(utils.PATH_PICTURES + keyFolder);
         folder.mkdir();
 
-        File minFolder = new File(utils.PATH + keyFolder + "_min");
+        File minFolder = new File(utils.PATH_PICTURES + keyFolder + "_min");
         minFolder.mkdir();
 
         int col = multipartFiles.size();

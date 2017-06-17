@@ -1,6 +1,7 @@
 package ru.mrchebik.bean;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +27,9 @@ import java.util.Random;
  */
 @Component
 public class Utils {
-    public final String PATH = "/home/ospicture/";
+    @Value("${path.pictures}")
+    public String PATH_PICTURES;
+
     private final BigDecimal kb = new BigDecimal(1024);
     private final Random random = new Random();
     private final DataKeyFileService dataKeyFileService;
@@ -99,7 +102,7 @@ public class Utils {
 
         String key = getKey();
 
-        File sourceFile = new File(PATH + keyFolder + (!keyFolder.equals("") ? "/" : "") + key + (formats[1].equals("octet-stream") ? "" : ("." + formats[1])));
+        File sourceFile = new File(PATH_PICTURES + keyFolder + (!keyFolder.equals("") ? "/" : "") + key + (formats[1].equals("octet-stream") ? "" : ("." + formats[1])));
         sourceFile.createNewFile();
         file.transferTo(sourceFile);
 
@@ -116,8 +119,8 @@ public class Utils {
         String fileName = getFilename(file.getOriginalFilename().split("\\."));
         
         if (isFolder) {
-            new File(PATH + keyFolder + "_500/").mkdir();
-            new File(PATH + keyFolder + "_200/").mkdir();
+            new File(PATH_PICTURES + keyFolder + "_500/").mkdir();
+            new File(PATH_PICTURES + keyFolder + "_200/").mkdir();
         }
         
         optimization.waitFor();
@@ -128,7 +131,7 @@ public class Utils {
         String size = getSize(afterOptimization.length());
         
         if (isFolder) {
-            optimization = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", PATH + keyFolder + "_min/" + afterOptimization.getName()).start();
+            optimization = new ProcessBuilder("convert", afterOptimization.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", PATH_PICTURES + keyFolder + "_min/" + afterOptimization.getName()).start();
         }
 
         if (px500Process != null) {
@@ -136,8 +139,8 @@ public class Utils {
             px200Process.waitFor();
         }
 
-        String px500Quest = PATH + (isFolder ? keyFolder + "_500/" : "500_") + sourceFile.getName();
-        String px200Quest = PATH + (isFolder ? keyFolder + "_200/" : "200_") + sourceFile.getName();
+        String px500Quest = PATH_PICTURES + (isFolder ? keyFolder + "_500/" : "500_") + sourceFile.getName();
+        String px200Quest = PATH_PICTURES + (isFolder ? keyFolder + "_200/" : "200_") + sourceFile.getName();
 
         px500Process = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "500x500^", px500Quest).start();
         px200Process = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "200x200^", px200Quest).start();
@@ -151,7 +154,7 @@ public class Utils {
         dataKeyFileService.add(new DataKeyFile("500_" + key, fileName, px500.getPath(), formats[1], getSize(px500.length()), getResolution(ImageIO.read(px500)), new Date(), key, "200_" + key));
         dataKeyFileService.add(new DataKeyFile("200_" + key, fileName, px200.getPath(), formats[1], getSize(px200.length()), getResolution(ImageIO.read(px200)), new Date(), "500_" + key, key));
 
-        return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), isFolder ? PATH + keyFolder + "_min/" + afterOptimization.getName() : null, "500_" + key, "200_" + key)), HttpStatus.CREATED);
+        return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), isFolder ? PATH_PICTURES + keyFolder + "_min/" + afterOptimization.getName() : null, "500_" + key, "200_" + key)), HttpStatus.CREATED);
     }
     
     public ResponseEntity<InputStreamResource> getDirectImage(String key, boolean isMin) throws FileNotFoundException {

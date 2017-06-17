@@ -26,4 +26,4 @@ function actionRotateZ(deg) {
     rotateDeg += deg;
     picture.css('transform', 'rotateZ(' + rotateDeg + 'deg)');
 }
-var site = "http://ospicture.xyz/";
+var site = window.location.protocol + "//" + window.location.host + "/";
