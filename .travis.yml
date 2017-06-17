@@ -1,4 +1,6 @@
 language: java
 jdk:
   - oraclejdk8
-script: mvn spring-boot:start
+services:
+  - mysql
+script: mvn spring-boot:start -Dspring.datasource.password=
