@@ -56,7 +56,7 @@ span, .footer {
     bottom: 5px;
     -webkit-transition: .2s ease-in;
     transition: .2s ease-in;
-    fill: black;
+    fill: #ECF0F1;
     cursor: pointer;
 }
 
@@ -371,7 +371,7 @@ body {
         color: #BDC3C7;
     }
 
-    .nav-icon:hover {
+    .nav-icon:hover, .github:hover {
         fill: #BDC3C7;
     }
 
@@ -383,10 +383,6 @@ body {
         padding-top: 15px;
         visibility: visible;
         opacity: 1;
-    }
-
-    .github:hover {
-        fill: #ECF0F1;
     }
 }
 
