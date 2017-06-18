@@ -67,7 +67,7 @@ function addListenerDownload(element) {
             } else {
                 element.append(img_folder[0]);
                 setTimeout(function () {
-                    img_folder[0].style.transition = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in";
+                    img_folder[0].style.transition = "filter .2s ease-in, opacity .05s, transform .2s ease-in, box-shadow .2s ease-in";
                     img_folder[0].style.transform = "rotateX(0deg)";
                     img_folder[0].style.boxShadow = "none";
                     img_folder[0].style.opacity = "1";
