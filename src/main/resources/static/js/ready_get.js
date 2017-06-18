@@ -1,4 +1,4 @@
-var notifDownload = 0, rotateDeg = 0;
+var notifDownload = 0, rotateDeg = 0, mainReady = $('.main');
 
 notification = $('.notification');
 notification.css("display", "block");
@@ -6,7 +6,7 @@ if ($('#format').length) {
     var resolution = $('#resolution').text().split("x"), notifRes = 0;
     setTimeout(function () {
         if (picture == undefined) {
-            0 == notifDownload && ($('.main').append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading")), notifDownload = 1)
+            0 == notifDownload && (mainReady.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading")), notifDownload = 1)
         }
     }, 1000);
     var img = $("<img />", {
@@ -15,25 +15,24 @@ if ($('#format').length) {
     }).attr('src', '/img/' + $('#picture-key').val() + '.' + $('#format').data('format'))
         .on('load', function () {
             if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
-                $('.main').append($('<span />').text('Broken image'));
+                mainReady.append($('<span />').text('Broken image'));
             } else {
                 notifDownload = 1;
                 if ($('.flowspinner').length) {
                     $(".flowspinner").remove();
                     $(".download-info").remove()
                 }
-                $('.main').append(img);
+                mainReady.append(img);
                 picture = $('.picture');
                 if (window.innerWidth < resolution[0] && window.innerHeight < resolution[1]) {
                     if (resolution[0] > resolution[1] && window.innerWidth > window.innerHeight) {
                         for (var i = 1; i < 11; i++) {
+                            console.log(window.innerWidth * i + " // " + window.innerHeight * i);
                             if (window.innerWidth * i >= resolution[0]) {
-                                if (window.innerHeight * i <= resolution[1]) {
+                                if (window.innerHeight * i >= resolution[1]) {
                                     notifRes = 1;
-                                    break;
-                                } else {
-                                    break;
                                 }
+                                break;
                             }
                         }
                         if (notifRes == 1) {
@@ -73,11 +72,12 @@ if ($('#format').length) {
 }
 
 function settingPicture() {
-    $('.main').css("overflow", "hidden");
-    $('.main').css("top", "0");
-    $('.main').css("left", "0");
-    $('.main').css("right", "0");
-    $('.main').css("bottom", "0");
+    mainReady.css("overflow", "hidden");
+    mainReady.css("top", "0");
+    mainReady.css("left", "0");
+    mainReady.css("right", "0");
+    mainReady.css("bottom", "0");
+    $('body').css("background-color", "black");
 }
 
 function addListenerDownload(element) {
