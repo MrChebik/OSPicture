@@ -26,4 +26,7 @@ function actionRotateZ(deg) {
     rotateDeg += deg;
     picture.css('transform', 'rotateZ(' + rotateDeg + 'deg)');
 }
+function actionGoToGitHub() {
+    window.location.href="https://github.com/MrChebik/OSPicture"
+}
 var site = window.location.protocol + "//" + window.location.host + "/";

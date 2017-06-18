@@ -2,7 +2,10 @@ package ru.mrchebik.bean;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +32,6 @@ import java.util.Random;
 public class Utils {
     @Value("${path.pictures}")
     public String PATH_PICTURES;
-
     private final BigDecimal kb = new BigDecimal(1024);
     private final Random random = new Random();
     private final DataKeyFileService dataKeyFileService;
@@ -157,13 +159,11 @@ public class Utils {
         return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), isFolder ? PATH_PICTURES + keyFolder + "_min/" + afterOptimization.getName() : null, "500_" + key, "200_" + key)), HttpStatus.CREATED);
     }
     
-    public ResponseEntity<InputStreamResource> getDirectImage(String key, boolean isMin) throws FileNotFoundException {
+    public ResponseEntity<Resource> getDirectImage(String key, boolean isMin) throws FileNotFoundException {
         DataKeyFile dataKeyFile = dataKeyFileService.get(key);
-        File file = new File(isMin ? dataKeyFile.getMinPath() : dataKeyFile.getPath());
 
-        return ResponseEntity.ok()
-                .contentLength(file.length())
-                .contentType(MediaType.parseMediaType(new MimetypesFileTypeMap().getContentType(file)))
-                .body(new InputStreamResource(new FileInputStream(file)));
+        HttpHeaders headers = new HttpHeaders();
+        Resource resource = new FileSystemResource(isMin ? dataKeyFile.getMinPath() : dataKeyFile.getPath());
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }

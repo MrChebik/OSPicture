@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import ru.mrchebik.bean.Utils;
 import ru.mrchebik.exception.ResourceNotFoundException;
 import ru.mrchebik.model.DataKeyFile;
+import ru.mrchebik.model.FilenameFormat;
 import ru.mrchebik.service.DataKeyFileService;
 
 import java.io.File;
@@ -52,7 +53,9 @@ public class LinkController {
             model.addAttribute("key", dataKeyFile.getKeyFile());
             model.addAttribute("name", dataKeyFile.getOriginalFilename());
             model.addAttribute("size", dataKeyFile.getSize());
-            model.addAttribute("format", dataKeyFile.getMimeType());
+            boolean isOctetStream = dataKeyFile.getMimeType().equals("octet-stream");
+            model.addAttribute("format", isOctetStream ? "png" : dataKeyFile.getMimeType());
+            model.addAttribute("isOctetStream", isOctetStream);
             model.addAttribute("resolution", dataKeyFile.getScale());
 
             DataKeyFile px500 = dataKeyFileService.get(dataKeyFile.getPath500px());
@@ -79,10 +82,11 @@ public class LinkController {
         File folder = new File(utils.PATH_PICTURES + key);
         if (folder.exists()) {
             File[] files = folder.listFiles();
-            ArrayList<String> keyFiles = new ArrayList<>();
+            ArrayList<FilenameFormat> keyFiles = new ArrayList<>();
 
             for (File file : files) {
-                keyFiles.add(dataKeyFileService.get(file.getName().substring(0, 10)).getKeyFile());
+                DataKeyFile dataKeyFile = dataKeyFileService.get(file.getName().substring(0, 10));
+                keyFiles.add(dataKeyFile.getMimeType().equals("octet-stream") ? new FilenameFormat(dataKeyFile.getKeyFile(), dataKeyFile.getMimeType(), true) : new FilenameFormat(dataKeyFile.getKeyFile(), dataKeyFile.getMimeType()));
             }
 
             model.addAttribute("files", keyFiles);

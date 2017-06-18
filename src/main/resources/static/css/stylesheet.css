@@ -19,6 +19,8 @@
 }
 
 .nav-icon {
+    -webkit-filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
     margin: 5px 16px;
     -webkit-transition: .2s ease-in;
     transition: .2s ease-in;
@@ -46,6 +48,16 @@
 
 span, .footer {
     font-family: "Uni Sans Thin"
+}
+
+.github {
+    position: absolute;
+    left: calc(50% - 19px);
+    bottom: 5px;
+    -webkit-transition: .2s ease-in;
+    transition: .2s ease-in;
+    fill: black;
+    cursor: pointer;
 }
 
 .main {
@@ -243,7 +255,7 @@ body {
         padding: 8px 10px;
     }
 
-    .nav-drop, #file-info, #email, .nav-icon, .nav-header {
+    .nav-drop, #file-info, #email, .nav-icon, .nav-header, .github {
         cursor: none;
     }
 
@@ -326,12 +338,17 @@ body {
     }
 
     .footer {
-        font-size: 30px
+        font-size: 35px;
+        padding: 40px 25px;
     }
 
     .icon {
         width: 100px;
         padding-top: 10px
+    }
+
+    .github {
+        left: calc(50% - 50px);
     }
 }
 
@@ -367,6 +384,10 @@ body {
         visibility: visible;
         opacity: 1;
     }
+
+    .github:hover {
+        fill: #ECF0F1;
+    }
 }
 
 .click-info {
@@ -401,7 +422,7 @@ body {
     color: #BDC3C7;
 }
 
-.nav-icon:active {
+.nav-icon:active, .github:active {
     fill: #7F8C8D;
 }
 
@@ -418,4 +439,8 @@ a, span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+span, p, .nav-header {
+    text-shadow: 0 2px 1px rgba(0,0,0,0.8);
 }

@@ -24,4 +24,4 @@ mvn spring-boot:run \
 2. Follow to the link: [_http://localhost:8446/_](http://localhost:8446/)
 
 ## License
-This project is licensed under the GPL 3.0 License - see the [LICENSE](https://github.com/MrChebik/OSPicture/blob/master/LICENSE) file for details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](https://github.com/MrChebik/OSPicture/blob/master/LICENSE) file for details.

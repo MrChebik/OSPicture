@@ -17,14 +17,9 @@
           content="хостинг картинок, загрузить картинку, раздать картинку, hosting images, upload image, share image, ospicture">
     <script async src="/js/actions_min.js"></script>
     <script async src="/js/ajax_min.js"></script>
-    <c:choose>
-        <c:when test="${folder == null && key == null}">
+    <c:if test="${folder == null && key == null}">
             <script async src="/js/drop_min.js"></script>
-        </c:when>
-        <c:otherwise>
-            <script async src="/js/ajax_get_min.js"></script>
-        </c:otherwise>
-    </c:choose>
+    </c:if>
     <meta name="yandex-verification" content="63722a67b19d1b95"/>
     <meta name="google-site-verification" content="lPL5nvLypGsZ8ZDIsV_RjeUZ1SRjrHX9bfLkkaEHsJo"/>
     <meta name="wmail-verification" content="196a7986855ac910b031fd120a241c18">
@@ -45,7 +40,7 @@
         <c:if test="${key != null}">
             <c:if test="${folder == null}">
                 <a id="download-picture" href='/img/${key}'
-                   download="${name}${format.equals('octet-stream') ? '' : '.'}${format.equals('octet-stream') ? '' : format}"></a>
+                   download="${name}${isOctetStream ? '' : '.'}${isOctetStream ? '' : format}"></a>
                 <div title="Download" class="nav-icon" onclick="actionDownload()">
                     <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 92 92" class="toolbox-svg">
                         <path d="M89,58.8V86c0,2.8-2.2,5-5,5H8c-2.8,0-5-2.2-5-5V58.8c0-2.8,2.2-5,5-5s5,2.2,5,5V81h66V58.8  c0-2.8,2.2-5,5-5S89,56,89,58.8z M42.4,65c0.9,1,2.2,1.5,3.6,1.5s2.6-0.5,3.6-1.5l19.9-20.4c1.9-2,1.9-5.1-0.1-7.1  c-2-1.9-5.1-1.9-7.1,0.1L51,49.3V6c0-2.8-2.2-5-5-5s-5,2.2-5,5v43.3L29.6,37.7c-1.9-2-5.1-2-7.1-0.1c-2,1.9-2,5.1-0.1,7.1L42.4,65z"></path>
@@ -72,14 +67,14 @@
             </div>
             <c:if test="${folder == null}">
                 <div class="drop-down-link">
-                    <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}')">Direct
+                    <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}.${format}')">Direct
                     </div>
                     <div class="nav-drop html-link"
-                         onclick="actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/${key}\' alt=\'Image from OSPicture\'></a>')">
+                         onclick="actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/${key}.${format}\' alt=\'Image from OSPicture\'></a>')">
                         HTML
                     </div>
                     <div class="nav-drop bb2-link"
-                         onclick="actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/${key}[/img][/url]')">
+                         onclick="actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/${key}.${format}[/img][/url]')">
                         BBCode
                     </div>
                 </div>
@@ -91,27 +86,20 @@
     <c:choose>
         <c:when test="${folder != null}">
             <c:forEach items="${files}" var="file">
-                <div class="file" onclick="actionClickInFolder('image/${file}')">
-                    <img class="image-folder" alt="Image" data-key="${file}">
-                </div>
+                <div class="file" data-key="${file.filename}" data-format="${file.format}" onclick="actionClickInFolder('image/${file.filename}')"></div>
             </c:forEach>
         </c:when>
         <c:otherwise>
-            <c:choose>
-                <c:when test="${key != null}">
-                    <img class="picture" alt="image" data-key="${key}">
-                </c:when>
-                <c:otherwise>
-                    <form action="/dropImage">
-                        <div id="dropZone" ondragenter="dropEnter(event);" ondragover="dropEnter(event);"
-                             ondragleave="dropLeave();"
-                             ondrop="return doDrop(event);"></div>
-                    </form>
-                    <p class="bold" onclick="actionImitationClick()">Upload Image</p>
-                    <span class="drag-info">Drag files to this page</span>
-                    <span class="click-info">Сlick on the button above</span>
-                </c:otherwise>
-            </c:choose>
+            <c:if test="${key == null}">
+                <form action="/dropImage">
+                    <div id="dropZone" ondragenter="dropEnter(event);" ondragover="dropEnter(event);"
+                         ondragleave="dropLeave();"
+                         ondrop="return doDrop(event);"></div>
+                </form>
+                <p class="bold" onclick="actionImitationClick()">Upload Image</p>
+                <span class="drag-info">Drag files to this page</span>
+                <span class="click-info">Сlick on the button above</span>
+            </c:if>
         </c:otherwise>
     </c:choose>
 </div>
@@ -124,15 +112,21 @@
         <div class="info">
             <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
             <span title="Size">${size}</span>
-            <span title="Resolution">${resolution}</span>
-            <span title="Format">${format}</span>
+            <span title="Resolution" id="resolution">${resolution}</span>
+            <span title="Format" id="format" data-format="${format}">${isOctetStream == 'true' ? 'octet-stream' : format}</span>
         </div>
     </c:when>
     <c:otherwise>
         <a title="Email" id="email" href="mailto:mrchebik@yandex.ru">mrchebik@yandex.ru</a>
+        <div class="github" onclick="actionGoToGitHub()">
+            <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 16 16" class="toolbox-svg">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+        </div>
         <span>@ 2017 OSPicture</span></c:otherwise>
 </c:choose>
 </div>
+<input id="picture-key" type="hidden" value="${key}">
 </body>
 </html>
 <link rel="stylesheet" href="/css/stylesheet_min.css">
