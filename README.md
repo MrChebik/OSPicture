@@ -4,7 +4,15 @@
 ## Getting Started
 1. Setting _utf8_ encoding in _MySQL_:
     1. Go to _/etc/my.cnf_
-    2. Remove ___;___ before _collation_server_ and _character_set_server_
+    2. Remove ___;___ before _collation_server_ and _character_set_server_, or add this:
+```
+[mysql]
+default-character-set = utf8
+  
+[mysqld]
+collation_server = utf8_unicode_ci
+character_set_server = utf8
+```
 2. Install image optimizations libraries and ImageMagick:
     * My tips for ___RPM___ (_CentOS6_ and _Mageia_): [mozjpeg](https://gist.github.com/MrChebik/d5cd2920d49415122376ef2f600907ce) and [optipng](https://gist.github.com/MrChebik/8c3594a521898b889d8acf4f419cbcbc)
     * Also you can find manuals on their pages:

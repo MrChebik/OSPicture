@@ -6,7 +6,7 @@ if ($('#format').length) {
     var resolution = $('#resolution').text().split("x"), notifRes = 0;
     setTimeout(function () {
         if (picture == undefined) {
-            0 == notifDownload && (main.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading")), notifDownload = 1)
+            0 == notifDownload && ($('.main').append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading")), notifDownload = 1)
         }
     }, 1000);
     var img = $("<img />", {
@@ -15,14 +15,14 @@ if ($('#format').length) {
     }).attr('src', '/img/' + $('#picture-key').val() + '.' + $('#format').data('format'))
         .on('load', function () {
             if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
-                main.append($('<span />').text('Broken image'));
+                $('.main').append($('<span />').text('Broken image'));
             } else {
                 notifDownload = 1;
                 if ($('.flowspinner').length) {
                     $(".flowspinner").remove();
                     $(".download-info").remove()
                 }
-                main.append(img);
+                $('.main').append(img);
                 picture = $('.picture');
                 if (window.innerWidth < resolution[0] && window.innerHeight < resolution[1]) {
                     if (resolution[0] > resolution[1] && window.innerWidth > window.innerHeight) {
@@ -73,11 +73,11 @@ if ($('#format').length) {
 }
 
 function settingPicture() {
-    main.css("overflow", "hidden");
-    main.css("top", "0");
-    main.css("left", "0");
-    main.css("right", "0");
-    main.css("bottom", "0");
+    $('.main').css("overflow", "hidden");
+    $('.main').css("top", "0");
+    $('.main').css("left", "0");
+    $('.main').css("right", "0");
+    $('.main').css("bottom", "0");
 }
 
 function addListenerDownload(element) {
