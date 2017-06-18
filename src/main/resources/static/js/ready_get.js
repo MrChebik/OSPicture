@@ -41,7 +41,6 @@ if ($('#format').length) {
                         }
                     } else if (resolution[0] < resolution[1] && window.innerWidth < window.innerHeight) {
                         for (var i = 1; i < 11; i++) {
-                            console.log(window.innerWidth * i + " // " + window.innerHeight * i + " // " + i + " // " + $(window).width() + " // " + $(window).height());
                             if (window.innerHeight * i >= resolution[1]) {
                                 if (window.innerWidth * i <= resolution[0]) {
                                     notifRes = 1;
