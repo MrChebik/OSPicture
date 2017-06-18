@@ -3,7 +3,7 @@ var notifDownload = 0, rotateDeg = 0, mainReady = $('.main');
 notification = $('.notification');
 notification.css("display", "block");
 if ($('#format').length) {
-    var resolution = $('#resolution').text().split("x"), notifRes = 0;
+    var resolution = $('#resolution').text().split("x");
     setTimeout(function () {
         if (picture == undefined) {
             0 == notifDownload && (mainReady.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading")), notifDownload = 1)
@@ -25,35 +25,12 @@ if ($('#format').length) {
                 mainReady.append(img);
                 picture = $('.picture');
                 if (window.innerWidth < resolution[0] && window.innerHeight < resolution[1]) {
-                    if (resolution[0] > resolution[1] && window.innerWidth > window.innerHeight) {
-                        for (var i = 1; i < 11; i++) {
-                            console.log(window.innerWidth * i + " // " + window.innerHeight * i);
-                            if (window.innerWidth * i >= resolution[0]) {
-                                if (window.innerHeight * i >= resolution[1]) {
-                                    notifRes = 1;
-                                }
-                                break;
-                            }
-                        }
-                        if (notifRes == 1) {
-                            settingPicture();
-                            picture.css("max-height", "inherit");
-                        }
-                    } else if (resolution[0] < resolution[1] && window.innerWidth < window.innerHeight) {
-                        for (var i = 1; i < 11; i++) {
-                            if (window.innerHeight * i >= resolution[1]) {
-                                if (window.innerWidth * i <= resolution[0]) {
-                                    notifRes = 1;
-                                    break;
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                        if (notifRes == 1) {
-                            settingPicture();
-                            picture.css("max-width", "inherit");
-                        }
+                    if (resolution[0] > resolution[1] && window.innerWidth > window.innerHeight && (window.innerWidth / window.innerHeight).toFixed(1) == (resolution[0] / resolution[1]).toFixed(1)) {
+                        settingPicture();
+                        picture.css("max-height", "inherit");
+                    } else if (resolution[0] < resolution[1] && window.innerWidth < window.innerHeight && (window.innerWidth / window.innerHeight).toFixed(1) == (resolution[0] / resolution[1]).toFixed(1)) {
+                        settingPicture();
+                        picture.css("max-width", "inherit");
                     }
                 }
                 setTimeout(function () {
