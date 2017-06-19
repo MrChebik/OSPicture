@@ -25,10 +25,10 @@ if ($('#format').length) {
                 mainReady.append(img);
                 picture = $('.picture');
                 if (window.innerWidth < resolution[0] && window.innerHeight < resolution[1]) {
-                    if (resolution[0] > resolution[1] && window.innerWidth > window.innerHeight && (window.innerWidth / window.innerHeight).toFixed(1) == (resolution[0] / resolution[1]).toFixed(1)) {
+                    if (resolution[0] > resolution[1] && window.innerWidth > window.innerHeight && (((screen.width / screen.height) + "").substring(0, 3) == ((resolution[0] / resolution[1]) + "").substring(0, 3) && screen.width - window.innerWidth <= 211 && screen.height - window.innerHeight <= 211) || ((window.innerWidth / window.innerHeight) + "").substring(0, 3) == ((resolution[0] / resolution[1]) + "").substring(0, 3)) {
                         settingPicture();
                         picture.css("max-height", "inherit");
-                    } else if (resolution[0] < resolution[1] && window.innerWidth < window.innerHeight && (window.innerWidth / window.innerHeight).toFixed(1) == (resolution[0] / resolution[1]).toFixed(1)) {
+                    } else if (resolution[0] < resolution[1] && ((window.innerWidth / window.innerHeight) + "").substring(0, 3) == ((resolution[0] / resolution[1]) + "").substring(0, 3)) {
                         settingPicture();
                         picture.css("max-width", "inherit");
                     }
