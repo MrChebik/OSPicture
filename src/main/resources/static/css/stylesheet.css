@@ -19,13 +19,16 @@
 }
 
 .nav-icon {
-    -webkit-filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
-    filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
     margin: 5px 16px;
     -webkit-transition: .2s ease-in;
     transition: .2s ease-in;
     fill: #ECF0F1;
     cursor: pointer;
+}
+
+.nav-icon {
+    -webkit-filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
 }
 
 .click-info {
@@ -63,9 +66,9 @@ span, .footer {
 .main {
     position: absolute;
     top: 70px;
-    bottom: 70px;
     left: 25px;
     right: 25px;
+    bottom: 70px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -78,21 +81,20 @@ span, .footer {
 .footer {
     position: fixed;
     bottom: 0;
-    left: 25px;
-    right: 25px
+    left: 0;
+    right: 0
 }
 
 body {
     background-color: #34495E;
     margin: 0;
     font-family: "Uni Sans Heavy", "DejaVu Sans", monospace;
-    color: #ECF0F1
+    color: #ECF0F1;
+    overflow: hidden;
 }
 
 .nav-header {
-    color: #ECF0F1;
     margin: 18px 16px 16px 16px;
-    -webkit-transition: .2s;
     -webkit-transition: .2s ease-in;
     transition: .2s ease-in;
     cursor: pointer;
@@ -116,7 +118,7 @@ body {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    padding: 15px 0
+    padding: 15px 25px 10px 25px
 }
 
 .icon {
@@ -222,21 +224,15 @@ body {
     transition: opacity .2s ease-in, top .2s ease-in;
 }
 
-#email {
-    text-decoration: none;
-}
-
 #file-info, #email, .nav-drop {
     -webkit-transition: .2s ease-in;
     transition: .2s ease-in;
     cursor: pointer;
-    color: #ECF0F1;
 }
 
 .nav-drop {
     margin: 0 0 16px 0;
     text-align: center;
-    text-shadow: -1px -1px 4px rgba(0,0,0,.3), -1px 1px 4px rgba(0,0,0,.3), 1px 1px 4px rgba(0,0,0,.3), 1px -1px 4px rgba(0,0,0,.3);
 }
 
 @media screen and (max-device-width: 480px) and (orientation: portrait) {
@@ -332,8 +328,8 @@ body {
 
     .main {
         top: 180px;
-        left: 5%;
-        right: 5%;
+        left: 25px;
+        right: 25px;
         bottom: 140px
     }
 
@@ -383,6 +379,10 @@ body {
         padding-top: 15px;
         visibility: visible;
         opacity: 1;
+    }
+
+    .footer:hover {
+        bottom: 0 !important;
     }
 }
 
@@ -435,8 +435,10 @@ a, span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    text-decoration: none;
+    color: #ECF0F1;
 }
 
-span, p, .nav-header {
+span, p, .nav-header, a, .nav-drop {
     text-shadow: 0 2px 1px rgba(0,0,0,0.8);
 }

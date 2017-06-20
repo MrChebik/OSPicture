@@ -18,7 +18,7 @@
     <script async src="/js/actions_min.js"></script>
     <script async src="/js/ajax_min.js"></script>
     <c:if test="${folder == null && key == null}">
-            <script async src="/js/drop_min.js"></script>
+        <script async src="/js/drop_min.js"></script>
     </c:if>
     <meta name="yandex-verification" content="63722a67b19d1b95"/>
     <meta name="google-site-verification" content="lPL5nvLypGsZ8ZDIsV_RjeUZ1SRjrHX9bfLkkaEHsJo"/>
@@ -30,7 +30,7 @@
 <input class="file-input" multiple type="file" id="file"
        onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
 <div class="header">
-    <div class="nav-header" onclick="actionLogo()">OSPicture</div>
+    <a class="nav-header" href="http://ospicture.xyz/">OSPicture</a>
     <div class="toolbox">
         <label title="Upload" class="nav-icon" id="label-upload" for="file">
             <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 92 92" class="toolbox-svg">
@@ -67,14 +67,13 @@
             </div>
             <c:if test="${folder == null}">
                 <div class="drop-down-link">
-                    <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}.${format}')">Direct
+                    <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}.${format}')">
+                        Direct
                     </div>
-                    <div class="nav-drop html-link"
-                         onclick="actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/${key}.${format}\' alt=\'Image from OSPicture\'></a>')">
+                    <div class="nav-drop html-link" onclick="actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/${key}.${format}\' alt=\'Image from OSPicture\'></a>')">
                         HTML
                     </div>
-                    <div class="nav-drop bb2-link"
-                         onclick="actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/${key}.${format}[/img][/url]')">
+                    <div class="nav-drop bb2-link" onclick="actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/${key}.${format}[/img][/url]')">
                         BBCode
                     </div>
                 </div>
@@ -82,20 +81,16 @@
         </c:if>
     </div>
 </div>
-<div class="main">
+<div class="main" data-key="${key}" data-format="${format}">
     <c:choose>
         <c:when test="${folder != null}">
             <c:forEach items="${files}" var="file">
-                <div class="file" data-key="${file.filename}" data-format="${file.format}" onclick="actionClickInFolder('image/${file.filename}')"></div>
+                <a class="file" data-key="${file.filename}" data-format="${file.format}" href="http://ospicture.xyz/image/${file.filename}"></a>
             </c:forEach>
         </c:when>
         <c:otherwise>
             <c:if test="${key == null}">
-                <form action="/dropImage">
-                    <div id="dropZone" ondragenter="dropEnter(event);" ondragover="dropEnter(event);"
-                         ondragleave="dropLeave();"
-                         ondrop="return doDrop(event);"></div>
-                </form>
+                <div id="dropZone" ondragenter="dropEnter(event);" ondragover="dropEnter(event);" ondragleave="dropLeave();" ondrop="return doDrop(event);"></div>
                 <p class="bold" onclick="actionImitationClick()">Upload Image</p>
                 <span class="drag-info">Drag files to this page</span>
                 <span class="click-info">Сlick on the button above</span>
@@ -106,27 +101,26 @@
 <div class="footer"><c:choose>
     <c:when test="${folder == null && key != null}">
         <div class="types">
-            <span class="type-px" onclick="actionGoTo('${px200Path}')">${px200TRUE == null ? '200px' : 'INITIAL'}</span>
-            <span class="type-px" onclick="actionGoTo('${px500Path}')">${px500TRUE == null ? '500px' : 'INITIAL'}</span>
+            <a class="type-px" href="http://ospicture.xyz/${px200Path}">${px200TRUE == null ? '200px' : 'INITIAL'}</a>
+            <a class="type-px" href="http://ospicture.xyz/${px500Path}">${px500TRUE == null ? '500px' : 'INITIAL'}</a>
         </div>
         <div class="info">
             <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
             <span title="Size">${size}</span>
             <span title="Resolution" id="resolution">${resolution}</span>
-            <span title="Format" id="format" data-format="${format}">${isOctetStream == 'true' ? 'octet-stream' : format}</span>
+            <span title="Format">${isOctetStream == 'true' ? 'octet-stream' : format}</span>
         </div>
     </c:when>
     <c:otherwise>
         <a title="Email" id="email" href="mailto:mrchebik@yandex.ru">mrchebik@yandex.ru</a>
-        <div class="github" onclick="actionGoToGitHub()">
+        <a class="github" href="https://github.com/MrChebik/OSPicture">
             <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 16 16" class="toolbox-svg">
                 <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
             </svg>
-        </div>
+        </a>
         <span>@ 2017 OSPicture</span></c:otherwise>
 </c:choose>
 </div>
-<input id="picture-key" type="hidden" value="${key}">
 </body>
 </html>
 <link rel="stylesheet" href="/css/stylesheet_min.css">

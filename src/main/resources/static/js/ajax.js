@@ -34,6 +34,7 @@ function ajax_send(e, a) {
             xhr.upload.addEventListener('progress', function (evt) {
                 if (evt.lengthComputable) {
                     if (!$('#progress-percent').length) {
+                        main.css("background-color", "#34495E");
                         var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                         svgEl.setAttributeNS(null, "id", "progress-percent");
                         svgEl.setAttributeNS(null, "width", "200");

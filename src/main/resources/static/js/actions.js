@@ -1,11 +1,5 @@
-function actionLogo() {
-    "/" != window.location.pathname && (window.location.href = "/")
-}
 function actionDownload() {
     $("#download-picture")[0].click()
-}
-function actionClickInFolder(o) {
-    window.location.href = site + o
 }
 function actionImitationClick() {
     $("#label-upload")[0].click()
@@ -19,14 +13,50 @@ function actionCopyToClipboard(text) {
         notification.css("top", "80px");
     }, 2000);
 }
-function actionGoTo(path) {
-    window.location.href = site + path;
-}
 function actionRotateZ(deg) {
     rotateDeg += deg;
+    calcViewRotateDeg();
     picture.css('transform', 'rotateZ(' + rotateDeg + 'deg)');
 }
-function actionGoToGitHub() {
-    window.location.href="https://github.com/MrChebik/OSPicture"
+
+function calcViewRotateDeg() {
+    if ((Math.abs(rotateDeg) / 90) % 2 == 1) {
+        if (!calculateView(1, 0)) {
+            setMain();
+            var width = picture.width();
+            $('body').css("background-color", "#34495E");
+            if (main.css("left") == "0px") {
+                picture.css("max-width", main.height() - 140);
+                picture.css("max-height", main.width() - 50);
+            } else {
+                picture.css("max-width", main.height());
+                picture.css("max-height", main.width());
+            }
+        }
+    } else {
+        if (!calculateView(0, 1)) {
+            setMain();
+            $('body').css("background-color", "#34495E");
+            picture.css("max-width", "100%");
+            picture.css("max-height", "100%");
+        }
+    }
 }
+
 var site = window.location.protocol + "//" + window.location.host + "/";
+
+function setMain() {
+    if (screen.width > 480) {
+        main.css("top", "70px");
+        main.css("left", "25px");
+        main.css("right", "25px");
+        main.css("bottom", "70px");
+    } else {
+        main.css("top", "225px");
+        main.css("left", "25px");
+        main.css("right", "25px");
+        main.css("bottom", "240px");
+    }
+    $('.footer').css("background-color", "transparent");
+    $('.footer').css("bottom", "0");
+}
