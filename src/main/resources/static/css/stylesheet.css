@@ -437,9 +437,16 @@ a, span {
     text-overflow: ellipsis;
     text-decoration: none;
     color: #ECF0F1;
-    outline: none;
+    outline: none
 }
 
 span, p, .nav-header, a, .nav-drop {
     text-shadow: 0 2px 1px rgba(0,0,0,0.8);
+}
+
+img {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none
 }
