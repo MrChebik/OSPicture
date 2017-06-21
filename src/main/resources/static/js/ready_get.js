@@ -28,9 +28,9 @@ function settingPicture() {
     mainReady.css("bottom", "0");
     $('body').css("transition", "background-color .2s ease-in");
     $('body').css("background-color", "black");
-    if (screen.width >= window.innerWidth) {
+    if (screen.width > 480) {
         footer.css("transition", "bottom .2s, background-color .2s");
-        footer.css("bottom", "-40px");
+        footer.css("bottom", "-44px");
     }
     footer.css("background-color", "rgba(0,0,0,0.7)");
 }
@@ -56,6 +56,17 @@ function addListenerDownload(element, type) {
                 if (isPicture) {
                     picture = $('.picture');
                     calculateView(0, 1);
+                    if (mainReady.data("animation") != "") {
+                        if (mainReady.data("animation") == "left") {
+                            mainReady.css("left", "-50%");
+                            mainReady.css("right", "50%");
+                        } else {
+                            mainReady.css("left", "50%");
+                            mainReady.css("right", "-50%");
+                        }
+                        picture.css("transform", "rotateX(0deg)");
+                        picture.css("boxShadow", "none");
+                    }
                 }
                 setTimeout(function () {
                     if (isPicture) {
@@ -69,6 +80,10 @@ function addListenerDownload(element, type) {
                     if (isPicture) {
                         setTimeout(function () {
                             mainReady.css("transition", "top .2s, bottom .2s, left .2s, right .2s");
+                            if (mainReady.data("animation") != "") {
+                                mainReady.css("left", "0px");
+                                mainReady.css("right", "0px");
+                            }
                         }, 40);
                         $(window).resize(function() {
                             calcViewRotateDeg();
@@ -90,7 +105,7 @@ function calculateView(x, y) {
                 picture.css("max-height", "inherit");
             } else {
                 picture.css("max-width", "inherit");
-                picture.css("max-height", main.width() + 50);
+                picture.css("max-height", main.width() + (main.width() == picture.css("max-height") ? 0 : main.css("left") == "0px" ? 0 : 50));
             }
             return true;
         } else if (!isResolution && !isWindowInner && isDivideResolutionAndWindow) {
@@ -99,11 +114,22 @@ function calculateView(x, y) {
                 picture.css("max-width", "inherit");
                 picture.css("max-height", "100%");
             } else {
-                picture.css("max-width", main.height() + 465);
+                picture.css("max-width", main.height() + (screen.width < 480 ? 465 : main.height() == picture.css("max-width") ? 0 : main.css("left") == "0px" ? 0 : 140));
                 picture.css("max-height", "inherit");
             }
             return true;
         }
     }
     return false;
+}
+
+if (mainReady.data("left") != "") {
+    document.onkeydown = function (evt) {
+        evt = evt || window.event;
+        if (evt.keyCode == 37) {
+            window.location = site + "imageAnim?key=" + mainReady.data("left") + "&left=true";
+        } else if (evt.keyCode == 39) {
+            window.location = site + "imageAnim?key=" + mainReady.data("right") + "&right=true";
+        }
+    }
 }

@@ -32,6 +32,7 @@ import java.util.Random;
 public class Utils {
     @Value("${path.pictures}")
     public String PATH_PICTURES;
+    public final int KEY_LENGTH = 10;
     private final BigDecimal kb = new BigDecimal(1024);
     private final Random random = new Random();
     private final DataKeyFileService dataKeyFileService;
@@ -46,7 +47,7 @@ public class Utils {
     public String getKey() {
         String key = "";
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < KEY_LENGTH; i++) {
             if (random.nextBoolean()) {
                 key += (char) (random.nextInt(9) + 48);
             } else {

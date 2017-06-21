@@ -3,9 +3,10 @@ package ru.mrchebik.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.mrchebik.bean.Utils;
 import ru.mrchebik.exception.ResourceNotFoundException;
 import ru.mrchebik.model.DataKeyFile;
@@ -14,7 +15,7 @@ import ru.mrchebik.service.DataKeyFileService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by mrchebik on 15.05.17.
@@ -42,14 +43,45 @@ public class LinkController {
         return "index";
     }
 
+    @GetMapping("/imageAnim")
+    public ModelAndView handleAnimation(@RequestParam String key,
+                                        @RequestParam(required = false) String left,
+                                        @RequestParam(required = false) String right,
+                                        @ModelAttribute("animation") String animation,
+                                        RedirectAttributes redirectAttributes) {
+        ModelAndView modelAndView = new ModelAndView();
+        RedirectView view = new RedirectView("/image/" + key);
+        view.setExposeModelAttributes(false);
+        modelAndView.setView(view);
+
+        redirectAttributes.addFlashAttribute("animation", left != null ? "left" : "right");
+
+        return modelAndView;
+    }
+    
     @GetMapping("/image/{key}")
     public String handleGetImage(Model model,
+                                 @ModelAttribute("animation") String animation,
                                  @PathVariable String key) throws IOException {
         DataKeyFile dataKeyFile = dataKeyFileService.get(key);
 
         if (dataKeyFile == null) {
             throw new ResourceNotFoundException();
         } else {
+            String folderPath = dataKeyFile.getPath().split(dataKeyFile.getKeyFile())[0];
+            if (!folderPath.equals(utils.PATH_PICTURES)) {
+                File folder = new File(folderPath);
+                model.addAttribute("isFromFolder", folder.getName());
+                String[] folderFiles = folder.list();
+                for (int i = 0; i < folderFiles.length; i++) {
+                    if (folderFiles[i].contains(key)) {
+                        model.addAttribute("folderLeft", folderFiles[i == 0 ? folderFiles.length - 1 : (i - 1)].substring(0, utils.KEY_LENGTH));
+                        model.addAttribute("folderRight", folderFiles[i == folderFiles.length - 1 ? 0 : (i + 1)].substring(0, utils.KEY_LENGTH));
+                        break;
+                    }
+                }
+            }
+
             model.addAttribute("key", dataKeyFile.getKeyFile());
             model.addAttribute("name", dataKeyFile.getOriginalFilename());
             model.addAttribute("size", dataKeyFile.getSize());

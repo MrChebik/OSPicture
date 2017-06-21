@@ -30,7 +30,12 @@
 <input class="file-input" multiple type="file" id="file"
        onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
 <div class="header">
-    <a class="nav-header" href="http://ospicture.xyz/" tabindex="-1">OSPicture</a>
+    <div class="header-box">
+        <a class="nav-header" href="/" tabindex="-1">OSPicture</a>
+        <c:if test="${isFromFolder != null}">
+            <a class="nav-header" href="/folder/${isFromFolder}">Folder</a>
+        </c:if>
+    </div>
     <div class="toolbox">
         <label title="Upload" class="nav-icon" id="label-upload" for="file">
             <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 92 92" class="toolbox-svg">
@@ -82,11 +87,11 @@
         </c:if>
     </div>
 </div>
-<div class="main" data-key="${key}" data-format="${format}">
+<div class="main" data-key="${key}" data-format="${format}" data-left="${folderLeft}" data-right="${folderRight}" data-animation="${animation}">
     <c:choose>
         <c:when test="${folder != null}">
             <c:forEach items="${files}" var="file">
-                <a class="file" data-key="${file.filename}" data-format="${file.format}" href="http://ospicture.xyz/image/${file.filename}" tabindex="-1"></a>
+                <a class="file" data-key="${file.filename}" data-format="${file.format}" href="/image/${file.filename}" tabindex="-1"></a>
             </c:forEach>
         </c:when>
         <c:otherwise>
@@ -101,11 +106,12 @@
         </c:otherwise>
     </c:choose>
 </div>
+<c:if test="${key != null}"><div class="popup-footer"></div></c:if>
 <div class="footer"><c:choose>
     <c:when test="${folder == null && key != null}">
         <div class="types">
-            <a class="type-px" href="http://ospicture.xyz/${px200Path}" tabindex="-1">${px200TRUE == null ? '200px' : 'INITIAL'}</a>
-            <a class="type-px" href="http://ospicture.xyz/${px500Path}" tabindex="-1">${px500TRUE == null ? '500px' : 'INITIAL'}</a>
+            <a class="type-px" href="/${px200Path}" tabindex="-1">${px200TRUE == null ? '200px' : 'INITIAL'}</a>
+            <a class="type-px" href="/${px500Path}" tabindex="-1">${px500TRUE == null ? '500px' : 'INITIAL'}</a>
         </div>
         <div class="info">
             <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>

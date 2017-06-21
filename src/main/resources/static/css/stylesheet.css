@@ -18,6 +18,12 @@
     display: block;
 }
 
+.header-box {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
 .nav-icon {
     margin: 5px 16px;
     -webkit-transition: .2s ease-in;
@@ -381,7 +387,15 @@ body {
         opacity: 1;
     }
 
-    .footer:hover {
+    .popup-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+    }
+
+    .popup-footer:hover + .footer, .footer:hover {
         bottom: 0 !important;
     }
 }
