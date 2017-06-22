@@ -3,7 +3,11 @@ notification = $('.notification');
 notification.css("display", "block");
 setTimeout(function () {
     if ($('.arrow-box').length) {
-        $('.footer').css("bottom", "-44px");
+        if (screen.width < 480) {
+            $('.footer').css("display", "none");
+        } else {
+            $('.footer').css("bottom", "-44px");
+        }
     }
     if ($('#download-picture').length) {
         addListenerDownload(mainReady, 'picture');
