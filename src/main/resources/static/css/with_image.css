@@ -27,7 +27,8 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    width: calc(100% - 165px);
+    width: calc(100% - 215px);
+    left: 165px;
     -ms-flex-pack: distribute;
     justify-content: space-around;
 }
@@ -57,7 +58,7 @@
 
     .main {
         top: 225px;
-        bottom: 240px;
+        bottom: 170px;
     }
 
     .footer {
@@ -70,10 +71,12 @@
     .types {
         width: initial;
         font-size: 50px;
-        margin: 20px 40px 40px 40px;
+        margin: 15px 40px 15px 40px;
     }
 
     .info {
+        display: none;
+        position: initial;
         margin-left: 0;
         width: initial;
     }
@@ -99,4 +102,8 @@
 
 .type-px:active {
     color: #7F8C8D;
+}
+
+body {
+    overflow: hidden;
 }

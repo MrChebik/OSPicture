@@ -142,3 +142,20 @@ function ajax_send(e, a) {
         }
     })
 }
+
+function ajax_get_info(key, type) {
+    if (!isProcessing) {
+        isProcessing = true;
+        $.ajax({
+            url: "/info_image/" + key,
+            type: "GET",
+            success: function (e) {
+                if (type == "left") {
+                    actionDoLeft(e);
+                } else {
+                    actionDoRight(e);
+                }
+            }
+        })
+    }
+}

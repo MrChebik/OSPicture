@@ -33,7 +33,7 @@
     <div class="header-box">
         <a class="nav-header" href="/" tabindex="-1">OSPicture</a>
         <c:if test="${isFromFolder != null}">
-            <a class="nav-header" href="/folder/${isFromFolder}">Folder</a>
+            <a class="nav-header" href="/folder/${isFromFolder}" tabindex="-1">Folder</a>
         </c:if>
     </div>
     <div class="toolbox">
@@ -72,13 +72,15 @@
             </div>
             <c:if test="${folder == null}">
                 <div class="drop-down-link">
-                    <div class="nav-drop" onclick="actionCopyToClipboard(site + 'img/${key}.${format}')">Direct
+                    <div id="direct-link" class="nav-drop"
+                         onclick="actionCopyToClipboard(site + 'img/${key}.${format}')">
+                        Direct
                     </div>
-                    <div class="nav-drop html-link"
+                    <div id="html-link" class="nav-drop html-link"
                          onclick="actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/${key}.${format}\' alt=\'Image from OSPicture\'></a>')">
                         HTML
                     </div>
-                    <div class="nav-drop bb2-link"
+                    <div id="bbcode-link" class="nav-drop bb2-link"
                          onclick="actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/${key}.${format}[/img][/url]')">
                         BBCode
                     </div>
@@ -87,11 +89,11 @@
         </c:if>
     </div>
 </div>
-<div class="main" data-key="${key}" data-format="${format}" data-left="${folderLeft}" data-right="${folderRight}" data-animation="${animation}">
+<div class="main" data-key="${key}" data-format="${format}" data-left="${folderLeft}" data-right="${folderRight}">
     <c:choose>
         <c:when test="${folder != null}">
             <c:forEach items="${files}" var="file">
-                <a class="file" data-key="${file.filename}" data-format="${file.format}" href="/image/${file.filename}" tabindex="-1"></a>
+                <a class="file" data-key="${file.filename}" data-format="${file.format}" href="/image/${file.filename}"></a>
             </c:forEach>
         </c:when>
         <c:otherwise>
@@ -107,29 +109,46 @@
     </c:choose>
 </div>
 <c:if test="${key != null}"><div class="popup-footer"></div></c:if>
-<div class="footer"><c:choose>
-    <c:when test="${folder == null && key != null}">
-        <div class="types">
-            <a class="type-px" href="/${px200Path}" tabindex="-1">${px200TRUE == null ? '200px' : 'INITIAL'}</a>
-            <a class="type-px" href="/${px500Path}" tabindex="-1">${px500TRUE == null ? '500px' : 'INITIAL'}</a>
-        </div>
-        <div class="info">
-            <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
-            <span title="Size">${size}</span>
-            <span title="Resolution" id="resolution">${resolution}</span>
-            <span title="Format">${isOctetStream == 'true' ? 'octet-stream' : format}</span>
-        </div>
-    </c:when>
-    <c:otherwise>
-        <a title="Email" id="email" href="mailto:mrchebik@yandex.ru" tabindex="-1">mrchebik@yandex.ru</a>
-        <a class="github" href="https://github.com/MrChebik/OSPicture" tabindex="-1">
-            <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 16 16" class="toolbox-svg">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
-            </svg>
-        </a>
-        <span>@ 2017 OSPicture</span></c:otherwise>
-</c:choose>
+<div class="footer">
+    <c:choose>
+        <c:when test="${folder == null && key != null}">
+            <div class="types">
+                <a id="px200" class="type-px" href="/${px200Path}" tabindex="-1">${px200TRUE == null ? '200px' : 'INITIAL'}</a>
+                <a id="px500" class="type-px" href="/${px500Path}" tabindex="-1">${px500TRUE == null ? '500px' : 'INITIAL'}</a>
+            </div>
+            <div class="info">
+                <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
+                <span title="Size" id="size">${size}</span>
+                <span title="Resolution" id="resolution">${resolution}</span>
+                <span title="Format" id="format">${isOctetStream ? 'octet-stream' : format}</span>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <a title="Email" id="email" href="mailto:mrchebik@yandex.ru" tabindex="-1">mrchebik@yandex.ru</a>
+            <a class="github" href="https://github.com/MrChebik/OSPicture" tabindex="-1">
+                <svg x="0px" y="0px" width="38px" height="38px" viewBox="0 0 16 16" class="toolbox-svg">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+            <span>@ 2017 OSPicture</span></c:otherwise>
+    </c:choose>
 </div>
+<c:if test="${isFromFolder != null}">
+    <div class="arrow-box">
+        <div id="arrow-left" class="nav-icon" onclick="ajax_get_info(mainReady.data('left'), 'left')">
+            <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
+                <line x1="20" y1="12" x2="4" y2="12"></line>
+                <polyline points="10 18 4 12 10 6"></polyline>
+            </svg>
+        </div>
+        <div id="arrow-right" class="nav-icon" onclick="ajax_get_info(mainReady.data('right'), 'right')">
+            <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <polyline points="14 6 20 12 14 18"></polyline>
+            </svg>
+        </div>
+    </div>
+</c:if>
 </body>
 </html>
 <link rel="stylesheet" href="/css/stylesheet_min.css">

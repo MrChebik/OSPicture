@@ -24,7 +24,6 @@ function calcViewRotateDeg() {
         if (!calculateView(1, 0)) {
             setMain();
             var width = picture.width();
-            $('body').css("background-color", "#34495E");
             if (main.css("left") == "0px") {
                 picture.css("max-width", main.height() - 140);
                 picture.css("max-height", main.width() - 50);
@@ -36,7 +35,6 @@ function calcViewRotateDeg() {
     } else {
         if (!calculateView(0, 1)) {
             setMain();
-            $('body').css("background-color", "#34495E");
             picture.css("max-width", "100%");
             picture.css("max-height", "100%");
         }
@@ -46,6 +44,7 @@ function calcViewRotateDeg() {
 var site = window.location.protocol + "//" + window.location.host + "/";
 
 function setMain() {
+    $('body').css("background-color", "#34495E");
     if (screen.width > 480) {
         main.css("top", "70px");
         main.css("left", "25px");
@@ -55,8 +54,8 @@ function setMain() {
         main.css("top", "225px");
         main.css("left", "25px");
         main.css("right", "25px");
-        main.css("bottom", "240px");
+        main.css("bottom", "170px");
     }
     $('.footer').css("background-color", "transparent");
-    $('.footer').css("bottom", "0");
+    $('.footer').css("bottom", $('.arrow-box').length ? "-44px" : "0");
 }

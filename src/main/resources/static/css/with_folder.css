@@ -7,7 +7,7 @@
     overflow: inherit;
 }
 
-.file:hover > img {
+.file:hover > img, .file:focus > img {
     -webkit-filter: brightness(40%) !important;
     filter: brightness(40%) !important;
     -webkit-transform: perspective(600px) rotateX(3deg) !important;
