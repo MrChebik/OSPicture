@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d403a319ed024a21b8db2956c7f97087)](https://www.codacy.com/app/mrchebik/OSPicture?utm_source=github.com&utm_medium=referral&utm_content=MrChebik/OSPicture&utm_campaign=badger)
 # OSPicture [![Build Status](https://travis-ci.org/MrChebik/OSPicture.svg?branch=master)](https://travis-ci.org/MrChebik/OSPicture)
 > Hosting the [images](http://ospicture.xyz/image/31b548211f) with [multiply uploads](http://ospicture.xyz/folder/08lahwa3cv), lossless optimization and less instances.
 
