@@ -20,9 +20,6 @@ public class InfoImage {
     private String folderLeft;
     private String folderRight;
 
-    public InfoImage() {
-    }
-
     public String getKey() {
         return key;
     }

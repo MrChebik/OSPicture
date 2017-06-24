@@ -1,19 +1,19 @@
-var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $('.main'), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, body = $('body'), footer = $('.footer'), typeAnimation, isProcessing = false, resolutionElem = $('#resolution'), downloadPictureElem = $('#download-picture'), fileElem = $('.file'), arrowLeftElem = $('#arrow-left'), arrowRightElem = $('#arrow-right'), fileInfoElem = $('#file-info'), sizeElem = $('#size'), formatElem = $('#format'), infoElem = $('.info'), directLinkElem = $('#direct-link'), htmlLinkElem = $('#html-link'), bbcodeLinkElem = $('#bbcode-link'), px200ELem = $('#px200'), px500Elem = $('#px500'), notification = $('.notification');
+var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $(".main"), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, body = $("body"), footer = $(".footer"), typeAnimation, isProcessing = false, resolutionElem = $("#resolution"), downloadPictureElem = $("#download-picture"), fileElem = $(".file"), arrowLeftElem = $("#arrow-left"), arrowRightElem = $("#arrow-right"), fileInfoElem = $("#file-info"), sizeElem = $("#size"), formatElem = $("#format"), infoElem = $(".info"), directLinkElem = $("#direct-link"), htmlLinkElem = $("#html-link"), bbcodeLinkElem = $("#bbcode-link"), px200ELem = $("#px200"), px500Elem = $("#px500"), notification = $(".notification");
 notification.css("display", "block");
 setTimeout(function () {
-    if ($('.arrow-box').length) {
+    if ($(".arrow-box").length) {
         if (screen.width < 480) {
-            $('.footer').css("display", "none");
+            $(".footer").css("display", "none");
         } else {
-            $('.footer').css("bottom", "-44px");
+            $(".footer").css("bottom", "-44px");
         }
     }
     if (downloadPictureElem.length) {
-        addListenerDownload(mainReady, 'picture');
+        addListenerDownload(mainReady, "picture");
     } else if (fileElem.length) {
         var files_pictures = fileElem;
         for (var i = 0; i < files_pictures.length; i++) {
-            addListenerDownload($(files_pictures[i]), 'image-folder')
+            addListenerDownload($(files_pictures[i]), "image-folder")
         }
     }
 }, 20);
@@ -21,11 +21,11 @@ setTimeout(function () {
 function settingPicture() {
     mainReady.css("top", "0");
     mainReady.css("bottom", "0");
-    if ($('.main').length < 2) {
+    if ($(".main").length < 2) {
         mainReady.css("left", "0");
         mainReady.css("right", "0");
     } else {
-        if (typeAnimation == 'left') {
+        if (typeAnimation == "left") {
             mainReady.css("left", "-100%");
             mainReady.css("right", "100%");
         } else {
@@ -42,7 +42,7 @@ function settingPicture() {
 }
 
 function addListenerDownload(element, type) {
-    var isPicture = type == 'picture';
+    var isPicture = type == "picture";
     if (isPicture) {
         resolution = resolutionElem.text().split("x");
         setTimeout(function () {
@@ -61,26 +61,26 @@ function addListenerDownload(element, type) {
         }, 400);
     }
     var img = $("<img />", {
-        'class': type,
-        'alt': 'Image'
-    }).attr('src', (isPicture ? '/img/' : '/img_min/') + element.data('key') + '.' + element.data('format'))
-        .on('load', function () {
+        "class": type,
+        "alt": "Image"
+    }).attr("src", (isPicture ? "/img/" : "/img_min/") + element.data("key") + "." + element.data("format"))
+        .on("load", function () {
             if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
-                element.append($('<span />').text('Broken image'));
+                element.append($("<span />").text("Broken image"));
             } else {
                 if (isPicture) {
                     notifDownload = 1;
-                    if ($('.flowspinner').length) {
+                    if ($(".flowspinner").length) {
                         $(".flowspinner").remove();
                         $(".download-info").remove()
                     }
                 }
                 element.append(img[0]);
                 if (isPicture) {
-                    picture = $('.picture').last();
+                    picture = $(".picture").last();
                     calculateView(0, 1);
-                    if ($('.main').length > 1 && mainReady.css("top") != "0px") {
-                        if (typeAnimation == 'right') {
+                    if ($(".main").length > 1 && mainReady.css("top") != "0px") {
+                        if (typeAnimation == "right") {
                             mainReady.css("left", "calc(100% + 25px)");
                             mainReady.css("right", "calc(-100% + 25px");
                         } else {
@@ -89,12 +89,12 @@ function addListenerDownload(element, type) {
                         }
                     }
                     if (mainReady.css("top") != "0px") {
-                        footer.css("bottom", $('.arrow-box').length ? "-44px" : "0px");
+                        footer.css("bottom", $(".arrow-box").length ? "-44px" : "0px");
                         footer.css("background-color", "transparent");
                     }
                 }
                 setTimeout(function () {
-                    if ($('.main').length < 2) {
+                    if ($(".main").length < 2) {
                         if (isPicture) {
                             img[0].style.transition = transitSetting + ",  max-width .2s ease-in, max-height .2s ease-in";
                         } else {
@@ -108,9 +108,9 @@ function addListenerDownload(element, type) {
                         setTimeout(function () {
                             mainReady.css("transition", "top .2s, bottom .2s, left .2s, right .2s");
                             img[0].style.transition = transitSetting + ",  max-width .2s ease-in, max-height .2s ease-in";
-                            var mainForFirst = $('.main');
+                            var mainForFirst = $(".main");
                             if (mainForFirst.length > 1) {
-                                if (typeAnimation == 'left') {
+                                if (typeAnimation == "left") {
                                     mainForFirst[0].style.left = "100%";
                                     mainForFirst[0].style.right = "-100%";
                                 } else {
@@ -118,18 +118,18 @@ function addListenerDownload(element, type) {
                                     mainForFirst[0].style.right = "100%";
                                 }
                                 if (mainReady.css("top") == "0px") {
-                                    $('body').css("background-color", "black");
+                                    $("body").css("background-color", "black");
                                     mainReady.css("left", "0px");
                                     mainReady.css("right", "0px");
                                 } else {
-                                    $('body').css("background-color", "#34495E");
+                                    $("body").css("background-color", "#34495E");
                                     mainReady.css("left", "25px");
                                     mainReady.css("right", "25px");
                                 }
                                 setTimeout(function () {
                                     $(mainForFirst[0]).remove();
                                     isProcessing = false;
-                                    main = $('.main');
+                                    main = $(".main");
                                     rotateDeg = 0;
                                 }, 200);
                             } else {
@@ -186,21 +186,21 @@ if (mainReady.data("left") != "") {
 }
 
 function actionDoLeft(message) {
-    typeAnimation = 'left';
+    typeAnimation = "left";
     settingNewPicture(message)
 }
 
 function actionDoRight(message) {
-    typeAnimation = 'right';
+    typeAnimation = "right";
     settingNewPicture(message)
 }
 
 function settingNewPicture(message) {
-    var newMainReady = $('<div>', {
-        'class': 'main'
+    var newMainReady = $("<div>", {
+        "class": "main"
     });
     mainReady.after(newMainReady);
-    mainReady = $('.main').last();
+    mainReady = $(".main").last();
     window.history.pushState("html", "OSPicture - Hosting the images", "/image/" + message.key);
     mainReady.data("key", message.key);
     mainReady.data("format", message.format);
@@ -212,22 +212,22 @@ function settingNewPicture(message) {
             actionCopyToClipboard(message.name);
         });
         sizeElem.text(message.size);
-        formatElem.text(message.isOctetStream == 'true' ? 'octet-stream' : message.format);
-        addListenerDownload(mainReady, 'picture');
+        formatElem.text(message.isOctetStream == "true" ? "octet-stream" : message.format);
+        addListenerDownload(mainReady, "picture");
         setTimeout(function () {
             infoElem.css("bottom", "10px");
         }, 20);
     }, 200);
     downloadPictureElem.attr("href", "/img/" + message.key);
-    downloadPictureElem.attr("download", message.name + (message.isOctetStream == 'true' ? '' : '.') + (message.isOctetStream == 'true' ? '' : message.format));
+    downloadPictureElem.attr("download", message.name + (message.isOctetStream == "true" ? "" : ".") + (message.isOctetStream == "true" ? "" : message.format));
     directLinkElem.click(function () {
-        actionCopyToClipboard(site + 'img/' + message.key + '.' + message.format);
+        actionCopyToClipboard(site + "img/" + message.key + "." + message.format);
     });
     htmlLinkElem.click(function () {
-        actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/' + message.key + '.' + message.format + '\' alt=\'Image from OSPicture\'></a>');
+        actionCopyToClipboard("<a href=\"" + window.location.href + "\"><img src=\"" + site + "img/" + message.key + "." + message.format + "\" alt=\"Image from OSPicture\"></a>");
     });
     bbcodeLinkElem.click(function () {
-        actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/' + message.key + '.' + message.format + '[/img][/url]');
+        actionCopyToClipboard("[url=" + window.location.href + "][img]" + site + "img/" + message.key + "." + message.format + "[/img][/url]");
     });
     px200ELem.attr("href", "/" + message.px200Path);
     px500Elem.attr("href", "/" + message.px500Path);

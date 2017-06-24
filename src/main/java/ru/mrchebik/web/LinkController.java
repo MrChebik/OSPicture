@@ -79,7 +79,8 @@ public class LinkController {
         DataKeyFile px500 = dataKeyFileService.get(dataKeyFile.getPath500px());
         DataKeyFile px200 = dataKeyFileService.get(dataKeyFile.getPath200px());
 
-        boolean isEqual500 = key.contains("500_"), isEqual200 = key.contains("200_");
+        boolean isEqual500 = key.contains("500_");
+        boolean isEqual200 = key.contains("200_");
 
         infoImage.setPx500Path(isEqual500 ? "image/" + px500.getKeyFile() : "image/500_" + (isEqual200 ? px200.getKeyFile() : key));
         infoImage.setPx200Path(isEqual200 ? "image/" + px200.getKeyFile() : "image/200_" + (isEqual500 ? px500.getKeyFile() : key));

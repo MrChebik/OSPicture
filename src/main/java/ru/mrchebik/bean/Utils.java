@@ -77,7 +77,7 @@ public class Utils {
         }
 
         String checkedName = pieces[pieces.length - 1];
-        if (!checkedName.equals("png") && !checkedName.equals("jpg") && !checkedName.equals("jpeg") && !checkedName.equals("gif") && !checkedName.equals("webp") && !checkedName.equals("bmp")) {
+        if (!"png".equals(checkedName) && !"jpg".equals(checkedName) && !"jpeg".equals(checkedName) && !"gif".equals(checkedName) && !"webp".equals(checkedName) && !"bmp".equals(checkedName)) {
             fileName += checkedName;
         }
 
@@ -101,7 +101,7 @@ public class Utils {
 
         String key = getKey();
 
-        File sourceFile = new File(PATH_PICTURES + keyFolder + (!keyFolder.equals("") ? "/" : "") + key + (formats[1].equals("octet-stream") ? "" : ("." + formats[1])));
+        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? "/" : "") + key + ("octet-stream".equals(formats[1]) ? "" : ("." + formats[1])));
         sourceFile.createNewFile();
         file.transferTo(sourceFile);
 
@@ -153,7 +153,12 @@ public class Utils {
         dataKeyFileService.add(new DataKeyFile("500_" + key, fileName, px500.getPath(), formats[1], getSize(px500.length()), getResolution(ImageIO.read(px500)), new Date(), key, "200_" + key));
         dataKeyFileService.add(new DataKeyFile("200_" + key, fileName, px200.getPath(), formats[1], getSize(px200.length()), getResolution(ImageIO.read(px200)), new Date(), "500_" + key, key));
 
-        return new ResponseEntity<>("image/" + dataKeyFileService.add(new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), isFolder ? PATH_PICTURES + keyFolder + "_min/" + afterOptimization.getName() : null, "500_" + key, "200_" + key)), HttpStatus.CREATED);
+        DataKeyFile dataKeyFile = new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], size, resolution, new Date(), "500_" + key, "200_" + key);
+        if (isFolder) {
+            dataKeyFile.setMinPath(PATH_PICTURES + keyFolder + "_min/" + afterOptimization.getName());
+        }
+
+        return new ResponseEntity<>("image/" + dataKeyFileService.add(dataKeyFile), HttpStatus.CREATED);
     }
     
     public ResponseEntity<Resource> getDirectImage(String key, boolean isMin) throws FileNotFoundException {
