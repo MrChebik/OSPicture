@@ -93,8 +93,9 @@ public class Utils {
                                   MultipartFile file,
                                   String keyFolder) throws IOException, InterruptedException {
         String formats[] = file.getContentType().split("/");
+        boolean isEqualOctet = "octet-stream".equals(formats[1]);
 
-        if ((!"image".equals(formats[0]) && !"octet-stream".equals(formats[1])) || "x-portable-pixmap".equals(formats[1]) || "x-portable-bitmap".equals(formats[1]) || "x-xpixmap".equals(formats[1]) || "x-xbitmap".equals(formats[1]) || "x-pcx".equals(formats[1]) || "x-tga".equals(formats[1])) {
+        if ((!"image".equals(formats[0]) && !isEqualOctet) || "x-portable-pixmap".equals(formats[1]) || "x-portable-bitmap".equals(formats[1]) || "x-xpixmap".equals(formats[1]) || "x-xbitmap".equals(formats[1]) || "x-pcx".equals(formats[1]) || "x-tga".equals(formats[1])) {
             if (isFolder) {
                 return new ResponseEntity(HttpStatus.CONTINUE);
             } else {
@@ -104,7 +105,7 @@ public class Utils {
 
         String key = getKey();
 
-        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? "/" : "") + key + ("octet-stream".equals(formats[1]) ? "" : ("." + formats[1])));
+        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? "/" : "") + key + (isEqualOctet ? "" : ("." + formats[1])));
         sourceFile.createNewFile();
         file.transferTo(sourceFile);
 
@@ -116,27 +117,26 @@ public class Utils {
 
         String fileName = getFilename(file.getOriginalFilename().split("\\."));
 
-        if (isFolder) {
-            new File(PATH_PICTURES + keyFolder + "_500/").mkdir();
-            new File(PATH_PICTURES + keyFolder + "_200/").mkdir();
-        }
-
         optimization.waitFor();
-
         sourceFile = new File(sourceFile.getPath());
+        DataKeyFile dataKeyFile = new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], getSize(sourceFile.length()), getResolution(ImageIO.read(sourceFile)), new Date(), "500_" + key, "200_" + key);
 
         if (isFolder) {
+            newFolders(new String[]{"500", "200"}, keyFolder);
             optimization = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", PATH_PICTURES + keyFolder + "_min/" + sourceFile.getName()).start();
+            dataKeyFile.setMinPath(PATH_PICTURES + keyFolder + "_min/" + sourceFile.getName());
         }
 
         setLessInstances(isFolder, key, keyFolder, sourceFile.getPath(), sourceFile.getName(), fileName, formats[1]);
 
-        DataKeyFile dataKeyFile = new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], getSize(sourceFile.length()), getResolution(ImageIO.read(sourceFile)), new Date(), "500_" + key, "200_" + key);
-        if (isFolder) {
-            dataKeyFile.setMinPath(PATH_PICTURES + keyFolder + "_min/" + sourceFile.getName());
-        }
-
         return new ResponseEntity<>("image/" + dataKeyFileService.add(dataKeyFile), HttpStatus.CREATED);
+    }
+
+    private void newFolders(String[] types,
+                            String keyFolder) {
+        for (int i = 0; i < types.length; i++) {
+            new File(PATH_PICTURES + keyFolder + "_" + types[i] + "/").mkdir();
+        }
     }
 
     private Process setTypeOptimization(String format,
@@ -205,22 +205,26 @@ public class Utils {
                           String path200,
                           String key) {
         String[] returns = new String[4];
-        DataKeyFile px500 = dataKeyFileService.get(path500);
-        DataKeyFile px200 = dataKeyFileService.get(path200);
 
-        boolean isEqual500 = key.contains("500_");
-        boolean isEqual200 = key.contains("200_");
+        returns[0] = getPx("500", key, path500);
+        returns[1] = getPx("200", key, path200);
 
-        returns[0] = isEqual500 ? "image/" + px500.getKeyFile() : "image/500_" + (isEqual200 ? px200.getKeyFile() : key);
-        returns[1] = isEqual200 ? "image/" + px200.getKeyFile() : "image/200_" + (isEqual500 ? px500.getKeyFile() : key);
-
-        if (isEqual500) {
+        if (key.contains("500_")) {
             returns[2] = String.valueOf(1);
-        } else if (isEqual200) {
+        } else if (key.contains("200_")) {
             returns[3] = String.valueOf(1);
         }
 
         return returns;
+    }
+
+    private String getPx(String type,
+                         String key,
+                         String keyPx) {
+        DataKeyFile px = dataKeyFileService.get(keyPx);
+        boolean isEqual = key.contains(type + "_");
+
+        return isEqual ? "image/" + px.getKeyFile() : "image/" + type + "_" + key;
     }
 
     public ResponseEntity<Resource> getDirectImage(String key,

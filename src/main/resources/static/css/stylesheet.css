@@ -442,6 +442,7 @@ a, span {
 }
 
 a:focus, span:focus {
+    color: #BDC3C7;
     outline: none;
 }
 
