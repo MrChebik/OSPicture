@@ -54,7 +54,7 @@ public class Utils {
         return key;
     }
 
-    public String getSize(long length) {
+    private String getSize(long length) {
         String originalSize = String.valueOf(length);
 
         if (originalSize.length() > 6) {
@@ -66,7 +66,7 @@ public class Utils {
         }
     }
 
-    public String getFilename(String[] pieces) {
+    private String getFilename(String[] pieces) {
         String fileName = "";
 
         for (int i = 0; i < pieces.length - 1; i++) {
@@ -84,7 +84,7 @@ public class Utils {
         return fileName;
     }
 
-    public String getResolution(BufferedImage bufferedImage) {
+    private String getResolution(BufferedImage bufferedImage) {
         return bufferedImage.getWidth() + "x" + bufferedImage.getHeight();
     }
     

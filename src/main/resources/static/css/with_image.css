@@ -13,39 +13,24 @@
     display: none
 }
 
-.types {
-    width: 150px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+.types, .info {
     -ms-flex-pack: distribute;
     justify-content: space-around;
+}
+
+.types {
+    width: 150px;
 }
 
 .info {
     margin-left: 15px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
     width: calc(100% - 215px);
     left: 165px;
-    -ms-flex-pack: distribute;
-    justify-content: space-around;
-}
-
-.type-px {
-    cursor: pointer;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
 }
 
 @media screen and (max-device-width: 480px) {
     .picture {
         border-radius: 10px
-    }
-
-    .type-px {
-        cursor: pointer;
     }
 
     .nav-header {

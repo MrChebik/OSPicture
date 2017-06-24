@@ -30,7 +30,7 @@
 <input class="file-input" multiple type="file" id="file"
        onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
 <div class="header">
-    <div class="header-box">
+    <div class="toolbox">
         <a class="nav-header" href="/" tabindex="-1">OSPicture</a>
         <c:if test="${isFromFolder != null}">
             <a class="nav-header" href="/folder/${isFromFolder}" tabindex="-1">Folder</a>

@@ -1,5 +1,4 @@
-var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $('.main'), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, footer = $('.footer'), isBlack, typeAnimation, isProcessing = false;
-notification = $('.notification');
+var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $('.main'), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, body = $('body'), footer = $('.footer'), typeAnimation, isProcessing = false, resolutionElem = $('#resolution'), downloadPictureElem = $('#download-picture'), fileElem = $('.file'), arrowLeftElem = $('#arrow-left'), arrowRightElem = $('#arrow-right'), fileInfoElem = $('#file-info'), sizeElem = $('#size'), formatElem = $('#format'), infoElem = $('.info'), directLinkElem = $('#direct-link'), htmlLinkElem = $('#html-link'), bbcodeLinkElem = $('#bbcode-link'), px200ELem = $('#px200'), px500Elem = $('#px500'), notification = $('.notification');
 notification.css("display", "block");
 setTimeout(function () {
     if ($('.arrow-box').length) {
@@ -9,10 +8,10 @@ setTimeout(function () {
             $('.footer').css("bottom", "-44px");
         }
     }
-    if ($('#download-picture').length) {
+    if (downloadPictureElem.length) {
         addListenerDownload(mainReady, 'picture');
-    } else if ($('.file').length) {
-        var files_pictures = $('.file');
+    } else if (fileElem.length) {
+        var files_pictures = fileElem;
         for (var i = 0; i < files_pictures.length; i++) {
             addListenerDownload($(files_pictures[i]), 'image-folder')
         }
@@ -38,14 +37,14 @@ function settingPicture() {
         footer.css("bottom", "-44px");
     }
     footer.css("background-color", "rgba(0,0,0,0.7)");
-    $('body').css("background-color", "black");
-    $('body').css("transition", "background-color .2s");
+    body.css("background-color", "black");
+    body.css("transition", "background-color .2s");
 }
 
 function addListenerDownload(element, type) {
     var isPicture = type == 'picture';
     if (isPicture) {
-        resolution = $('#resolution').text().split("x");
+        resolution = resolutionElem.text().split("x");
         setTimeout(function () {
             if (picture == undefined) {
                 if (notifDownload == 0) {
@@ -90,8 +89,8 @@ function addListenerDownload(element, type) {
                         }
                     }
                     if (mainReady.css("top") != "0px") {
-                        $('.footer').css("bottom", $('.arrow-box').length ? "-44px" : "0px");
-                        $('.footer').css("background-color", "transparent");
+                        footer.css("bottom", $('.arrow-box').length ? "-44px" : "0px");
+                        footer.css("background-color", "transparent");
                     }
                 }
                 setTimeout(function () {
@@ -109,13 +108,14 @@ function addListenerDownload(element, type) {
                         setTimeout(function () {
                             mainReady.css("transition", "top .2s, bottom .2s, left .2s, right .2s");
                             img[0].style.transition = transitSetting + ",  max-width .2s ease-in, max-height .2s ease-in";
-                            if ($('.main').length > 1) {
+                            var mainForFirst = $('.main');
+                            if (mainForFirst.length > 1) {
                                 if (typeAnimation == 'left') {
-                                    $('.main')[0].style.left = "100%";
-                                    $('.main')[0].style.right = "-100%";
+                                    mainForFirst[0].style.left = "100%";
+                                    mainForFirst[0].style.right = "-100%";
                                 } else {
-                                    $('.main')[0].style.left = "-100%";
-                                    $('.main')[0].style.right = "100%";
+                                    mainForFirst[0].style.left = "-100%";
+                                    mainForFirst[0].style.right = "100%";
                                 }
                                 if (mainReady.css("top") == "0px") {
                                     $('body').css("background-color", "black");
@@ -127,7 +127,7 @@ function addListenerDownload(element, type) {
                                     mainReady.css("right", "25px");
                                 }
                                 setTimeout(function () {
-                                    $('.main').first().remove();
+                                    $(mainForFirst[0]).remove();
                                     isProcessing = false;
                                     main = $('.main');
                                     rotateDeg = 0;
@@ -178,9 +178,9 @@ if (mainReady.data("left") != "") {
     document.onkeydown = function (evt) {
         evt = evt || window.event;
         if (evt.keyCode == 37) {
-            $('#arrow-left').click();
+            arrowLeftElem.click();
         } else if (evt.keyCode == 39) {
-            $('#arrow-right').click();
+            arrowRightElem.click();
         }
     }
 }
@@ -204,33 +204,33 @@ function settingNewPicture(message) {
     window.history.pushState("html", "OSPicture - Hosting the images", "/image/" + message.key);
     mainReady.data("key", message.key);
     mainReady.data("format", message.format);
-    $('.info').css("bottom", "-44px");
+    infoElem.css("bottom", "-44px");
     setTimeout(function () {
-        $('#resolution').text(message.resolution);
-        $('#file-info').text(message.name);
-        $('#file-info').click(function () {
+        resolutionElem.text(message.resolution);
+        fileInfoElem.text(message.name);
+        fileInfoElem.click(function () {
             actionCopyToClipboard(message.name);
         });
-        $('#size').text(message.size);
-        $('#format').text(message.isOctetStream == 'true' ? 'octet-stream' : message.format);
+        sizeElem.text(message.size);
+        formatElem.text(message.isOctetStream == 'true' ? 'octet-stream' : message.format);
         addListenerDownload(mainReady, 'picture');
         setTimeout(function () {
-            $('.info').css("bottom", "10px");
+            infoElem.css("bottom", "10px");
         }, 20);
     }, 200);
-    $('#download-picture').attr("href", "/img/" + message.key);
-    $('#download-picture').attr("download", message.name + (message.isOctetStream == 'true' ? '' : '.') + (message.isOctetStream == 'true' ? '' : message.format));
-    $('#direct-link').click(function () {
+    downloadPictureElem.attr("href", "/img/" + message.key);
+    downloadPictureElem.attr("download", message.name + (message.isOctetStream == 'true' ? '' : '.') + (message.isOctetStream == 'true' ? '' : message.format));
+    directLinkElem.click(function () {
         actionCopyToClipboard(site + 'img/' + message.key + '.' + message.format);
     });
-    $('#html-link').click(function () {
+    htmlLinkElem.click(function () {
         actionCopyToClipboard('<a href=\'' + window.location.href + '\'><img src=\'' + site + 'img/' + message.key + '.' + message.format + '\' alt=\'Image from OSPicture\'></a>');
     });
-    $('#bbcode-link').click(function () {
+    bbcodeLinkElem.click(function () {
         actionCopyToClipboard('[url=' + window.location.href + '][img]' + site + 'img/' + message.key + '.' + message.format + '[/img][/url]');
     });
-    $('#px200').attr("href", "/" + message.px200Path);
-    $('#px500').attr("href", "/" + message.px500Path);
+    px200ELem.attr("href", "/" + message.px200Path);
+    px500Elem.attr("href", "/" + message.px500Path);
     mainReady.data("left", message.folderLeft);
     mainReady.data("right", message.folderRight);
 }

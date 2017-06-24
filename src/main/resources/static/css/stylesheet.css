@@ -8,66 +8,60 @@
     src: url("/font/Uni Sans Thin.otf") format("opentype")
 }
 
-.toolbox {
+.header, .toolbox, .arrow-box, .main, .footer, .types, .info {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex
+}
+
+.header, .arrow-box {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
 }
 
 #label-upload {
     display: block;
 }
 
-.header-box {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+.nav-header, .rotate, .drop-down-link, #file-info, #email, .nav-drop, .github, .type-px, .bold {
+    -webkit-transition: .2s ease-in;
+    transition: .2s ease-in;
+}
+
+.nav-header, .nav-icon, #file-info, #email, .nav-drop, .github, .type-px {
+    cursor: pointer;
+}
+
+.nav-icon, .github {
+    fill: #ECF0F1;
 }
 
 .nav-icon {
     margin: 5px 16px;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
-    fill: #ECF0F1;
-    cursor: pointer;
-}
-
-.nav-icon {
     -webkit-filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
     filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
 }
 
-.click-info {
-    display: none
-}
-
 .header {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
     position: fixed;
-    left: 25px;
-    right: 25px;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    padding-top: 10px;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 25px;
     z-index: 10
 }
 
-span, .footer {
-    font-family: "Uni Sans Thin"
+span, .footer, #percent {
+    font-family: "Uni Sans Thin", "DejaVu Sans", monospace;
+}
+
+.arrow-box, .main, .info, .drop-down-link, .flowspinner, .flowspinner:after, .notification, .popup-footer, .optimize-info, .download-info, .github {
+    position: absolute;
 }
 
 .arrow-box {
     width: 200px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    position: absolute;
     left: calc(50% - 100px);
     -webkit-transition: bottom .2s, opacity .2s;
     transition: bottom .2s, opacity .2s;
@@ -75,28 +69,19 @@ span, .footer {
 }
 
 .github {
-    position: absolute;
     left: calc(50% - 19px);
     bottom: 5px;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
-    fill: #ECF0F1;
-    cursor: pointer;
+}
+
+.click-info, .file-input, .notification {
+    display: none
 }
 
 .main {
-    position: absolute;
     top: 70px;
     left: 25px;
     right: 25px;
     bottom: 70px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-
-.file-input {
-    display: none
 }
 
 .footer {
@@ -108,20 +93,12 @@ span, .footer {
 
 body {
     background-color: #34495E;
-    margin: 0;
     font-family: "Uni Sans Heavy", "DejaVu Sans", monospace;
     color: #ECF0F1;
 }
 
 .nav-header {
-    margin: 18px 16px 16px 16px;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
-    cursor: pointer;
-}
-
-.toolbox > .nav-header {
-    padding: 16px 20px 0 23px
+    margin: 18px 16px 16px;
 }
 
 .rotate {
@@ -130,39 +107,25 @@ body {
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
 }
 
 .footer {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
     padding: 15px 25px 10px 25px;
     -webkit-transition: bottom .2s, background-color .2s;
     transition: bottom .2s, background-color .2s;
 }
 
 .info {
-    position: absolute;
     -webkit-transition: bottom .2s;
     transition: bottom .2s;
-}
-
-.icon {
-    margin: -10px;
-    width: 40px
 }
 
 .drop-down-link {
     visibility: hidden;
     opacity: 0;
-    position: absolute;
     top: 55px;
-    right: 0;
+    right: 25px;
     width: 70px;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
     border-radius: 5px;
 }
 
@@ -181,7 +144,6 @@ body {
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
     font-size: 3em;
-    font-family: "Uni Sans Thin";
     text-anchor: middle;
     -webkit-transition: fill .1s ease-in;
     transition: fill .1s ease-in;
@@ -199,7 +161,6 @@ body {
 
 .flowspinner {
     width: 200px;
-    position: absolute;
     height: 200px;
     left: calc(50% - 100px);
     top: calc(50% - 100px);
@@ -207,7 +168,6 @@ body {
 }
 
 .flowspinner:after {
-    position: absolute;
     width: 180px;
     height: 180px;
     border-left: 10px solid #ECF0F1;
@@ -240,24 +200,16 @@ body {
 /* -- */
 
 .notification {
-    display: none;
-    position: absolute;
-    opacity: .0;
+    opacity: 0;
     top: 80px;
     left: calc(50% - 98.5px);
     z-index: 10;
-    padding: 19px 16px 16px 16px;
+    padding: 19px 16px 16px;
     text-align: center;
     background-color: #2C3E50;
     border-radius: 30px;
     -webkit-transition: opacity .2s ease-in, top .2s ease-in;
     transition: opacity .2s ease-in, top .2s ease-in;
-}
-
-#file-info, #email, .nav-drop {
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
-    cursor: pointer;
 }
 
 .nav-drop {
@@ -267,8 +219,7 @@ body {
 
 @media screen and (max-device-width: 480px) and (orientation: portrait) {
     .header {
-        height: 130px;
-        margin-top: 15px
+        padding: 20px;
     }
 
     .nav-header {
@@ -278,7 +229,6 @@ body {
     }
 
     .optimize-info {
-        position: absolute;
         left: calc(50% - 124px);
         bottom: calc(50% - 325px);
     }
@@ -287,7 +237,7 @@ body {
         padding: 8px 10px;
     }
 
-    .nav-drop, #file-info, #email, .nav-icon, .nav-header, .github {
+    .nav-drop, #file-info, #email, .nav-icon, .nav-header, .github, .type-px {
         cursor: none;
     }
 
@@ -360,10 +310,6 @@ body {
         font-size: 40px;
     }
 
-    .drag-info, #dropZone {
-        display: none
-    }
-
     .click-info {
         display: inline
     }
@@ -385,37 +331,23 @@ body {
         padding: 40px 25px;
     }
 
-    .icon {
-        width: 100px;
-        padding-top: 10px
-    }
-
     .github {
         left: calc(50% - 50px);
     }
 
     .download-info {
-        position: absolute;
         left: calc(50% - 136px);
         bottom: calc(50% - 368px);
     }
 }
 
 @media screen and (max-device-width: 1024px) {
-    .drag-info {
-        display: none
-    }
-
-    #dropZone {
-        display: none
-    }
-
     .click-info {
         display: inline
     }
 }
 
-@media screen and (min-device-width: 1200px) and (max-device-width: 2600px) and (-webkit-min-device-pixel-ratio: 1) {
+@media screen and (min-device-width: 1200px) and (max-device-width: 99999px) and (-webkit-min-device-pixel-ratio: 1) {
     .nav-header:hover {
         color: #BDC3C7;
     }
@@ -435,7 +367,6 @@ body {
     }
 
     .popup-footer {
-        position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
@@ -451,28 +382,21 @@ body {
         opacity: 0;
     }
 
-    .optimize-info {
-        position: absolute;
-        left: calc(50% - 50px);
+    .optimize-info, .download-info {
         bottom: calc(50% - 160px);
     }
 
+    .optimize-info {
+        left: calc(50% - 50px);
+    }
+
     .download-info {
-        position: absolute;
         left: calc(50% - 54px);
-        bottom: calc(50% - 160px);
     }
 }
 
 .click-info {
     font-size: 40px
-}
-
-.bold {
-    color: #BDC3C7;
-    -webkit-transition: .2s ease-in;
-    transition: .2s ease-in;
-    margin-bottom: 76px;
 }
 
 .copy-link:hover + .drop-down-link {
@@ -504,7 +428,7 @@ body {
     stroke: #7F8C8D;
 }
 
-.nav-header:active, .bold:active, .nav-drop:active, #email:active, #file-info:active {
+.nav-header:active, .nav-drop:active, #email:active, #file-info:active {
     color: #7F8C8D;
 }
 

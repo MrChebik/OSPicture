@@ -1,5 +1,10 @@
 .bold {
-    font-size: 75px
+    color: #BDC3C7;
+    font-size: 75px;
+}
+
+.bold:active {
+    color: #7F8C8D;
 }
 
 #dropZone.hover {
@@ -19,18 +24,21 @@
     left: 0;
     top: 0;
     bottom: 0;
-    right: 0
-}
-
-.footer {
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
+    right: 0;
 }
 
 @media screen and (max-device-width: 480px) {
     .bold {
-        font-size: 100px;
-        padding: 50px 50px 35px
+        font-size: 100px
+    }
+
+    .drag-info, #dropZone {
+        display: none;
+    }
+}
+
+@media screen and (max-device-width: 1024px) {
+    .drag-info, #dropZone {
+        display: none;
     }
 }

@@ -1,5 +1,5 @@
 function actionDownload() {
-    $("#download-picture")[0].click()
+    downloadPictureElem[0].click()
 }
 function actionImitationClick() {
     $("#label-upload")[0].click()
@@ -44,7 +44,7 @@ function calcViewRotateDeg() {
 var site = window.location.protocol + "//" + window.location.host + "/";
 
 function setMain() {
-    $('body').css("background-color", "#34495E");
+    body.css("background-color", "#34495E");
     if (screen.width > 480) {
         main.css("top", "70px");
         main.css("left", "25px");
@@ -56,6 +56,6 @@ function setMain() {
         main.css("right", "25px");
         main.css("bottom", "170px");
     }
-    $('.footer').css("background-color", "transparent");
-    $('.footer').css("bottom", $('.arrow-box').length ? "-44px" : "0");
+    footer.css("background-color", "transparent");
+    footer.css("bottom", $('.arrow-box').length ? "-44px" : "0");
 }

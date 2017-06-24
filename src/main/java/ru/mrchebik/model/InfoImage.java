@@ -23,21 +23,6 @@ public class InfoImage {
     public InfoImage() {
     }
 
-    public InfoImage(String key, String name, String size, String format, String isOctetStream, String resolution, String px500Path, String px200Path, String px500TRUE, String px200TRUE, String folderLeft, String folderRight) {
-        this.key = key;
-        this.name = name;
-        this.size = size;
-        this.format = format;
-        this.isOctetStream = isOctetStream;
-        this.resolution = resolution;
-        this.px500Path = px500Path;
-        this.px200Path = px200Path;
-        this.px500TRUE = px500TRUE;
-        this.px200TRUE = px200TRUE;
-        this.folderLeft = folderLeft;
-        this.folderRight = folderRight;
-    }
-
     public String getKey() {
         return key;
     }
