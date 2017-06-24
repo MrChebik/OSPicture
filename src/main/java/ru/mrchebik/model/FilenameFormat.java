@@ -13,12 +13,6 @@ public class FilenameFormat {
         this.format = format;
     }
 
-    public FilenameFormat(String filename, String format, boolean isOctetStream) {
-        this.filename = filename;
-        this.format = format;
-        this.isOctetStream = isOctetStream;
-    }
-
     public String getFilename() {
         return filename;
     }

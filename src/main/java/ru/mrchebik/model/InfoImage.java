@@ -20,6 +20,15 @@ public class InfoImage {
     private String folderLeft;
     private String folderRight;
 
+    public InfoImage(String key, String name, String size, String format, String isOctetStream, String resolution) {
+        this.key = key;
+        this.name = name;
+        this.size = size;
+        this.format = format;
+        this.isOctetStream = isOctetStream;
+        this.resolution = resolution;
+    }
+
     public String getKey() {
         return key;
     }

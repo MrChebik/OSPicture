@@ -439,7 +439,10 @@ a, span {
     text-overflow: ellipsis;
     text-decoration: none;
     color: #ECF0F1;
-    outline: none
+}
+
+a:focus, span:focus {
+    outline: none;
 }
 
 span, p, .nav-header, a, .nav-drop {

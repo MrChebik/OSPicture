@@ -50,46 +50,21 @@ public class LinkController {
     @ResponseBody
     public ResponseEntity<InfoImage> handleGetInfoImage(@PathVariable String key) throws IOException {
         DataKeyFile dataKeyFile = dataKeyFileService.get(key);
-        InfoImage infoImage = new InfoImage();
+        boolean isOctetStream = "octet-steam".equals(dataKeyFile.getMimeType());
 
-        String keyFile = dataKeyFile.getKeyFile();
-        if (keyFile.length() == utils.KEY_LENGTH) {
-            String folderPath = dataKeyFile.getPath().split(keyFile)[0];
-            if (!folderPath.equals(utils.PATH_PICTURES)) {
-                File folder = new File(folderPath);
-                String[] folderFiles = folder.list();
-                for (int i = 0; i < folderFiles.length; i++) {
-                    if (folderFiles[i].contains(key)) {
-                        infoImage.setFolderLeft(folderFiles[i == 0 ? folderFiles.length - 1 : (i - 1)].substring(0, utils.KEY_LENGTH));
-                        infoImage.setFolderRight(folderFiles[i == folderFiles.length - 1 ? 0 : (i + 1)].substring(0, utils.KEY_LENGTH));
-                        break;
-                    }
-                }
-            }
+        InfoImage infoImage = new InfoImage(dataKeyFile.getKeyFile(), dataKeyFile.getOriginalFilename(), dataKeyFile.getSize(), isOctetStream ? "png" : dataKeyFile.getMimeType(), String.valueOf(isOctetStream), dataKeyFile.getScale());
+
+        String[] leftRight = utils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
+        if (leftRight[0] != null) {
+            infoImage.setFolderLeft(leftRight[1]);
+            infoImage.setFolderRight(leftRight[2]);
         }
 
-        infoImage.setKey(dataKeyFile.getKeyFile());
-        infoImage.setName(dataKeyFile.getOriginalFilename());
-        infoImage.setSize(dataKeyFile.getSize());
-        boolean isOctetStream = dataKeyFile.getMimeType().equals("octet-stream");
-        infoImage.setFormat(isOctetStream ? "png" : dataKeyFile.getMimeType());
-        infoImage.setIsOctetStream(String.valueOf(isOctetStream));
-        infoImage.setResolution(dataKeyFile.getScale());
-
-        DataKeyFile px500 = dataKeyFileService.get(dataKeyFile.getPath500px());
-        DataKeyFile px200 = dataKeyFileService.get(dataKeyFile.getPath200px());
-
-        boolean isEqual500 = key.contains("500_");
-        boolean isEqual200 = key.contains("200_");
-
-        infoImage.setPx500Path(isEqual500 ? "image/" + px500.getKeyFile() : "image/500_" + (isEqual200 ? px200.getKeyFile() : key));
-        infoImage.setPx200Path(isEqual200 ? "image/" + px200.getKeyFile() : "image/200_" + (isEqual500 ? px500.getKeyFile() : key));
-
-        if (isEqual500) {
-            infoImage.setPx500TRUE(String.valueOf(1));
-        } else if (isEqual200) {
-            infoImage.setPx200TRUE(String.valueOf(1));
-        }
+        String[] pxValues = utils.getPX(dataKeyFile.getPath500px(), dataKeyFile.getPath200px(), dataKeyFile.getKeyFile());
+        infoImage.setPx500Path(pxValues[0]);
+        infoImage.setPx200Path(pxValues[1]);
+        infoImage.setPx500TRUE(pxValues[2]);
+        infoImage.setPx200TRUE(pxValues[3]);
 
         return new ResponseEntity<>(infoImage, HttpStatus.OK);
     }
@@ -102,44 +77,26 @@ public class LinkController {
         if (dataKeyFile == null) {
             throw new ResourceNotFoundException();
         } else {
-            String keyFile = dataKeyFile.getKeyFile();
-            if (keyFile.length() == utils.KEY_LENGTH) {
-                String folderPath = dataKeyFile.getPath().split(keyFile)[0];
-                if (!folderPath.equals(utils.PATH_PICTURES)) {
-                    File folder = new File(folderPath);
-                    model.addAttribute("isFromFolder", folder.getName());
-                    String[] folderFiles = folder.list();
-                    for (int i = 0; i < folderFiles.length; i++) {
-                        if (folderFiles[i].contains(key)) {
-                            model.addAttribute("folderLeft", folderFiles[i == 0 ? folderFiles.length - 1 : (i - 1)].substring(0, utils.KEY_LENGTH));
-                            model.addAttribute("folderRight", folderFiles[i == folderFiles.length - 1 ? 0 : (i + 1)].substring(0, utils.KEY_LENGTH));
-                            break;
-                        }
-                    }
-                }
+            String[] leftRight = utils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
+            if (leftRight[0] != null) {
+                model.addAttribute("isFromFolder", leftRight[0]);
+                model.addAttribute("folderLeft", leftRight[1]);
+                model.addAttribute("folderRight", leftRight[2]);
             }
 
             model.addAttribute("key", dataKeyFile.getKeyFile());
             model.addAttribute("name", dataKeyFile.getOriginalFilename());
             model.addAttribute("size", dataKeyFile.getSize());
-            boolean isOctetStream = dataKeyFile.getMimeType().equals("octet-stream");
+            boolean isOctetStream = "octet-stream".equals(dataKeyFile.getMimeType());
             model.addAttribute("format", isOctetStream ? "png" : dataKeyFile.getMimeType());
             model.addAttribute("isOctetStream", isOctetStream);
             model.addAttribute("resolution", dataKeyFile.getScale());
 
-            DataKeyFile px500 = dataKeyFileService.get(dataKeyFile.getPath500px());
-            DataKeyFile px200 = dataKeyFileService.get(dataKeyFile.getPath200px());
-
-            boolean isEqual500 = key.contains("500_"), isEqual200 = key.contains("200_");
-
-            model.addAttribute("px500Path", isEqual500 ? "image/" + px500.getKeyFile() : "image/500_" + (isEqual200 ? px200.getKeyFile() : key));
-            model.addAttribute("px200Path", isEqual200 ? "image/" + px200.getKeyFile() : "image/200_" + (isEqual500 ? px500.getKeyFile() : key));
-
-            if (isEqual500) {
-                model.addAttribute("px500TRUE", 1);
-            } else if (isEqual200) {
-                model.addAttribute("px200TRUE", 1);
-            }
+            String[] pxValues = utils.getPX(dataKeyFile.getPath500px(), dataKeyFile.getPath200px(), dataKeyFile.getKeyFile());
+            model.addAttribute("px500Path", pxValues[0]);
+            model.addAttribute("px200Path", pxValues[1]);
+            model.addAttribute("px500TRUE", pxValues[2]);
+            model.addAttribute("px200TRUE", pxValues[3]);
 
             return "index";
         }
@@ -147,7 +104,7 @@ public class LinkController {
 
     @GetMapping("/folder/{key}")
     public String handleGetFolder(Model model,
-                                   @PathVariable String key) throws IOException {
+                                  @PathVariable String key) throws IOException {
         File folder = new File(utils.PATH_PICTURES + key);
         if (folder.exists()) {
             File[] files = folder.listFiles();
@@ -155,7 +112,11 @@ public class LinkController {
 
             for (File file : files) {
                 DataKeyFile dataKeyFile = dataKeyFileService.get(file.getName().substring(0, 10));
-                keyFiles.add(dataKeyFile.getMimeType().equals("octet-stream") ? new FilenameFormat(dataKeyFile.getKeyFile(), dataKeyFile.getMimeType(), true) : new FilenameFormat(dataKeyFile.getKeyFile(), dataKeyFile.getMimeType()));
+                FilenameFormat filenameFormat = new FilenameFormat(dataKeyFile.getKeyFile(), dataKeyFile.getMimeType());
+                if ("octet-stream".equals(dataKeyFile.getMimeType())) {
+                    filenameFormat.setOctetStream(true);
+                }
+                keyFiles.add(filenameFormat);
             }
 
             model.addAttribute("files", keyFiles);
