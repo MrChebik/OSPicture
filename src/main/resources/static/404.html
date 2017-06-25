@@ -5,9 +5,11 @@
     <title>OSPicture - 404 Error</title>
     <script async src="/js/actions_min.js"></script>
     <script async src="/js/ajax_min.js"></script>
+    <script async src="/js/drop_min.js"></script>
 </head>
 <body>
-<input class="file-input" multiple type="file" id="file" onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
+<input class="file-input" multiple type="file" id="file"
+       onchange="this.files.length < 2 ? ajaxUpload(this.files[0]) : ajaxUploads(this.files)">
 <div class="header">
     <a class="nav-header" href="/" tabindex="-1">OSPicture</a>
     <div class="toolbox">

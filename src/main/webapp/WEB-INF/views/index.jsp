@@ -28,7 +28,7 @@
 <body>
 <div class="notification">Copied to clipboard</div>
 <input class="file-input" multiple type="file" id="file"
-       onchange="this.files.length < 2 ? ajax_upload(this.files[0]) : ajax_uploads(this.files)">
+       onchange="this.files.length < 2 ? ajaxUpload(this.files[0]) : ajaxUploads(this.files)">
 <div class="header">
     <div class="toolbox">
         <a class="nav-header" href="/" tabindex="-1">OSPicture</a>
@@ -135,13 +135,13 @@
 </div>
 <c:if test="${isFromFolder != null}">
     <div class="arrow-box">
-        <div id="arrow-left" class="nav-icon" onclick="ajax_get_info(mainReady.data('left'), 'left')">
+        <div id="arrow-left" class="nav-icon" onclick="ajaxGetInfo(mainReady.data('left'), 'left')">
             <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
                 <line x1="20" y1="12" x2="4" y2="12"></line>
                 <polyline points="10 18 4 12 10 6"></polyline>
             </svg>
         </div>
-        <div id="arrow-right" class="nav-icon" onclick="ajax_get_info(mainReady.data('right'), 'right')">
+        <div id="arrow-right" class="nav-icon" onclick="ajaxGetInfo(mainReady.data('right'), 'right')">
             <svg width="38px" height="38px" viewBox="0 0 22 22" class="rotate">
                 <line x1="4" y1="12" x2="20" y2="12"></line>
                 <polyline points="14 6 20 12 14 18"></polyline>

@@ -1,13 +1,13 @@
-var notification, picture, optimizeInterval;
+var picture, optimizeInterval;
 
 function copyToClipboard(e) {
     var o = $("<input>");
     $("body").append(o), o.val(e).select(), document.execCommand("copy"), o.remove();
 }
 
-function ajax_send(e, a) {
+function ajaxSend(e, a) {
     $.ajax({
-        url: "/upload/image" + ("are" == a ? "s" : ""),
+        url: "/upload/image" + ("are" === a ? "s" : ""),
         type: "PUT",
         data: e,
         cache: !1,
@@ -42,12 +42,12 @@ function ajax_send(e, a) {
                         pie = $("#circle");
 
                         pieOfValue = pie.css("strokeDasharray").split(" ")[1];
-                        dash = pieOfValue.charAt(pieOfValue.length - 1) == "x" ? pieOfValue.substring(0, pieOfValue.length - 2) : pieOfValue;
+                        dash = pieOfValue.charAt(pieOfValue.length - 1) === "x" ? pieOfValue.substring(0, pieOfValue.length - 2) : pieOfValue;
 
                         $(".bold").hide();
                         $(".drag-info").hide();
                         $(".click-info").hide();
-                        if (picture != undefined) {
+                        if (picture !== undefined) {
                             picture.hide();
                         }
                         $(".file").hide();
@@ -59,10 +59,10 @@ function ajax_send(e, a) {
                         notif = 1;
                     }
 
-                    if (notif != 2) {
+                    if (notif !== 2) {
                         percentComplete = Math.ceil(evt.loaded / evt.total * 100);
 
-                        if (optimizeInterval == undefined) {
+                        if (optimizeInterval === undefined) {
                             optimizeInterval = setInterval(function () {
                                 if (percentComplete - prevPercent >= 25) {
                                     pie.css("transition", "stroke-dasharray .01s ease-in, stroke .01s ease-in");
@@ -90,10 +90,10 @@ function ajax_send(e, a) {
                         pie.css("strokeDasharray", ((percentComplete * dash) / 100) + " " + dash);
                         percent.text(percentComplete + "%");
 
-                        if (percentComplete == 100) {
+                        if (percentComplete === 100) {
                             notif = 2;
                             setTimeout(function () {
-                                if (wasError == 0) {
+                                if (wasError === 0) {
                                     $(".upload-info").remove();
                                     progress.remove();
                                     main.append($("<div/>", {"class": "flowspinner"}), $("<span/>", {"class": "optimize-info"}).text("Optimization"));
@@ -127,14 +127,14 @@ function ajax_send(e, a) {
     })
 }
 
-function ajax_upload(e) {
+function ajaxUpload(e) {
     if (e.size > maxFileSize) alert("File size is bigger than 10MB"); else {
         var a = new FormData;
-        a.append("file", e), ajax_send(a, "is");
+        a.append("file", e), ajaxSend(a, "is");
     }
 }
 
-function ajax_uploads(e) {
+function ajaxUploads(e) {
     for (var a = 0, i = 0; i < e.length; i++) {
         a += e[i].size;
     }
@@ -144,20 +144,20 @@ function ajax_uploads(e) {
         for (var n = new FormData, i = 0; i < e.length; i++) {
             n.append("multipartFiles", e[i]);
         }
-        ajax_send(n, "are");
+        ajaxSend(n, "are");
     }
 }
 
 var notif = 0, wasError = 0, prevPercent = 0, colors = ["#2ECC71", "#1ABC9C", "#F39C12", "#E67E22", "#E74C3C"], color = 0, percent, pie, progress, pieOfValue, dash, percentComplete = 0;
 
-function ajax_get_info(key, type) {
+function ajaxGetInfo(key, type) {
     if (!isProcessing) {
         isProcessing = true;
         $.ajax({
             url: "/info_image/" + key,
             type: "GET",
             success: function (e) {
-                if (type == "left") {
+                if (type === "left") {
                     actionDoLeft(e);
                 } else {
                     actionDoRight(e);

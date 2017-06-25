@@ -170,7 +170,6 @@ body {
 .flowspinner:after {
     width: 180px;
     height: 180px;
-    border-left: 10px solid #ECF0F1;
     border-right: 10px solid #ECF0F1;
     border-top: 10px solid transparent;
     border-left: 10px solid transparent;
@@ -300,7 +299,6 @@ body {
         left: calc(50% - 250px);
         right: calc(50% - 250px);
         bottom: calc(50% - 250px);
-        border-left: 20px solid #ECF0F1;
         border-right: 20px solid #ECF0F1;
         border-top: 20px solid transparent;
         border-left: 20px solid transparent;

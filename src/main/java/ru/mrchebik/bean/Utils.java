@@ -234,12 +234,12 @@ public class Utils {
     private String getPx(String type,
                          String key) {
         boolean isBigger = key.length() > KEY_LENGTH;
-        boolean isContains = key.contains(type + "_");
+        String newKey = null;
         if (isBigger) {
-            key = key.substring(key.length() - KEY_LENGTH, key.length());
+            newKey = key.substring(key.length() - KEY_LENGTH, key.length());
         }
 
-        return "image/" + (isBigger ? isContains ? key : (type + "_" + key) : (type + "_" + key));
+        return "image/" + (isBigger ? key.contains(type + "_") ? newKey : (type + "_" + newKey) : (type + "_" + key));
     }
 
     public ResponseEntity<Resource> getDirectImage(String key,

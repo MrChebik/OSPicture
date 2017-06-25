@@ -31,19 +31,21 @@ function setMain() {
     footer.css("bottom", $(".arrow-box").length ? "-44px" : "0");
 }
 
+function setPictureReg(width, height, isLeft) {
+    picture.css("max-width", width === "100%" ? "100%" : (main.height() - (isLeft ? 140 : 0)));
+    picture.css("max-height", height === "100%" ? "100%" : (main.width() - (isLeft ? 50 : 0)));
+}
+
 function calcViewRotateDeg() {
-    if ((Math.abs(rotateDeg) / 90) % 2 == 1) {
+    if ((Math.abs(rotateDeg) / 90) % 2 === 1) {
         if (!calculateView(1, 0)) {
             setMain();
-            var isLeft = main.css("left") === "0px";
-            picture.css("max-width", main.height() - (isLeft ? 140 : 0));
-            picture.css("max-height", main.width() - (isLeft ? 50 : 0));
+            setPictureReg("calc", "calc", main.css("left") === "0px");
         }
     } else {
         if (!calculateView(0, 1)) {
             setMain();
-            picture.css("max-width", "100%");
-            picture.css("max-height", "100%");
+            setPictureReg("100%", "100%");
         }
     }
 }
