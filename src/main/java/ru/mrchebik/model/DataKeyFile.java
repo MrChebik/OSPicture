@@ -26,7 +26,7 @@ public class DataKeyFile {
     public DataKeyFile() {
     }
 
-    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate, String path500px, String path200px) {
+    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate) {
         this.keyFile = keyFile;
         this.originalFilename = originalFilename;
         this.path = path;
@@ -34,8 +34,8 @@ public class DataKeyFile {
         this.size = size;
         this.resolution = resolution;
         this.startDate = startDate;
-        this.path500px = path500px;
-        this.path200px = path200px;
+        this.path500px = "500_" + (keyFile.contains("500_") ? keyFile.substring(4, keyFile.length()) : keyFile);
+        this.path200px = "200_" + (keyFile.contains("200_") ? keyFile.substring(4, keyFile.length()) : keyFile);
     }
 
     public String getPath() {

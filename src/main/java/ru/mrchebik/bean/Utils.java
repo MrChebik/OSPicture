@@ -32,9 +32,6 @@ public class Utils {
     private final DataKeyFileService dataKeyFileService;
     @Value("${path.pictures}")
     public String PATH_PICTURES;
-    private Process optimization;
-    private Process px500Process;
-    private Process px200Process;
 
     @Autowired
     public Utils(DataKeyFileService dataKeyFileService) {
@@ -93,9 +90,8 @@ public class Utils {
                                   MultipartFile file,
                                   String keyFolder) throws IOException, InterruptedException {
         String formats[] = file.getContentType().split("/");
-        boolean isEqualOctet = "octet-stream".equals(formats[1]);
 
-        if ((!"image".equals(formats[0]) && !isEqualOctet) || "x-portable-pixmap".equals(formats[1]) || "x-portable-bitmap".equals(formats[1]) || "x-xpixmap".equals(formats[1]) || "x-xbitmap".equals(formats[1]) || "x-pcx".equals(formats[1]) || "x-tga".equals(formats[1])) {
+        if (isUnsupportedFormat(formats[0], formats[1])) {
             if (isFolder) {
                 return new ResponseEntity(HttpStatus.CONTINUE);
             } else {
@@ -103,39 +99,54 @@ public class Utils {
             }
         }
 
-        String key = getKey();
-
-        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? "/" : "") + key + (isEqualOctet ? "" : ("." + formats[1])));
-        sourceFile.createNewFile();
-        file.transferTo(sourceFile);
-
-        if (optimization != null) {
-            optimization.waitFor();
-        }
-
-        optimization = setTypeOptimization(formats[1], sourceFile.getPath());
-
-        String fileName = getFilename(file.getOriginalFilename().split("\\."));
-
-        optimization.waitFor();
+        File sourceFile = createPicture(getKey(), keyFolder, formats[1], file);
+        setOptimization(formats[1], sourceFile.getPath());
         sourceFile = new File(sourceFile.getPath());
-        DataKeyFile dataKeyFile = new DataKeyFile(key, fileName, sourceFile.getPath(), formats[1], getSize(sourceFile.length()), getResolution(ImageIO.read(sourceFile)), new Date(), "500_" + key, "200_" + key);
+        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), getFilename(file.getOriginalFilename().split("\\.")), sourceFile.getPath(), formats[1], getSize(sourceFile.length()), getResolution(ImageIO.read(sourceFile)), new Date());
 
         if (isFolder) {
-            newFolders(new String[]{"500", "200"}, keyFolder);
-            optimization = new ProcessBuilder("convert", sourceFile.getPath(), "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", PATH_PICTURES + keyFolder + "_min/" + sourceFile.getName()).start();
-            dataKeyFile.setMinPath(PATH_PICTURES + keyFolder + "_min/" + sourceFile.getName());
+            dataKeyFile.setMinPath(setMinInstance(keyFolder, sourceFile.getPath(), sourceFile.getName()));
         }
 
-        setLessInstances(isFolder, key, keyFolder, sourceFile.getPath(), sourceFile.getName(), fileName, formats[1]);
+        setLessInstances(isFolder, dataKeyFile.getKeyFile(), keyFolder, sourceFile.getPath(), sourceFile.getName(), dataKeyFile.getOriginalFilename(), formats[1]);
 
         return new ResponseEntity<>("image/" + dataKeyFileService.add(dataKeyFile), HttpStatus.CREATED);
     }
 
+    private File createPicture(String key,
+                               String keyFolder,
+                               String format,
+                               MultipartFile file) throws IOException {
+        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? "/" : "") + key + ("octet-stream".equals(format) ? "" : ("." + format)));
+        sourceFile.createNewFile();
+        file.transferTo(sourceFile);
+
+        return sourceFile;
+    }
+
+    private boolean isUnsupportedFormat(String format0,
+                                        String format1) {
+        return (!"image".equals(format0) && !"octet-stream".equals(format1)) || "x-portable-pixmap".equals(format1) || "x-portable-bitmap".equals(format1) || "x-xpixmap".equals(format1) || "x-xbitmap".equals(format1) || "x-pcx".equals(format1) || "x-tga".equals(format1);
+    }
+
+    private String setMinInstance(String keyFolder,
+                                  String sourcePath,
+                                  String sourceName) throws IOException {
+        new ProcessBuilder("convert", sourcePath, "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", PATH_PICTURES + keyFolder + "_min/" + sourceName).start();
+        return PATH_PICTURES + keyFolder + "_min/" + sourceName;
+    }
+
+    private void setOptimization(String format,
+                                 String sourcePath) throws IOException, InterruptedException {
+        Process optimization = setTypeOptimization(format, sourcePath);
+        assert optimization != null;
+        optimization.waitFor();
+    }
+
     private void newFolders(String[] types,
                             String keyFolder) {
-        for (int i = 0; i < types.length; i++) {
-            new File(PATH_PICTURES + keyFolder + "_" + types[i] + "/").mkdir();
+        for (String type : types) {
+            new File(PATH_PICTURES + keyFolder + "_" + type + "/").mkdir();
         }
     }
 
@@ -157,25 +168,29 @@ public class Utils {
                                   String sourceName,
                                   String fileName,
                                   String format) throws InterruptedException, IOException {
-        if (px500Process != null) {
-            px500Process.waitFor();
-            px200Process.waitFor();
+        if (isFolder) {
+            newFolders(new String[]{"500", "200"}, keyFolder);
         }
 
-        String px500Quest = PATH_PICTURES + (isFolder ? keyFolder + "_500/" : "500_") + sourceName;
-        String px200Quest = PATH_PICTURES + (isFolder ? keyFolder + "_200/" : "200_") + sourceName;
+        setPxInstance("500", isFolder, key, keyFolder, sourcePath, sourceName, fileName, format);
+        setPxInstance("200", isFolder, key, keyFolder, sourcePath, sourceName, fileName, format);
+    }
 
-        px500Process = new ProcessBuilder("convert", sourcePath, "-resize", "500x500^", px500Quest).start();
-        px200Process = new ProcessBuilder("convert", sourcePath, "-resize", "200x200^", px200Quest).start();
+    private void setPxInstance(String type,
+                               boolean isFolder,
+                               String key,
+                               String keyFolder,
+                               String sourcePath,
+                               String sourceName,
+                               String fileName,
+                               String format) throws IOException, InterruptedException {
+        String pxQuest = PATH_PICTURES + (isFolder ? (keyFolder + "_" + type + "/") : (type + "_")) + sourceName;
 
-        px500Process.waitFor();
-        px200Process.waitFor();
+        Process pxProcess = new ProcessBuilder("convert", sourcePath, "-resize", type + "x" + type + "^", pxQuest).start();
+        pxProcess.waitFor();
 
-        File px500 = new File(px500Quest);
-        File px200 = new File(px200Quest);
-
-        dataKeyFileService.add(new DataKeyFile("500_" + key, fileName, px500.getPath(), format, getSize(px500.length()), getResolution(ImageIO.read(px500)), new Date(), key, "200_" + key));
-        dataKeyFileService.add(new DataKeyFile("200_" + key, fileName, px200.getPath(), format, getSize(px200.length()), getResolution(ImageIO.read(px200)), new Date(), "500_" + key, key));
+        File px = new File(pxQuest);
+        dataKeyFileService.add(new DataKeyFile(type + "_" + key, fileName, px.getPath(), format, getSize(px.length()), getResolution(ImageIO.read(px)), new Date()));
     }
 
     public String[] getFolderPaths(String key,
@@ -201,13 +216,11 @@ public class Utils {
         return returns;
     }
 
-    public String[] getPX(String path500,
-                          String path200,
-                          String key) {
+    public String[] getPX(String key) {
         String[] returns = new String[4];
 
-        returns[0] = getPx("500", key, path500);
-        returns[1] = getPx("200", key, path200);
+        returns[0] = getPx("500", key);
+        returns[1] = getPx("200", key);
 
         if (key.contains("500_")) {
             returns[2] = String.valueOf(1);
@@ -219,12 +232,14 @@ public class Utils {
     }
 
     private String getPx(String type,
-                         String key,
-                         String keyPx) {
-        DataKeyFile px = dataKeyFileService.get(keyPx);
-        boolean isEqual = key.contains(type + "_");
+                         String key) {
+        boolean isBigger = key.length() > KEY_LENGTH;
+        boolean isContains = key.contains(type + "_");
+        if (isBigger) {
+            key = key.substring(key.length() - KEY_LENGTH, key.length());
+        }
 
-        return isEqual ? "image/" + px.getKeyFile() : "image/" + type + "_" + key;
+        return "image/" + (isBigger ? isContains ? key : (type + "_" + key) : (type + "_" + key));
     }
 
     public ResponseEntity<Resource> getDirectImage(String key,

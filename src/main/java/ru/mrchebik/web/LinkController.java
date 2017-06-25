@@ -60,7 +60,7 @@ public class LinkController {
             infoImage.setFolderRight(leftRight[2]);
         }
 
-        String[] pxValues = utils.getPX(dataKeyFile.getPath500px(), dataKeyFile.getPath200px(), dataKeyFile.getKeyFile());
+        String[] pxValues = utils.getPX(dataKeyFile.getKeyFile());
         infoImage.setPx500Path(pxValues[0]);
         infoImage.setPx200Path(pxValues[1]);
         infoImage.setPx500TRUE(pxValues[2]);
@@ -92,7 +92,7 @@ public class LinkController {
             model.addAttribute("isOctetStream", isOctetStream);
             model.addAttribute("resolution", dataKeyFile.getScale());
 
-            String[] pxValues = utils.getPX(dataKeyFile.getPath500px(), dataKeyFile.getPath200px(), dataKeyFile.getKeyFile());
+            String[] pxValues = utils.getPX(dataKeyFile.getKeyFile());
             model.addAttribute("px500Path", pxValues[0]);
             model.addAttribute("px200Path", pxValues[1]);
             model.addAttribute("px500TRUE", pxValues[2]);
