@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ru.mrchebik.bean.Utils;
 import ru.mrchebik.exception.ResourceNotFoundException;
 import ru.mrchebik.model.DataKeyFile;
 import ru.mrchebik.model.FilenameFormat;
 import ru.mrchebik.model.InfoImage;
 import ru.mrchebik.service.DataKeyFileService;
+import ru.mrchebik.utils.FileUtils;
+import ru.mrchebik.utils.LessInstancesUtils;
+import ru.mrchebik.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,12 +29,18 @@ import java.util.ArrayList;
 public class LinkController {
     private final DataKeyFileService dataKeyFileService;
     private final Utils utils;
+    private final FileUtils fileUtils;
+    private final LessInstancesUtils lessInstancesUtils;
 
     @Autowired
     public LinkController(DataKeyFileService dataKeyFileService,
-                          Utils utils) {
+                          Utils utils,
+                          FileUtils fileUtils,
+                          LessInstancesUtils lessInstancesUtils) {
         this.dataKeyFileService = dataKeyFileService;
         this.utils = utils;
+        this.fileUtils = fileUtils;
+        this.lessInstancesUtils = lessInstancesUtils;
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -54,13 +62,13 @@ public class LinkController {
 
         InfoImage infoImage = new InfoImage(dataKeyFile.getKeyFile(), dataKeyFile.getOriginalFilename(), dataKeyFile.getSize(), isOctetStream ? "png" : dataKeyFile.getMimeType(), String.valueOf(isOctetStream), dataKeyFile.getScale());
 
-        String[] leftRight = utils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
+        String[] leftRight = fileUtils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
         if (leftRight[0] != null) {
             infoImage.setFolderLeft(leftRight[1]);
             infoImage.setFolderRight(leftRight[2]);
         }
 
-        String[] pxValues = utils.getPX(dataKeyFile.getKeyFile());
+        String[] pxValues = lessInstancesUtils.getPX(dataKeyFile.getKeyFile());
         infoImage.setPx500Path(pxValues[0]);
         infoImage.setPx200Path(pxValues[1]);
         infoImage.setPx500TRUE(pxValues[2]);
@@ -77,7 +85,7 @@ public class LinkController {
         if (dataKeyFile == null) {
             throw new ResourceNotFoundException();
         } else {
-            String[] leftRight = utils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
+            String[] leftRight = fileUtils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
             if (leftRight[0] != null) {
                 model.addAttribute("isFromFolder", leftRight[0]);
                 model.addAttribute("folderLeft", leftRight[1]);
@@ -92,7 +100,7 @@ public class LinkController {
             model.addAttribute("isOctetStream", isOctetStream);
             model.addAttribute("resolution", dataKeyFile.getScale());
 
-            String[] pxValues = utils.getPX(dataKeyFile.getKeyFile());
+            String[] pxValues = lessInstancesUtils.getPX(dataKeyFile.getKeyFile());
             model.addAttribute("px500Path", pxValues[0]);
             model.addAttribute("px200Path", pxValues[1]);
             model.addAttribute("px500TRUE", pxValues[2]);

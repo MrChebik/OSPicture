@@ -163,7 +163,7 @@ body {
     width: 200px;
     height: 200px;
     left: calc(50% - 100px);
-    top: calc(50% - 100px);
+    top: calc(50% - 115px);
     margin: 0 auto 35px;
 }
 
@@ -177,7 +177,7 @@ body {
     content: '';
     left: calc(50% - 100px);
     bottom: calc(50% - 100px);
-    top: calc(50% - 100px);
+    top: calc(50% - 115px);
     right: calc(50% - 100px);
     margin: auto;
     -webkit-animation: spinme 400ms linear infinite;
@@ -381,7 +381,7 @@ body {
     }
 
     .optimize-info, .download-info {
-        bottom: calc(50% - 160px);
+        bottom: calc(50% - 125px);
     }
 
     .optimize-info {

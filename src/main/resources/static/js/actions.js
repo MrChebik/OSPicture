@@ -31,16 +31,17 @@ function setMain() {
     footer.css("bottom", $(".arrow-box").length ? "-44px" : "0");
 }
 
-function setPictureReg(width, height, isLeft) {
-    picture.css("max-width", width === "100%" ? "100%" : (main.height() - (isLeft ? 140 : 0)));
-    picture.css("max-height", height === "100%" ? "100%" : (main.width() - (isLeft ? 50 : 0)));
+function setPictureReg(width, height) {
+    picture.css("max-width", width);
+    picture.css("max-height", height);
 }
 
 function calcViewRotateDeg() {
     if ((Math.abs(rotateDeg) / 90) % 2 === 1) {
         if (!calculateView(1, 0)) {
             setMain();
-            setPictureReg("calc", "calc", main.css("left") === "0px");
+            const isLeft = main.css("left") === "0px";
+            setPictureReg(main.height() - (isLeft ? 140 : 0), main.width() - (isLeft ? 50 : 0));
         }
     } else {
         if (!calculateView(0, 1)) {

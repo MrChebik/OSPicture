@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.mrchebik.bean.Utils;
+import ru.mrchebik.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +43,7 @@ public class UploadController {
         int col = multipartFiles.size();
 
         for (MultipartFile multipartFile : multipartFiles) {
-            if (utils.addFile(true, multipartFile, keyFolder) == new ResponseEntity(HttpStatus.CONTINUE)) {
+            if (utils.addFile(true, multipartFile, keyFolder).equals(new ResponseEntity(HttpStatus.CONTINUE))) {
                 col--;
             }
         }

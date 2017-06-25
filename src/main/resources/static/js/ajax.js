@@ -13,7 +13,7 @@ function ajaxSend(e, a) {
         cache: !1,
         processData: !1,
         contentType: !1,
-        xhr: function () {
+        xhr() {
             var xhr = $.ajaxSettings.xhr();
             xhr.upload.addEventListener("progress", function (evt) {
                 if (evt.lengthComputable) {
@@ -47,7 +47,7 @@ function ajaxSend(e, a) {
                         $(".bold").hide();
                         $(".drag-info").hide();
                         $(".click-info").hide();
-                        if (picture !== undefined) {
+                        if (!!picture) {
                             picture.hide();
                         }
                         $(".file").hide();
@@ -62,7 +62,7 @@ function ajaxSend(e, a) {
                     if (notif !== 2) {
                         percentComplete = Math.ceil(evt.loaded / evt.total * 100);
 
-                        if (optimizeInterval === undefined) {
+                        if (!!optimizeInterval) {
                             optimizeInterval = setInterval(function () {
                                 if (percentComplete - prevPercent >= 25) {
                                     pie.css("transition", "stroke-dasharray .01s ease-in, stroke .01s ease-in");
@@ -107,10 +107,10 @@ function ajaxSend(e, a) {
             }, false);
             return xhr;
         },
-        success: function (e) {
+        success(e) {
             window.location.href = site + e;
         },
-        error: function () {
+        error() {
             clearInterval(optimizeInterval);
             percentComplete = 0;
             notif = 0;
@@ -124,27 +124,32 @@ function ajaxSend(e, a) {
             $(".file").show();
             alert("Something was wrong, check the type of file.");
         }
-    })
+    });
 }
 
 function ajaxUpload(e) {
-    if (e.size > maxFileSize) alert("File size is bigger than 10MB"); else {
-        var a = new FormData;
-        a.append("file", e), ajaxSend(a, "is");
+    if (e.size > maxFileSize) {
+        alert("File size is bigger than 10MB");
+    } else {
+        var formData = new FormData;
+        formData.append("file", e);
+        ajaxSend(formData, "is");
     }
 }
 
 function ajaxUploads(e) {
-    for (var a = 0, i = 0; i < e.length; i++) {
-        a += e[i].size;
+    var currentSize = 0;
+    for (var i = 0; i < e.length; i++) {
+        currentSize += e[i].size;
     }
-    if (a > maxFileSize) {
+    if (currentSize > maxFileSize) {
         alert("Files size is bigger than 10MB");
     } else {
-        for (var n = new FormData, i = 0; i < e.length; i++) {
-            n.append("multipartFiles", e[i]);
+        var formData = new FormData;
+        for (var i = 0; i < e.length; i++) {
+            formData.append("multipartFiles", e[i]);
         }
-        ajaxSend(n, "are");
+        ajaxSend(formData, "are");
     }
 }
 

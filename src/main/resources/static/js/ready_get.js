@@ -25,30 +25,34 @@ function settingPicture() {
 }
 
 function setPicture(width, height) {
-    picture.css("max-width", width === "100%" ? "100%" : width === "inherit" ? "inherit" : (main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140)));
-    picture.css("max-height", height === "100%" ? "100%" : height === "inherit" ? "inherit" : (main.width() + (main.width() === picture.css("max-height") ? 0 : main.css("left") === "0px" ? 0 : 50)));
+    picture.css("max-width", width);
+    picture.css("max-height", height);
 }
 
 function calculateView(x, y) {
     isResolution = resolution[x] > resolution[y];
     if (window.innerWidth <= resolution[x] && window.innerHeight <= resolution[y]) {
         var isWindowInner = window.innerWidth > window.innerHeight, divideResolution = (resolution[x] / resolution[y] + "").substring(0, 3), isDivideResolutionAndWindow = divideResolution === (window.innerWidth / window.innerHeight + "").substring(0, 3);
-        if (isResolution && isWindowInner && (((screen.width / screen.height + "").substring(0, 3) === divideResolution && screen.width - window.innerWidth <= 211 && screen.height - window.innerHeight <= 211) || isDivideResolutionAndWindow)) {
-            settingPicture();
-            if (resolution[0] > resolution[1] && x === 0) {
-                setPicture("100%", "inherit");
-            } else {
-                setPicture("inherit", "calc");
+        if (isResolution) {
+            if (isWindowInner && (((screen.width / screen.height + "").substring(0, 3) === divideResolution && screen.width - window.innerWidth <= 211 && screen.height - window.innerHeight <= 211) || isDivideResolutionAndWindow)) {
+                settingPicture();
+                if (resolution[0] > resolution[1] && x === 0) {
+                    setPicture("100%", "inherit");
+                } else {
+                    setPicture("inherit", main.width() + (main.width() === picture.css("max-height") ? 0 : main.css("left") === "0px" ? 0 : 50));
+                }
+                return true;
             }
-            return true;
-        } else if (!isResolution && !isWindowInner && isDivideResolutionAndWindow) {
-            settingPicture();
-            if (x === 0) {
-                setPicture("inherit", "calc");
-            } else {
-                setPicture("calc", "inherit");
+        } else {
+            if (!isWindowInner && isDivideResolutionAndWindow) {
+                settingPicture();
+                if (x === 0) {
+                    setPicture("inherit", main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140));
+                } else {
+                    setPicture("calc", "inherit");
+                }
+                return true;
             }
-            return true;
         }
     }
     return false;
@@ -70,7 +74,7 @@ function addListenerDownload(element, type) {
     if (isPicture) {
         resolution = resolutionElem.text().split("x");
         setTimeout(function () {
-            if (picture === undefined) {
+            if (!!picture) {
                 if (notifDownload === 0) {
                     mainReady.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading"));
                     notifDownload = 1;
@@ -171,7 +175,7 @@ setTimeout(function () {
     }
     if (downloadPictureElem.length) {
         addListenerDownload(mainReady, "picture");
-    } else if (fileElem.length) {
+    } else {
         for (var i = 0; i < fileElem.length; i++) {
             addListenerDownload($(fileElem[i]), "image-folder");
         }
@@ -231,10 +235,10 @@ function settingNewPicture(message) {
 
 function actionDoLeft(message) {
     typeAnimation = "left";
-    settingNewPicture(message)
+    settingNewPicture(message);
 }
 
 function actionDoRight(message) {
     typeAnimation = "right";
-    settingNewPicture(message)
+    settingNewPicture(message);
 }
