@@ -47,7 +47,7 @@ function ajaxSend(e, a) {
                         $(".bold").hide();
                         $(".drag-info").hide();
                         $(".click-info").hide();
-                        if (!!picture) {
+                        if (picture) {
                             picture.hide();
                         }
                         $(".file").hide();
@@ -62,7 +62,7 @@ function ajaxSend(e, a) {
                     if (notif !== 2) {
                         percentComplete = Math.ceil(evt.loaded / evt.total * 100);
 
-                        if (!!optimizeInterval) {
+                        if (optimizeInterval) {
                             optimizeInterval = setInterval(function () {
                                 if (percentComplete - prevPercent >= 25) {
                                     pie.css("transition", "stroke-dasharray .01s ease-in, stroke .01s ease-in");
@@ -138,15 +138,15 @@ function ajaxUpload(e) {
 }
 
 function ajaxUploads(e) {
-    var currentSize = 0;
-    for (var i = 0; i < e.length; i++) {
+    var currentSize = 0, i;
+    for (i = 0; i < e.length; i++) {
         currentSize += e[i].size;
     }
     if (currentSize > maxFileSize) {
         alert("Files size is bigger than 10MB");
     } else {
         var formData = new FormData;
-        for (var i = 0; i < e.length; i++) {
+        for (i = 0; i < e.length; i++) {
             formData.append("multipartFiles", e[i]);
         }
         ajaxSend(formData, "are");

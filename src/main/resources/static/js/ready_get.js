@@ -39,7 +39,7 @@ function calculateView(x, y) {
                 if (resolution[0] > resolution[1] && x === 0) {
                     setPicture("100%", "inherit");
                 } else {
-                    setPicture("inherit", main.width() + (main.width() === picture.css("max-height") ? 0 : main.css("left") === "0px" ? 0 : 50));
+                    setPicture("inherit", (main.width() + (main.width() === picture.css("max-height") ? 0 : main.css("left") === "0px" ? 0 : 50)));
                 }
                 return true;
             }
@@ -47,7 +47,7 @@ function calculateView(x, y) {
             if (!isWindowInner && isDivideResolutionAndWindow) {
                 settingPicture();
                 if (x === 0) {
-                    setPicture("inherit", main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140));
+                    setPicture("inherit", (main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140)));
                 } else {
                     setPicture("calc", "inherit");
                 }
@@ -60,7 +60,7 @@ function calculateView(x, y) {
 
 function setMainReady(element, isMinus) {
     element.css("left", "calc(" + (isMinus ? "-" : "+") + "100% + 25px)");
-    element.css("right", "calc(" + (isMinus ? "+" : "-") + "100% + 25px");
+    element.css("right", "calc(" + (isMinus ? "+" : "-") + "100% + 25px)");
 }
 
 function setMainReadyPx(px) {
@@ -74,7 +74,7 @@ function addListenerDownload(element, type) {
     if (isPicture) {
         resolution = resolutionElem.text().split("x");
         setTimeout(function () {
-            if (!!picture) {
+            if (picture) {
                 if (notifDownload === 0) {
                     mainReady.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading"));
                     notifDownload = 1;
@@ -109,9 +109,9 @@ function addListenerDownload(element, type) {
                     calculateView(0, 1);
                     if ($(".main").length > 1 && mainReady.css("top") !== "0px") {
                         if (typeAnimation === "right") {
-                            setMainReady(mainReady, "+");
+                            setMainReady(mainReady, false);
                         } else {
-                            setMainReady(mainReady, "-");
+                            setMainReady(mainReady, true);
                         }
                     }
                     if (mainReady.css("top") !== "0px") {
@@ -137,9 +137,9 @@ function addListenerDownload(element, type) {
                             var mainForFirst = $(".main");
                             if (mainForFirst.length > 1) {
                                 if (typeAnimation === "left") {
-                                    setMainReady($(mainForFirst[0]), "+");
+                                    setMainReady($(mainForFirst[0]), false);
                                 } else {
-                                    setMainReady($(mainForFirst[0]), "-");
+                                    setMainReady($(mainForFirst[0]), true);
                                 }
                                 if (mainReady.css("top") === "0px") {
                                     setMainReadyPx("0px");

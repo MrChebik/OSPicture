@@ -40,8 +40,8 @@ function calcViewRotateDeg() {
     if ((Math.abs(rotateDeg) / 90) % 2 === 1) {
         if (!calculateView(1, 0)) {
             setMain();
-            const isLeft = main.css("left") === "0px";
-            setPictureReg(main.height() - (isLeft ? 140 : 0), main.width() - (isLeft ? 50 : 0));
+            var isLeft = main.css("left") === "0px";
+            setPictureReg((main.height() - (isLeft ? 140 : 0)), (main.width() - (isLeft ? 50 : 0)));
         }
     } else {
         if (!calculateView(0, 1)) {
