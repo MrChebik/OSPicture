@@ -161,13 +161,13 @@ function ajaxGetInfo(key, type) {
         $.ajax({
             url: "/info_image/" + key,
             type: "GET",
-            success: function (e) {
+            success(e) {
                 if (type === "left") {
                     actionDoLeft(e);
                 } else {
                     actionDoRight(e);
                 }
             }
-        })
+        });
     }
 }

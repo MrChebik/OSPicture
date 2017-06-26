@@ -375,7 +375,7 @@ body {
         bottom: 0 !important;
     }
 
-    .popup-footer:hover + .arrow-box, .footer:hover + .arrow-box {
+    .popup-footer:hover ~ .arrow-box, .footer:hover + .arrow-box {
         bottom: 56px;
         opacity: 0;
     }
