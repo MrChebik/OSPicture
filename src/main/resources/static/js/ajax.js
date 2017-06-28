@@ -208,7 +208,7 @@ function ajaxSendURL(URL) {
             window.location.href = site + e;
         },
         error() {
-            clearOthers()
+            clearOthers();
         }
     });
 }

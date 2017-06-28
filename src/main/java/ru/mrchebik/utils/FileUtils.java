@@ -88,7 +88,7 @@ public class FileUtils {
     private File createSourceFile(String key,
                                   String keyFolder,
                                   String format) throws IOException {
-        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? File.separator : "") + key + ("octet-stream".equals(format) ? "" : ("." + format)));
+        File sourceFile = new File(PATH_PICTURES + keyFolder + File.separator + key + ("octet-stream".equals(format) ? "" : ("." + format)));
         sourceFile.createNewFile();
 
         return sourceFile;
@@ -106,30 +106,25 @@ public class FileUtils {
         String originalSize = String.valueOf(length);
 
         if (originalSize.length() > 6) {
-            return new BigDecimal(originalSize).divide(kb, 1, BigDecimal.ROUND_HALF_UP).divide(kb, 1, BigDecimal.ROUND_HALF_UP) + "Mb";
+            return new BigDecimal(originalSize)
+                    .divide(kb, 1, BigDecimal.ROUND_HALF_UP)
+                    .divide(kb, 1, BigDecimal.ROUND_HALF_UP) + "Mb";
         } else if (originalSize.length() > 3) {
-            return new BigDecimal(originalSize).divide(kb, 1, BigDecimal.ROUND_HALF_UP) + "Kb";
+            return new BigDecimal(originalSize)
+                    .divide(kb, 1, BigDecimal.ROUND_HALF_UP) + "Kb";
         } else {
             return originalSize + "b";
         }
     }
 
-    protected String getFilename(String[] pieces) {
-        String fileName = "";
+    protected String getFilename(String name) {
+        int lastDot = name.lastIndexOf(".");
 
-        for (int i = 0; i < pieces.length - 1; i++) {
-            fileName += pieces[i];
-            if (i != pieces.length - 2) {
-                fileName += ".";
-            }
+        if (isSupportedFormat(name.substring(lastDot + 1, name.length()))) {
+            return name.substring(0, lastDot);
         }
 
-        String checkedName = pieces[pieces.length - 1];
-        if (!"png".equalsIgnoreCase(checkedName) && !"jpg".equalsIgnoreCase(checkedName) && !"jpeg".equalsIgnoreCase(checkedName) && !"gif".equalsIgnoreCase(checkedName) && !"webp".equalsIgnoreCase(checkedName) && !"bmp".equalsIgnoreCase(checkedName)) {
-            fileName += checkedName;
-        }
-
-        return fileName;
+        return name;
     }
 
     protected String getResolution(BufferedImage bufferedImage) {
@@ -139,17 +134,17 @@ public class FileUtils {
     protected boolean isSupportedFormat(File file) throws IOException {
         String formats[] = Files.probeContentType(file.toPath()).split("/");
 
-        return isSupportedFormat(formats[0], formats[1]);
+        return "image".equals(formats[0]) && isSupportedFormat(formats[1]);
     }
 
     protected boolean isSupportedFormat(MultipartFile file) throws IOException {
         String formats[] = file.getContentType().split("/");
 
-        return isSupportedFormat(formats[0], formats[1]);
+        return "image".equals(formats[0]) && isSupportedFormat(formats[1]);
     }
 
-    private boolean isSupportedFormat(String formatFile, String format) {
-        return "image".equals(formatFile) && ("jpeg".equals(format) || "png".equals(format) || "webp".equals(format) || "bmp".equals(format) || "gif".equals(format));
+    private boolean isSupportedFormat(String format) {
+        return "jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) || "png".equalsIgnoreCase(format) || "webp".equalsIgnoreCase(format) || "bmp".equalsIgnoreCase(format) || "gif".equalsIgnoreCase(format);
     }
 
     protected String createZipArchive(String key) throws IOException {

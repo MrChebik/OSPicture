@@ -83,7 +83,7 @@ public class Utils {
         File sourceFile = fileUtils.createPicture(getKey(), format, file);
         setOptimization(sourceFile, format);
         sourceFile = new File(sourceFile.getPath());
-        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), fileUtils.getFilename(file.getOriginalFilename().split("\\.")), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
+        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), fileUtils.getFilename(file.getOriginalFilename()), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
 
         lessInstancesUtils.setLessInstances(dataKeyFile.getKeyFile(), sourceFile.getPath(), sourceFile.getName(), dataKeyFile.getOriginalFilename(), format);
 
@@ -101,7 +101,7 @@ public class Utils {
         File sourceFile = fileUtils.createPicture(getKey(), keyFolder, format, file);
         setOptimization(sourceFile, format);
         sourceFile = new File(sourceFile.getPath());
-        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), fileUtils.getFilename(file.getOriginalFilename().split("\\.")), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
+        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), fileUtils.getFilename(file.getOriginalFilename()), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
 
         dataKeyFile.setMinPath(lessInstancesUtils.setMinInstance(keyFolder, sourceFile.getPath(), sourceFile.getName()));
 

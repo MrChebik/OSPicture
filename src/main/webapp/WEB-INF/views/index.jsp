@@ -197,4 +197,8 @@
 <script src="/js/ready_drop_min.js"></script>
 <c:if test="${folder != null || key != null}">
     <script src="/js/ready_get_min.js"></script>
+    <script src="/js/rotate_min.js"></script>
+</c:if>
+<c:if test="${isFromFolder != null}">
+    <script src="/js/arrows_min.js"></script>
 </c:if>
