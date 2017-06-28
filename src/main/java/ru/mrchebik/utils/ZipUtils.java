@@ -13,16 +13,8 @@ import java.util.zip.ZipOutputStream;
  */
 @Component
 public class ZipUtils {
-    private final int BUFFER = 10_000_000;
     @Value("${path.pictures}")
     public String PATH_PICTURES;
-    @Value("${key.length}")
-    public int KEY_LENGTH;
-    private final File zipFolder = new File(PATH_PICTURES + "zip");
-
-    public ZipUtils() {
-        zipFolder.mkdir();
-    }
 
     protected String checkZip(String key) throws IOException {
         File zip = new File(PATH_PICTURES + "zip" + File.separator + key + ".zip");
@@ -39,6 +31,7 @@ public class ZipUtils {
     }
 
     private void addFileToZip(ZipOutputStream zout, File file) throws IOException {
+        int BUFFER = 10_000_000;
         byte[] data = new byte[BUFFER];
         BufferedInputStream origin = new BufferedInputStream(new FileInputStream(file), BUFFER);
         zout.putNextEntry(new ZipEntry(file.getName()));
