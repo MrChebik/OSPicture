@@ -22,7 +22,7 @@ function settingPicture() {
     footer.css("background-color", "rgba(0,0,0,0.7)");
     body.css("background-color", "black");
     body.css("transition", "background-color .2s");
-    $('.url-input').css("background-color", "rgba(0,0,0,.5)");
+    $(".url-input").css("background-color", "rgba(0,0,0,.5)");
 }
 
 function setPicture(width, height) {
@@ -31,7 +31,7 @@ function setPicture(width, height) {
 }
 
 function calcPx() {
-    return (main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140))
+    return (main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140));
 }
 
 function calculateView(x, y) {
@@ -178,7 +178,7 @@ setTimeout(function () {
             $(".footer").css("bottom", "-44px");
         }
     }
-    if ($('.main').data("format") !== "") {
+    if ($(".main").data("format") !== "") {
         addListenerDownload(mainReady, "picture");
     } else {
         for (var i = 0; i < fileElem.length; i++) {

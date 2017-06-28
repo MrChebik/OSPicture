@@ -183,7 +183,7 @@ function ajaxSendURL(URL) {
     if (picture) {
         picture.hide();
     }
-    $('.bold').hide();
+    $(".bold").hide();
     $(".drag-info").hide();
     $(".click-info").hide();
     if (fileElem) {
