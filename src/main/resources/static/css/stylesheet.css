@@ -8,7 +8,7 @@
     src: url("/font/Uni Sans Thin.otf") format("opentype")
 }
 
-.header, .toolbox, .arrow-box, .main, .footer, .types, .info {
+.header, .toolbox, .arrow-box, .main, .footer, .types, .info, .upload-box {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex
@@ -24,12 +24,12 @@
     display: block;
 }
 
-.nav-header, .rotate, .drop-down-link, #file-info, #email, .nav-drop, .github, .type-px, .bold {
+.nav-header, .nav-icon, .rotate, .drop-down-link, #file-info, #email, .nav-drop, .github, .type-px, .bold {
     -webkit-transition: .2s ease-in;
     transition: .2s ease-in;
 }
 
-.nav-header, .nav-icon, #file-info, #email, .nav-drop, .github, .type-px {
+.nav-header, .nav-icon, #file-info, #email, .nav-drop, .github, .type-px, .bold {
     cursor: pointer;
 }
 
@@ -38,7 +38,7 @@
 }
 
 .nav-icon {
-    margin: 5px 16px;
+    margin: 8px 16px 2px;
     -webkit-filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
     filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
 }
@@ -48,7 +48,7 @@
     top: 0;
     left: 0;
     right: 0;
-    padding: 10px 25px;
+    padding: 8px 25px;
     z-index: 10
 }
 
@@ -56,7 +56,7 @@ span, .footer, #percent {
     font-family: "Uni Sans Thin", "DejaVu Sans", monospace;
 }
 
-.arrow-box, .main, .info, .drop-down-link, .flowspinner, .flowspinner:after, .notification, .popup-footer, .optimize-info, .download-info, .github {
+.arrow-box, .main, .info, .drop-down-link, .flowspinner, .flowspinner:after, .notification, .popup-footer, .optimize-info, .download-info, .github, #dropZone, .border {
     position: absolute;
 }
 
@@ -216,6 +216,73 @@ body {
     text-align: center;
 }
 
+.url-box {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transition: opacity .2s ease, visibility .2s ease;
+    transition: opacity .2s ease, visibility .2s ease;
+}
+
+.url-input {
+    font-family: "DejaVu Sans Light";
+    background-color: #2C3E50;
+    border-radius: 5px;
+    border: none;
+    -webkit-transition: -webkit-box-shadow .2s ease;
+    transition: -webkit-box-shadow .2s ease;
+    transition: box-shadow .2s ease;
+    transition: box-shadow .2s ease, -webkit-box-shadow .2s ease;
+    height: 54px;
+    padding: 0 15px;
+    font-size: 1em;
+    width: calc(100% - 25px);
+    color: #ECF0F1;
+}
+
+.url-input:focus {
+    outline: none;
+    -webkit-box-shadow: 0 0 8px rgba(236, 240, 241, 0.2);
+    box-shadow: 0 0 8px rgba(236, 240, 241, 0.2);
+}
+
+.url-box:hover {
+    visibility: visible;
+    opacity: 1;
+}
+
+#label-upload:hover + .url-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.url-box {
+    position: absolute;
+    left: 0;
+    right: 70px;
+    padding-right: 25px;
+}
+
+#label-upload {
+    margin-left: 0;
+    padding-left: 16px;
+}
+
+.upload-box {
+    position: absolute;
+    left: 25px;
+    right: 0;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    -ms-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+}
+
+.toolbox-center {
+    position: relative;
+    width: 100%;
+}
+
 @media screen and (max-device-width: 480px) and (orientation: portrait) {
     .header {
         padding: 20px;
@@ -236,7 +303,7 @@ body {
         padding: 8px 10px;
     }
 
-    .nav-drop, #file-info, #email, .nav-icon, .nav-header, .github, .type-px {
+    .nav-drop, #file-info, #email, .nav-icon, .nav-header, .github, .type-px, .bold {
         cursor: none;
     }
 
@@ -308,6 +375,10 @@ body {
         font-size: 40px;
     }
 
+    .drag-info {
+        display: none;
+    }
+
     .click-info {
         display: inline
     }
@@ -340,12 +411,20 @@ body {
 }
 
 @media screen and (max-device-width: 1024px) {
+    .drag-info {
+        display: none;
+    }
+
     .click-info {
         display: inline
     }
 }
 
 @media screen and (min-device-width: 1200px) and (max-device-width: 99999px) and (-webkit-min-device-pixel-ratio: 1) {
+    .url-box {
+        display: block;
+    }
+
     .nav-header:hover {
         color: #BDC3C7;
     }
@@ -362,6 +441,10 @@ body {
         padding-top: 15px;
         visibility: visible;
         opacity: 1;
+    }
+
+    .bold:hover {
+        color: #ECF0F1;
     }
 
     .popup-footer {
@@ -453,4 +536,36 @@ img {
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none
+}
+
+#dropZone {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    visibility: hidden;
+    -webkit-transition: background-color .2s;
+    transition: background-color .2s;
+}
+
+.windw {
+    -webkit-transition: opacity .2s;
+    transition: opacity .2s;
+}
+
+#dropZone.hover {
+    visibility: visible;
+    background-color: rgba(221, 221, 221, 0.1);
+}
+
+#dropZone.hover + div {
+    opacity: .4
+}
+
+.border {
+    top: 70px;
+    left: 70px;
+    right: 70px;
+    bottom: 70px;
+    border: 15px dashed rgba(170, 170, 170, 0.4);
 }

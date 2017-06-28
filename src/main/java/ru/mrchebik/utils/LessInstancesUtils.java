@@ -9,7 +9,6 @@ import ru.mrchebik.service.DataKeyFileService;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * Created by mrchebik on 6/25/17.
@@ -30,19 +29,25 @@ public class LessInstancesUtils {
         this.fileUtils = fileUtils;
     }
 
-    protected void setLessInstances(boolean isFolder,
-                                    String key,
+    protected void setLessInstances(String key,
                                     String keyFolder,
                                     String sourcePath,
                                     String sourceName,
                                     String fileName,
                                     String format) throws InterruptedException, IOException {
-        if (isFolder) {
-            newFolders(new String[]{"500", "200"}, keyFolder);
-        }
+        newFolders(new String[]{"500", "200"}, keyFolder);
 
-        setPxInstance("500", isFolder, key, keyFolder, sourcePath, sourceName, fileName, format);
-        setPxInstance("200", isFolder, key, keyFolder, sourcePath, sourceName, fileName, format);
+        setPxInstance("500", key, keyFolder, sourcePath, sourceName, fileName, format);
+        setPxInstance("200", key, keyFolder, sourcePath, sourceName, fileName, format);
+    }
+
+    protected void setLessInstances(String key,
+                                    String sourcePath,
+                                    String sourceName,
+                                    String fileName,
+                                    String format) throws InterruptedException, IOException {
+        setPxInstance("500", key, sourcePath, sourceName, fileName, format);
+        setPxInstance("200", key, sourcePath, sourceName, fileName, format);
     }
 
     private void newFolders(String[] types,
@@ -53,20 +58,34 @@ public class LessInstancesUtils {
     }
 
     private void setPxInstance(String type,
-                               boolean isFolder,
                                String key,
                                String keyFolder,
                                String sourcePath,
                                String sourceName,
                                String fileName,
                                String format) throws IOException, InterruptedException {
-        String pxQuest = PATH_PICTURES + (isFolder ? (keyFolder + "_" + type + "/") : (type + "_")) + sourceName;
+        String pxQuest = PATH_PICTURES + keyFolder + "_" + type + "/" + sourceName;
 
         Process pxProcess = new ProcessBuilder("convert", sourcePath, "-resize", type + "x" + type + "^", pxQuest).start();
         pxProcess.waitFor();
 
         File px = new File(pxQuest);
-        dataKeyFileService.add(new DataKeyFile(type + "_" + key, fileName, px.getPath(), format, fileUtils.getSize(px.length()), fileUtils.getResolution(ImageIO.read(px)), new Date()));
+        dataKeyFileService.add(new DataKeyFile(type + "_" + key, fileName, px.getPath(), format, fileUtils.getSize(px.length()), fileUtils.getResolution(ImageIO.read(px))));
+    }
+
+    private void setPxInstance(String type,
+                               String key,
+                               String sourcePath,
+                               String sourceName,
+                               String fileName,
+                               String format) throws IOException, InterruptedException {
+        String pxQuest = PATH_PICTURES + type + "_" + sourceName;
+
+        Process pxProcess = new ProcessBuilder("convert", sourcePath, "-resize", type + "x" + type + "^", pxQuest).start();
+        pxProcess.waitFor();
+
+        File px = new File(pxQuest);
+        dataKeyFileService.add(new DataKeyFile(type + "_" + key, fileName, px.getPath(), format, fileUtils.getSize(px.length()), fileUtils.getResolution(ImageIO.read(px))));
     }
 
     public String[] getPX(String key) {

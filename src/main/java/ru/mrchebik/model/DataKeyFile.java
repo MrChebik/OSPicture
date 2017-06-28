@@ -26,14 +26,14 @@ public class DataKeyFile {
     public DataKeyFile() {
     }
 
-    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution, Date startDate) {
+    public DataKeyFile(String keyFile, String originalFilename, String path, String mimeType, String size, String resolution) {
         this.keyFile = keyFile;
         this.originalFilename = originalFilename;
         this.path = path;
         this.mimeType = mimeType;
         this.size = size;
         this.resolution = resolution;
-        this.startDate = startDate;
+        this.startDate = new Date();
         this.path500px = "500_" + (keyFile.contains("500_") ? keyFile.substring(4, keyFile.length()) : keyFile);
         this.path200px = "200_" + (keyFile.contains("200_") ? keyFile.substring(4, keyFile.length()) : keyFile);
     }

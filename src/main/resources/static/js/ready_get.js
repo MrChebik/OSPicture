@@ -1,4 +1,4 @@
-var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $(".main"), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, body = $("body"), footer = $(".footer"), typeAnimation, isProcessing = false, resolutionElem = $("#resolution"), downloadPictureElem = $("#download-picture"), fileElem = $(".file"), arrowLeftElem = $("#arrow-left"), arrowRightElem = $("#arrow-right"), fileInfoElem = $("#file-info"), sizeElem = $("#size"), formatElem = $("#format"), infoElem = $(".info"), directLinkElem = $("#direct-link"), htmlLinkElem = $("#html-link"), bbcodeLinkElem = $("#bbcode-link"), px200ELem = $("#px200"), px500Elem = $("#px500"), notification = $(".notification");
+var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $(".main"), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, body = $("body"), footer = $(".footer"), typeAnimation, isProcessing = false, resolutionElem = $("#resolution"), downloadPictureElem = $("#download-picture"), arrowLeftElem = $("#arrow-left"), arrowRightElem = $("#arrow-right"), fileInfoElem = $("#file-info"), sizeElem = $("#size"), formatElem = $("#format"), infoElem = $(".info"), directLinkElem = $("#direct-link"), htmlLinkElem = $("#html-link"), bbcodeLinkElem = $("#bbcode-link"), px200ELem = $("#px200"), px500Elem = $("#px500"), notification = $(".notification");
 notification.css("display", "block");
 
 function settingPicture() {
@@ -22,11 +22,16 @@ function settingPicture() {
     footer.css("background-color", "rgba(0,0,0,0.7)");
     body.css("background-color", "black");
     body.css("transition", "background-color .2s");
+    $('.url-input').css("background-color", "rgba(0,0,0,.5)");
 }
 
 function setPicture(width, height) {
     picture.css("max-width", width);
     picture.css("max-height", height);
+}
+
+function calcPx() {
+    return (main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140))
 }
 
 function calculateView(x, y) {
@@ -47,9 +52,9 @@ function calculateView(x, y) {
             if (!isWindowInner && isDivideResolutionAndWindow) {
                 settingPicture();
                 if (x === 0) {
-                    setPicture("inherit", (main.height() + (screen.width < 480 ? 395 : main.height() === picture.css("max-width") ? 0 : main.css("left") === "0px" ? 0 : 140)));
+                    setPicture("inherit", calcPx());
                 } else {
-                    setPicture("calc", "inherit");
+                    setPicture(calcPx(), "inherit");
                 }
                 return true;
             }
@@ -74,7 +79,7 @@ function addListenerDownload(element, type) {
     if (isPicture) {
         resolution = resolutionElem.text().split("x");
         setTimeout(function () {
-            if (picture) {
+            if (!picture) {
                 if (notifDownload === 0) {
                     mainReady.append($("<div/>", {class: "flowspinner"}), $("<span/>", {class: "download-info"}).text("Downloading"));
                     notifDownload = 1;
@@ -173,7 +178,7 @@ setTimeout(function () {
             $(".footer").css("bottom", "-44px");
         }
     }
-    if (downloadPictureElem.length) {
+    if ($('.main').data("format") !== "") {
         addListenerDownload(mainReady, "picture");
     } else {
         for (var i = 0; i < fileElem.length; i++) {

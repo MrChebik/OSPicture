@@ -29,6 +29,7 @@ function setMain() {
     }
     footer.css("background-color", "transparent");
     footer.css("bottom", $(".arrow-box").length ? "-44px" : "0");
+    $('.url-input').css("background-color", "#2C3E50");
 }
 
 function setPictureReg(width, height) {
@@ -55,6 +56,13 @@ function actionRotateZ(deg) {
     rotateDeg += deg;
     calcViewRotateDeg();
     picture.css("transform", "rotateZ(" + rotateDeg + "deg)");
+}
+
+function actionSendURL(event) {
+    if (event.keyCode == 13) {
+        ajaxSendURL($('.url-input').val());
+        $('.url-input').val("");
+    }
 }
 
 var site = window.location.protocol + "//" + window.location.host + "/";

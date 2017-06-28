@@ -1,11 +1,17 @@
-var dropZone;
+var dropZone, isDrop;
 
 function dropEnter(o) {
+    isDrop = true;
     o.stopPropagation(), o.preventDefault(), dropZone.addClass("hover");
 }
 
 function dropLeave() {
-    dropZone.removeClass("hover");
+    isDrop = false;
+    setTimeout(function () {
+        if (isDrop === false) {
+            dropZone.removeClass("hover");
+        }
+    }, 200);
 }
 
 function doDrop(o) {

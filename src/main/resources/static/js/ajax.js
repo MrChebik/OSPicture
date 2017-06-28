@@ -1,4 +1,4 @@
-var picture, optimizeInterval;
+var picture, optimizeInterval, fileElem = $(".file");
 
 function copyToClipboard(e) {
     var o = $("<input>");
@@ -18,7 +18,9 @@ function ajaxSend(e, a) {
             xhr.upload.addEventListener("progress", function (evt) {
                 if (evt.lengthComputable) {
                     if (!$("#progress-percent").length) {
-                        main.css("background-color", "#34495E");
+                        if (main.css("top") === "0px") {
+                            main.css("background-color", "#34495E");
+                        }
                         var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                         svgEl.setAttributeNS(null, "id", "progress-percent");
                         svgEl.setAttributeNS(null, "width", "200");
@@ -50,7 +52,7 @@ function ajaxSend(e, a) {
                         if (picture) {
                             picture.hide();
                         }
-                        $(".file").hide();
+                        fileElem.hide();
                         main.css("justify-content", "center");
                         main.css("align-items", "center");
                         main.css("flex-direction", "column");
@@ -111,6 +113,9 @@ function ajaxSend(e, a) {
             window.location.href = site + e;
         },
         error() {
+            if (main.css("top") === "0px") {
+                main.css("background-color", "black");
+            }
             clearInterval(optimizeInterval);
             percentComplete = 0;
             notif = 0;
@@ -121,19 +126,21 @@ function ajaxSend(e, a) {
             $(".upload-info").remove();
             $(".bold").show();
             picture.show();
-            $(".file").show();
+            fileElem.show();
             alert("Something was wrong, check the type of file.");
         }
     });
 }
 
 function ajaxUpload(e) {
-    if (e.size > maxFileSize) {
-        alert("File size is bigger than 10MB");
-    } else {
-        var formData = new FormData;
-        formData.append("file", e);
-        ajaxSend(formData, "is");
+    if (e) {
+        if (e.size > maxFileSize) {
+            alert("File size is bigger than 10MB");
+        } else {
+            var formData = new FormData;
+            formData.append("file", e);
+            ajaxSend(formData, "is");
+        }
     }
 }
 
@@ -170,4 +177,41 @@ function ajaxGetInfo(key, type) {
             }
         });
     }
+}
+
+function ajaxSendURL(URL) {
+    if (picture) {
+        picture.hide();
+    }
+    $('.bold').hide();
+    $(".drag-info").hide();
+    $(".click-info").hide();
+    if (fileElem) {
+        fileElem.hide();
+    }
+    if (main.css("top") === "0px") {
+        main.css("background-color", "#34495E");
+    }
+    main.append($("<div/>", {"class": "flowspinner"}));
+    $.ajax({
+        url: "/upload?url=" + URL,
+        type: "PUT",
+        success(e) {
+            window.location.href = site + e;
+        },
+        error() {
+            if (main.css("top") === "0px") {
+                main.css("background-color", "black");
+            }
+            $(".flowspinner").remove();
+            $(".bold").show();
+            if (picture) {
+                picture.show();
+            }
+            if (fileElem) {
+                fileElem.show();
+            }
+            alert("Something was wrong, check the type of file.");
+        }
+    });
 }

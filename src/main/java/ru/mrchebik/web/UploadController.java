@@ -11,6 +11,7 @@ import ru.mrchebik.utils.Utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -25,9 +26,14 @@ public class UploadController {
         this.utils = utils;
     }
 
+    @PutMapping("/upload")
+    public ResponseEntity add(@RequestParam String url) throws IOException, InterruptedException {
+        return utils.addFile(new URL(url));
+    }
+
     @PutMapping("/upload/image")
     public ResponseEntity add(@RequestBody MultipartFile file) throws IOException, InterruptedException {
-        return utils.addFile(false, file, "");
+        return utils.addFile(file);
     }
 
     @PutMapping("/upload/images")
@@ -43,7 +49,7 @@ public class UploadController {
         int col = multipartFiles.size();
 
         for (MultipartFile multipartFile : multipartFiles) {
-            if (utils.addFile(true, multipartFile, keyFolder).equals(new ResponseEntity(HttpStatus.CONTINUE))) {
+            if (utils.addFile(multipartFile, keyFolder).equals(new ResponseEntity(HttpStatus.CONTINUE))) {
                 col--;
             }
         }
@@ -67,5 +73,11 @@ public class UploadController {
     @ResponseBody
     public ResponseEntity<Resource> downloadImageMin(@PathVariable String key) throws FileNotFoundException {
         return utils.getDirectImage(key, true);
+    }
+
+    @GetMapping("/zip_folder/{key}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFolder(@PathVariable String key) throws IOException {
+        return utils.getZipFolder(key);
     }
 }

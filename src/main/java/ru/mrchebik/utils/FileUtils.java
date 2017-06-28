@@ -5,20 +5,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.nio.file.Files;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by mrchebik on 6/25/17.
  */
 @Component
 public class FileUtils {
+    private final int BUFFER = 10_000_000;
     private final BigDecimal kb = new BigDecimal(1024);
     @Value("${path.pictures}")
     public String PATH_PICTURES;
     @Value("${key.length}")
     public int KEY_LENGTH;
+    private final File zipFolder = new File(PATH_PICTURES + "zip");
 
     public String[] getFolderPaths(String key,
                                    String path) {
@@ -43,13 +49,52 @@ public class FileUtils {
         return returns;
     }
 
+    protected File createTempFile(URL url) throws IOException {
+        File temp = new File(PATH_PICTURES + "temp.tmp");
+        Files.copy(url.openStream(), temp.toPath());
+
+        return temp;
+    }
+
     protected File createPicture(String key,
                                  String keyFolder,
                                  String format,
                                  MultipartFile file) throws IOException {
-        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? "/" : "") + key + ("octet-stream".equals(format) ? "" : ("." + format)));
-        sourceFile.createNewFile();
+        File sourceFile = createSourceFile(key, keyFolder, format);
         file.transferTo(sourceFile);
+
+        return sourceFile;
+    }
+
+    protected File createPicture(String key,
+                                 String format,
+                                 MultipartFile file) throws IOException {
+        File sourceFile = createSourceFile(key, format);
+        file.transferTo(sourceFile);
+
+        return sourceFile;
+    }
+
+    protected File createPicture(File file, String key, String format) throws IOException {
+        File newFile = new File(PATH_PICTURES + key + "." + format);
+        file.renameTo(newFile);
+
+        return newFile;
+    }
+
+    private File createSourceFile(String key,
+                                  String keyFolder,
+                                  String format) throws IOException {
+        File sourceFile = new File(PATH_PICTURES + keyFolder + (!"".equals(keyFolder) ? File.separator : "") + key + ("octet-stream".equals(format) ? "" : ("." + format)));
+        sourceFile.createNewFile();
+
+        return sourceFile;
+    }
+
+    private File createSourceFile(String key,
+                                  String format) throws IOException {
+        File sourceFile = new File(PATH_PICTURES + key + ("octet-stream".equals(format) ? "" : ("." + format)));
+        sourceFile.createNewFile();
 
         return sourceFile;
     }
@@ -88,8 +133,45 @@ public class FileUtils {
         return bufferedImage.getWidth() + "x" + bufferedImage.getHeight();
     }
 
-    protected boolean isUnsupportedFormat(String format0,
-                                          String format1) {
-        return (!"image".equals(format0) && !"octet-stream".equals(format1)) || "x-portable-pixmap".equals(format1) || "x-portable-bitmap".equals(format1) || "x-xpixmap".equals(format1) || "x-xbitmap".equals(format1) || "x-pcx".equals(format1) || "x-tga".equals(format1);
+    protected boolean isSupportedFormat(File file) throws IOException {
+        String formats[] = Files.probeContentType(file.toPath()).split("/");
+
+        return isSupportedFormat(formats[0], formats[1]);
+    }
+
+    protected boolean isSupportedFormat(MultipartFile file) throws IOException {
+        String formats[] = file.getContentType().split("/");
+
+        return isSupportedFormat(formats[0], formats[1]);
+    }
+
+    private boolean isSupportedFormat(String formatFile, String format) {
+        return "image".equals(formatFile) && ("jpeg".equals(format) || "png".equals(format) || "webp".equals(format) || "bmp".equals(format) || "gif".equals(format));
+    }
+
+    protected String createZipArchive(String key) throws IOException {
+        zipFolder.mkdir();
+        File zip = new File(PATH_PICTURES + "zip" + File.separator + key + ".zip");
+        if (zip.createNewFile()) {
+            ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zip));
+            zout.setLevel(Deflater.BEST_COMPRESSION);
+            for (File file : new File(PATH_PICTURES + key).listFiles()) {
+                addFileToZip(zout, file);
+            }
+            zout.close();
+        }
+
+        return zip.getPath();
+    }
+
+    private void addFileToZip(ZipOutputStream zout, File file) throws IOException {
+        byte[] data = new byte[BUFFER];
+        BufferedInputStream origin = new BufferedInputStream(new FileInputStream(file), BUFFER);
+        zout.putNextEntry(new ZipEntry(file.getName()));
+        int count;
+        while ((count = origin.read(data, 0, BUFFER)) != -1) {
+            zout.write(data, 0, count);
+        }
+        origin.close();
     }
 }
