@@ -40,11 +40,7 @@ function addListenerDownload(element, type) {
                     picture = $(".picture").last();
                     calculateView(0, 1);
                     if ($(".main").length > 1 && mainReady.css("top") !== "0px") {
-                        if (typeAnimation === "right") {
-                            setMainReady(mainReady, false);
-                        } else {
-                            setMainReady(mainReady, true);
-                        }
+                        setMainReady(mainReady, typeAnimation !== "right");
                     }
                     if (mainReady.css("top") !== "0px") {
                         footer.css("bottom", $(".arrow-box").length ? "-44px" : "0px");
@@ -68,16 +64,8 @@ function addListenerDownload(element, type) {
                             img[0].style.transition = transitSetting + ",  max-width .2s ease-in, max-height .2s ease-in";
                             var mainForFirst = $(".main");
                             if (mainForFirst.length > 1) {
-                                if (typeAnimation === "left") {
-                                    setMainReady($(mainForFirst[0]), false);
-                                } else {
-                                    setMainReady($(mainForFirst[0]), true);
-                                }
-                                if (mainReady.css("top") === "0px") {
-                                    setMainReadyPx("0px");
-                                } else {
-                                    setMainReadyPx("25px");
-                                }
+                                setMainReady($(mainForFirst[0]), typeAnimation !== "left");
+                                setMainReadyPx(mainReady.css("top") === "0px" ? "0px" : "25px");
                                 setTimeout(function () {
                                     $(mainForFirst[0]).remove();
                                     isProcessing = false;

@@ -1,22 +1,23 @@
+function setMainPixes(element, top, left, right, bottom) {
+    element.css("top", top);
+    element.css("left", left);
+    element.css("right", right);
+    element.css("bottom", bottom);
+}
+
 function setMain() {
     body.css("background-color", "#34495E");
     if (screen.width > 480) {
-        main.css("top", "70px");
-        main.css("left", "25px");
-        main.css("right", "25px");
-        main.css("bottom", "70px");
+        setMainPixes(main, "70px", "25px", "25px", "70px");
     } else {
-        main.css("top", "225px");
-        main.css("left", "25px");
-        main.css("right", "25px");
-        main.css("bottom", "170px");
+        setMainPixes(main, "225px", "25px", "25px", "170px");
     }
     footer.css("background-color", "transparent");
     footer.css("bottom", $(".arrow-box").length ? "-44px" : "0");
     $(".url-input").css("background-color", "#2C3E50");
 }
 
-function setPictureReg(width, height) {
+function setPicture(width, height) {
     picture.css("max-width", width);
     picture.css("max-height", height);
 }
@@ -26,29 +27,24 @@ function calcViewRotateDeg() {
         if (!calculateView(1, 0)) {
             setMain();
             var isLeft = main.css("left") === "0px";
-            setPictureReg((main.height() - (isLeft ? 140 : 0)), (main.width() - (isLeft ? 50 : 0)));
+            setPicture((main.height() - (isLeft ? 140 : 0)), (main.width() - (isLeft ? 50 : 0)));
         }
     } else {
         if (!calculateView(0, 1)) {
             setMain();
-            setPictureReg("100%", "100%");
+            setPicture("100%", "100%");
         }
     }
 }
 
 function settingPicture() {
-    mainReady.css("top", "0");
-    mainReady.css("bottom", "0");
     if ($(".main").length < 2) {
-        mainReady.css("left", "0");
-        mainReady.css("right", "0");
+        setMainPixes(mainReady, "0px", "0px", "0px", "0px");
     } else {
         if (typeAnimation === "left") {
-            mainReady.css("left", "-100%");
-            mainReady.css("right", "100%");
+            setMainPixes(mainReady, "0px", "-100%", "100%", "0px");
         } else {
-            mainReady.css("left", "100%");
-            mainReady.css("right", "-100%");
+            setMainPixes(mainReady, "0px", "100%", "-100%", "0px");
         }
     }
     if (screen.width > 480) {
@@ -56,13 +52,7 @@ function settingPicture() {
     }
     footer.css("background-color", "rgba(0,0,0,0.7)");
     body.css("background-color", "black");
-    body.css("transition", "background-color .2s");
     $(".url-input").css("background-color", "rgba(0,0,0,.5)");
-}
-
-function setPicture(width, height) {
-    picture.css("max-width", width);
-    picture.css("max-height", height);
 }
 
 function calcPx() {
