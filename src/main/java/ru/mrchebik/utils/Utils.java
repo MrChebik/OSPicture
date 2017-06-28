@@ -113,8 +113,10 @@ public class Utils {
     private void setOptimization(File file,
                                  String format) throws IOException, InterruptedException {
         Process optimization = setTypeOptimization(file, format);
-        assert optimization != null;
-        optimization.waitFor();
+
+        if (optimization != null) {
+            optimization.waitFor();
+        }
     }
 
     private Process setTypeOptimization(File file,
@@ -131,7 +133,12 @@ public class Utils {
     private String getFilename(URL url) {
         String[] slashes = url.getPath().split("\\/");
         String lastSlash = slashes[slashes.length - 1];
-        return lastSlash.substring(0, lastSlash.lastIndexOf("."));
+        int lastDot = lastSlash.lastIndexOf(".");
+        if (lastDot == -1) {
+            return lastSlash;
+        }
+
+        return lastSlash.substring(0, lastDot);
     }
 
     public ResponseEntity<Resource> getDirectImage(String key,
