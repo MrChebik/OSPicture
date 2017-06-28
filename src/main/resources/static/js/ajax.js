@@ -5,6 +5,21 @@ function copyToClipboard(e) {
     $("body").append(o), o.val(e).select(), document.execCommand("copy"), o.remove();
 }
 
+function clearOthers() {
+    if (main.css("top") === "0px") {
+        main.css("background-color", "black");
+    }
+    $(".flowspinner").remove();
+    $(".bold").show();
+    if (picture) {
+        picture.show();
+    }
+    if (fileElem) {
+        fileElem.show();
+    }
+    alert("Something was wrong, check the type of file.");
+}
+
 function ajaxSend(e, a) {
     $.ajax({
         url: "/upload/image" + ("are" === a ? "s" : ""),
@@ -113,21 +128,14 @@ function ajaxSend(e, a) {
             window.location.href = site + e;
         },
         error() {
-            if (main.css("top") === "0px") {
-                main.css("background-color", "black");
-            }
             clearInterval(optimizeInterval);
             percentComplete = 0;
             notif = 0;
             wasError = 1;
             progress.remove();
             $(".optimize-info").remove();
-            $(".flowspinner").remove();
             $(".upload-info").remove();
-            $(".bold").show();
-            picture.show();
-            fileElem.show();
-            alert("Something was wrong, check the type of file.");
+            clearOthers();
         }
     });
 }
@@ -200,18 +208,7 @@ function ajaxSendURL(URL) {
             window.location.href = site + e;
         },
         error() {
-            if (main.css("top") === "0px") {
-                main.css("background-color", "black");
-            }
-            $(".flowspinner").remove();
-            $(".bold").show();
-            if (picture) {
-                picture.show();
-            }
-            if (fileElem) {
-                fileElem.show();
-            }
-            alert("Something was wrong, check the type of file.");
+            clearOthers()
         }
     });
 }
