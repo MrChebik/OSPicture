@@ -31,7 +31,7 @@ public class ZipUtils {
     }
 
     private void addFileToZip(ZipOutputStream zout, File file) throws IOException {
-        int BUFFER = 10_000_000;
+        int BUFFER = 8 * 1024;
         byte[] data = new byte[BUFFER];
         BufferedInputStream origin = new BufferedInputStream(new FileInputStream(file), BUFFER);
         zout.putNextEntry(new ZipEntry(file.getName()));
