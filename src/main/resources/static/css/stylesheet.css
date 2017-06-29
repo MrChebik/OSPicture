@@ -95,7 +95,6 @@ body {
     background-color: #34495E;
     font-family: "Uni Sans Heavy", "DejaVu Sans", monospace;
     color: #ECF0F1;
-    transition: background-color .2s;
 }
 
 .nav-header {

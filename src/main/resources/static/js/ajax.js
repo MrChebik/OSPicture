@@ -1,4 +1,4 @@
-var picture, optimizeInterval, fileElem = $(".file");
+var picture, optimizeInterval, fileElem;
 
 function copyToClipboard(e) {
     var o = $("<input>");
@@ -67,7 +67,9 @@ function ajaxSend(e, a) {
                         if (picture) {
                             picture.hide();
                         }
-                        fileElem.hide();
+                        if (fileElem) {
+                            fileElem.hide();
+                        }
                         main.css("justify-content", "center");
                         main.css("align-items", "center");
                         main.css("flex-direction", "column");

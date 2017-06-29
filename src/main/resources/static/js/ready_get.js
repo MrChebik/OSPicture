@@ -1,4 +1,5 @@
 var notifDownload = 0, rotateDeg = 0, resolution, mainReady = $(".main"), transitSetting = "opacity .05s, transform .2s ease-in, box-shadow .2s ease-in", isResolution, body = $("body"), footer = $(".footer"), typeAnimation, isProcessing = false, resolutionElem = $("#resolution"), downloadPictureElem = $("#download-picture"), arrowLeftElem = $("#arrow-left"), arrowRightElem = $("#arrow-right"), fileInfoElem = $("#file-info"), sizeElem = $("#size"), formatElem = $("#format"), infoElem = $(".info"), directLinkElem = $("#direct-link"), htmlLinkElem = $("#html-link"), bbcodeLinkElem = $("#bbcode-link"), px200ELem = $("#px200"), px500Elem = $("#px500"), notification = $(".notification");
+fileElem = $(".file");
 notification.css("display", "block");
 
 function addListenerDownload(element, type) {

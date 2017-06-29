@@ -52,6 +52,7 @@ function settingPicture() {
     }
     footer.css("background-color", "rgba(0,0,0,0.7)");
     body.css("background-color", "black");
+    body.css("transition", "background-color .2s");
     $(".url-input").css("background-color", "rgba(0,0,0,.5)");
 }
 
