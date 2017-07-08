@@ -201,9 +201,9 @@ body {
 .notification {
     opacity: 0;
     top: 80px;
-    left: calc(50% - 98.5px);
+    left: calc(50% - 107.75px);
     z-index: 10;
-    padding: 19px 16px 16px;
+    padding: 19px 26px 16px;
     text-align: center;
     background-color: #2C3E50;
     border-radius: 30px;

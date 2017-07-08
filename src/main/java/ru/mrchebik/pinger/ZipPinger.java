@@ -1,4 +1,4 @@
-package ru.mrchebik.model;
+package ru.mrchebik.pinger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,12 +23,15 @@ public class ZipPinger {
         zipFolder.mkdir();
     }
 
-    @Scheduled(fixedDelay = 86_400_000)
+    @Scheduled(fixedDelay = 86_000_000)
     public void pingZip() {
-        for (File zip : zipFolder.listFiles()) {
-            if (LocalDateTime.now().minusDays(1)
-                    .isAfter(LocalDateTime.from(new Date(zip.lastModified()).toInstant().atZone(ZoneId.systemDefault())))) {
-                zip.delete();
+        File[] zips = zipFolder.listFiles();
+        if (zips != null) {
+            for (File zip : zips) {
+                if (LocalDateTime.now().minusDays(1)
+                        .isAfter(LocalDateTime.from(new Date(zip.lastModified()).toInstant().atZone(ZoneId.systemDefault())))) {
+                    zip.delete();
+                }
             }
         }
     }

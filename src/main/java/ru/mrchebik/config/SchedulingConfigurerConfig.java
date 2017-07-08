@@ -12,7 +12,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
  */
 @Configuration
 @EnableScheduling
-public class ZipSchedulingConfigurer implements SchedulingConfigurer {
+public class SchedulingConfigurerConfig implements SchedulingConfigurer {
     @Bean
     public ThreadPoolTaskScheduler taskScheduler() {
         return new ThreadPoolTaskScheduler();

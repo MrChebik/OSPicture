@@ -45,6 +45,11 @@
             <artifactId>rollbar</artifactId>
             <version>0.5.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.57</version>
+        </dependency>
     </dependencies>
 
     <build>

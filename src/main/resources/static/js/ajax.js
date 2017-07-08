@@ -20,124 +20,152 @@ function clearOthers() {
     alert("Something was wrong, check the type of file.");
 }
 
-function ajaxSend(e, a) {
+function processProgress() {
+    var xhr = $.ajaxSettings.xhr();
+    xhr.upload.addEventListener("progress", function (evt) {
+        if (evt.lengthComputable) {
+            if (!$("#progress-percent").length) {
+                if (main.css("top") === "0px") {
+                    main.css("background-color", "#34495E");
+                }
+                var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svgEl.setAttributeNS(null, "id", "progress-percent");
+                svgEl.setAttributeNS(null, "width", "200");
+                svgEl.setAttributeNS(null, "height", "200");
+                var circleEl = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circleEl.setAttributeNS(null, "id", "circle");
+                circleEl.setAttributeNS(null, "r", "90");
+                circleEl.setAttributeNS(null, "cx", "100");
+                circleEl.setAttributeNS(null, "cy", "100");
+                var percentEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                percentEl.setAttributeNS(null, "id", "percent");
+                percentEl.setAttributeNS(null, "x", "100");
+                percentEl.setAttributeNS(null, "y", "-85");
+
+                main.append(svgEl, $("<span/>", {"class": "upload-info"}).text("Uploading"));
+
+                progress = $("#progress-percent");
+                progress.append(circleEl, percentEl);
+                percent = $("#percent");
+                percent.text("0%");
+                pie = $("#circle");
+
+                pieOfValue = pie.css("strokeDasharray").split(" ")[1];
+                dash = pieOfValue.charAt(pieOfValue.length - 1) === "x" ? pieOfValue.substring(0, pieOfValue.length - 2) : pieOfValue;
+
+                $(".bold").hide();
+                $(".drag-info").hide();
+                $(".click-info").hide();
+                if (picture) {
+                    picture.hide();
+                }
+                if (fileElem) {
+                    fileElem.hide();
+                }
+                main.css("justify-content", "center");
+                main.css("align-items", "center");
+                main.css("flex-direction", "column");
+                $(".upload-info").show();
+
+                notif = 1;
+            }
+
+            if (notif !== 2) {
+                percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+
+                if (optimizeInterval) {
+                    optimizeInterval = setInterval(function () {
+                        if (percentComplete - prevPercent >= 25) {
+                            pie.css("transition", "stroke-dasharray .01s ease-in, stroke .01s ease-in");
+                            percent.css("transition", "fill .01s ease-in");
+                        } else if (percentComplete - prevPercent >= 10) {
+                            pie.css("transition", "stroke-dasharray .1s ease-in, stroke .1s ease-in");
+                            percent.css("transition", "fill .1s ease-in");
+                        } else if (percentComplete - prevPercent >= 5) {
+                            pie.css("transition", "stroke-dasharray .2s ease-in, stroke .2s ease-in");
+                            percent.css("transition", "fill .2s ease-in");
+                        } else {
+                            pie.css("transition", "stroke-dasharray .3s ease-in, stroke .3s ease-in");
+                            percent.css("transition", "fill .3s ease-in");
+                        }
+
+                        prevPercent = percentComplete;
+                    }, 1000);
+                }
+
+                color = percentComplete > 90 ? 0 : percentComplete > 75 ? 1 : percentComplete > 50 ? 2 : percentComplete > 25 ? 3 : 4;
+
+                pie.css("stroke", colors[color]);
+                percent.css("fill", colors[color]);
+
+                pie.css("strokeDasharray", ((percentComplete * dash) / 100) + " " + dash);
+                percent.text(percentComplete + "%");
+
+                if (percentComplete === 100) {
+                    notif = 2;
+                    setTimeout(function () {
+                        if (wasError === 0) {
+                            $(".upload-info").remove();
+                            progress.remove();
+                            main.append($("<div/>", {"class": "flowspinner"}), $("<span/>", {"class": "optimize-info"}).text("Optimization"));
+                        } else {
+                            wasError = 0;
+                        }
+                    }, 1000);
+                }
+            }
+        }
+    }, false);
+    return xhr;
+}
+
+function processFail() {
+    clearInterval(optimizeInterval);
+    percentComplete = 0;
+    notif = 0;
+    wasError = 1;
+    progress.remove();
+    $(".optimize-info").remove();
+    $(".upload-info").remove();
+    clearOthers();
+}
+
+function ajaxSend(e) {
     $.ajax({
-        url: "/upload/image" + ("are" === a ? "s" : ""),
+        url: "/upload/image",
         type: "PUT",
         data: e,
         cache: !1,
         processData: !1,
         contentType: !1,
         xhr() {
-            var xhr = $.ajaxSettings.xhr();
-            xhr.upload.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    if (!$("#progress-percent").length) {
-                        if (main.css("top") === "0px") {
-                            main.css("background-color", "#34495E");
-                        }
-                        var svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                        svgEl.setAttributeNS(null, "id", "progress-percent");
-                        svgEl.setAttributeNS(null, "width", "200");
-                        svgEl.setAttributeNS(null, "height", "200");
-                        var circleEl = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                        circleEl.setAttributeNS(null, "id", "circle");
-                        circleEl.setAttributeNS(null, "r", "90");
-                        circleEl.setAttributeNS(null, "cx", "100");
-                        circleEl.setAttributeNS(null, "cy", "100");
-                        var percentEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                        percentEl.setAttributeNS(null, "id", "percent");
-                        percentEl.setAttributeNS(null, "x", "100");
-                        percentEl.setAttributeNS(null, "y", "-85");
-
-                        main.append(svgEl, $("<span/>", {"class":"upload-info"}).text("Uploading"));
-
-                        progress = $("#progress-percent");
-                        progress.append(circleEl, percentEl);
-                        percent = $("#percent");
-                        percent.text("0%");
-                        pie = $("#circle");
-
-                        pieOfValue = pie.css("strokeDasharray").split(" ")[1];
-                        dash = pieOfValue.charAt(pieOfValue.length - 1) === "x" ? pieOfValue.substring(0, pieOfValue.length - 2) : pieOfValue;
-
-                        $(".bold").hide();
-                        $(".drag-info").hide();
-                        $(".click-info").hide();
-                        if (picture) {
-                            picture.hide();
-                        }
-                        if (fileElem) {
-                            fileElem.hide();
-                        }
-                        main.css("justify-content", "center");
-                        main.css("align-items", "center");
-                        main.css("flex-direction", "column");
-                        $(".upload-info").show();
-
-                        notif = 1;
-                    }
-
-                    if (notif !== 2) {
-                        percentComplete = Math.ceil(evt.loaded / evt.total * 100);
-
-                        if (optimizeInterval) {
-                            optimizeInterval = setInterval(function () {
-                                if (percentComplete - prevPercent >= 25) {
-                                    pie.css("transition", "stroke-dasharray .01s ease-in, stroke .01s ease-in");
-                                    percent.css("transition", "fill .01s ease-in");
-                                } else if (percentComplete - prevPercent >= 10) {
-                                    pie.css("transition", "stroke-dasharray .1s ease-in, stroke .1s ease-in");
-                                    percent.css("transition", "fill .1s ease-in");
-                                } else if (percentComplete - prevPercent >= 5) {
-                                    pie.css("transition", "stroke-dasharray .2s ease-in, stroke .2s ease-in");
-                                    percent.css("transition", "fill .2s ease-in");
-                                } else {
-                                    pie.css("transition", "stroke-dasharray .3s ease-in, stroke .3s ease-in");
-                                    percent.css("transition", "fill .3s ease-in");
-                                }
-
-                                prevPercent = percentComplete;
-                            }, 1000);
-                        }
-
-                        color = percentComplete > 90 ? 0 : percentComplete > 75 ? 1 : percentComplete > 50 ? 2 : percentComplete > 25 ? 3 : 4;
-
-                        pie.css("stroke", colors[color]);
-                        percent.css("fill", colors[color]);
-
-                        pie.css("strokeDasharray", ((percentComplete * dash) / 100) + " " + dash);
-                        percent.text(percentComplete + "%");
-
-                        if (percentComplete === 100) {
-                            notif = 2;
-                            setTimeout(function () {
-                                if (wasError === 0) {
-                                    $(".upload-info").remove();
-                                    progress.remove();
-                                    main.append($("<div/>", {"class": "flowspinner"}), $("<span/>", {"class": "optimize-info"}).text("Optimization"));
-                                } else {
-                                    wasError = 0;
-                                }
-                            }, 1000);
-                        }
-                    }
-                }
-            }, false);
-            return xhr;
+            return processProgress();
         },
         success(e) {
             window.location.href = site + e;
         },
         error() {
-            clearInterval(optimizeInterval);
-            percentComplete = 0;
-            notif = 0;
-            wasError = 1;
-            progress.remove();
-            $(".optimize-info").remove();
-            $(".upload-info").remove();
-            clearOthers();
+            processFail();
+        }
+    });
+}
+
+function ajaxSends(files, keys) {
+    $.ajax({
+        url: "/upload/images?keys=" + keys,
+        type: "PUT",
+        data: files,
+        cache: !1,
+        processData: !1,
+        contentType: !1,
+        xhr() {
+            return processProgress();
+        },
+        success(e) {
+            window.location.href = site + e;
+        },
+        error() {
+            processFail();
         }
     });
 }
@@ -147,9 +175,7 @@ function ajaxUpload(e) {
         if (e.size > maxFileSize) {
             alert("File size is bigger than 10MB");
         } else {
-            var formData = new FormData;
-            formData.append("file", e);
-            ajaxSend(formData, "is");
+            checkChecksum(e);
         }
     }
 }
@@ -162,11 +188,9 @@ function ajaxUploads(e) {
     if (currentSize > maxFileSize) {
         alert("Files size is bigger than 10MB");
     } else {
-        var formData = new FormData;
         for (i = 0; i < e.length; i++) {
-            formData.append("multipartFiles", e[i]);
+            checkChecksum(e[i], i === e.length - 1 ? "are1" : "are", e.length);
         }
-        ajaxSend(formData, "are");
     }
 }
 
@@ -176,7 +200,7 @@ function ajaxGetInfo(key, type) {
     if (!isProcessing) {
         isProcessing = true;
         $.ajax({
-            url: "/info_image/" + key,
+            url: "/info_image/" + mainReady.data("folder") + "/" + key,
             type: "GET",
             success(e) {
                 if (type === "left") {

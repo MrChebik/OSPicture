@@ -13,11 +13,13 @@ function settingNewPicture(message) {
     var newMainReady = $("<div>", {
         "class": "main"
     });
+    var folderCur = mainReady.data("folder");
     mainReady.after(newMainReady);
     mainReady = $(".main").last();
-    window.history.pushState("html", "OSPicture - Hosting the images", "/image/" + message.key);
+    window.history.pushState("html", "OSPicture - Hosting the images", "/folder/" + folderCur + "/image/" + message.key);
     mainReady.data("key", message.key);
     mainReady.data("format", message.format);
+    mainReady.data("folder", folderCur);
     infoElem.css("bottom", "-44px");
     setTimeout(function () {
         resolutionElem.text(message.resolution);

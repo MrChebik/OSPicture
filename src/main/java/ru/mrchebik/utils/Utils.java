@@ -9,146 +9,155 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.mrchebik.model.DataKeyFile;
-import ru.mrchebik.service.DataKeyFileService;
+import ru.mrchebik.model.Image;
+import ru.mrchebik.service.ImageService;
+import ru.mrchebik.utils.key.KeyUtils;
+import ru.mrchebik.utils.optimization.OptimizationUtils;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Random;
+import java.security.DigestException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by mrchebik on 5/31/17.
  */
 @Component
 public class Utils {
-    private final Random random = new Random();
-    private final DataKeyFileService dataKeyFileService;
-    private final LessInstancesUtils lessInstancesUtils;
+    private final KeyUtils keyUtils;
+    private final ZipUtils zipUtils;
     private final FileUtils fileUtils;
+    private final ImageService imageService;
+    private final ChecksumUtils checksumUtils;
+    private final OptimizationUtils optimizationUtils;
+    private final LessInstancesUtils lessInstancesUtils;
     @Value("${path.pictures}")
     public String PATH_PICTURES;
-    @Value("${key.length}")
-    public int KEY_LENGTH;
 
     @Autowired
-    public Utils(DataKeyFileService dataKeyFileService,
-                 LessInstancesUtils lessInstancesUtils,
-                 FileUtils fileUtils) {
-        this.dataKeyFileService = dataKeyFileService;
-        this.lessInstancesUtils = lessInstancesUtils;
+    public Utils(KeyUtils keyUtils,
+                 ZipUtils zipUtils,
+                 FileUtils fileUtils,
+                 ImageService imageService,
+                 ChecksumUtils checksumUtils,
+                 OptimizationUtils optimizationUtils,
+                 LessInstancesUtils lessInstancesUtils) {
+        this.keyUtils = keyUtils;
+        this.zipUtils = zipUtils;
         this.fileUtils = fileUtils;
+        this.imageService = imageService;
+        this.checksumUtils = checksumUtils;
+        this.optimizationUtils = optimizationUtils;
+        this.lessInstancesUtils = lessInstancesUtils;
     }
 
-    public String getKey() {
-        String key = "";
-
-        for (int i = 0; i < KEY_LENGTH; i++) {
-            key += (char) (random.nextBoolean() ? (random.nextInt(9) + 48) : (random.nextInt(25) + 97));
-        }
-
-        return key;
-    }
-
-    public ResponseEntity addFile(URL url) throws IOException, InterruptedException {
+    public ResponseEntity addFile(URL url) throws IOException, InterruptedException, NoSuchAlgorithmException, DigestException {
         File temp = fileUtils.createTempFile(url);
 
         String format = Files.probeContentType(temp.toPath()).split("/")[1];
 
-        if (!fileUtils.isSupportedFormat(temp)) {
+        if (!fileUtils.isSupportedFormat(format)) {
             temp.delete();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        File sourceFile = fileUtils.createPicture(temp, getKey(), format);
-        setOptimization(sourceFile, format);
-        sourceFile = new File(sourceFile.getPath());
-        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), getFilename(url), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
+        File sourceFile = fileUtils.createPicture(keyUtils.generateKey(), format, temp);
+        optimizationUtils.doOptimization(sourceFile.getPath(),
+                format);
+        File optimizeFile = new File(sourceFile.getPath());
 
-        lessInstancesUtils.setLessInstances(dataKeyFile.getKeyFile(), sourceFile.getPath(), sourceFile.getName(), dataKeyFile.getOriginalFilename(), format);
+        String checksum = checksumUtils.getChecksumSHA3(optimizeFile.toPath());
+        String resolution = fileUtils.getResolution(optimizeFile);
+        long size = optimizeFile.length();
+        String resultOfChecksum = checksumUtils.findDuplicate(checksum,
+                resolution,
+                size);
 
-        return new ResponseEntity<>("image/" + dataKeyFileService.add(dataKeyFile), HttpStatus.CREATED);
+        if (!"none".equals(resultOfChecksum)) {
+            return new ResponseEntity<>("image/" + resultOfChecksum, HttpStatus.ACCEPTED);
+        } else {
+            Image image = new Image(fileUtils.getFilename(sourceFile.getName()),
+                    getFilename(url),
+                    fileUtils.getSize(size),
+                    resolution,
+                    format,
+
+                    sourceFile.length(),
+                    size,
+                    checksumUtils.getChecksumSHA3(sourceFile.toPath()),
+                    checksum);
+
+            lessInstancesUtils.setLessInstances(image.getKeyFile(),
+                    format,
+                    image.getFilename(),
+                    sourceFile.getName(),
+                    sourceFile.getPath());
+
+            return new ResponseEntity<>("image/" + imageService.add(image), HttpStatus.CREATED);
+        }
     }
 
-    public ResponseEntity addFile(MultipartFile file) throws IOException, InterruptedException {
+    public Image addFile(MultipartFile file) throws IOException, InterruptedException, DigestException, NoSuchAlgorithmException {
         String format = file.getContentType().split("/")[1];
 
-        if (!fileUtils.isSupportedFormat(file)) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!fileUtils.isSupportedFormat(format)) {
+            return null;
         }
 
-        File sourceFile = fileUtils.createPicture(getKey(), format, file);
-        setOptimization(sourceFile, format);
-        sourceFile = new File(sourceFile.getPath());
-        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), fileUtils.getFilename(file.getOriginalFilename()), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
+        File sourceFile = fileUtils.createPicture(keyUtils.generateKey(),
+                format,
+                file);
+        optimizationUtils.doOptimization(sourceFile.getPath(),
+                format);
+        File optimizeFile = new File(sourceFile.getPath());
 
-        lessInstancesUtils.setLessInstances(dataKeyFile.getKeyFile(), sourceFile.getPath(), sourceFile.getName(), dataKeyFile.getOriginalFilename(), format);
+        String checksum = checksumUtils.getChecksumSHA3(optimizeFile.toPath());
+        String resolution = fileUtils.getResolution(optimizeFile);
+        long size = optimizeFile.length();
+        String resultOfChecksum = checksumUtils.findDuplicate(checksum,
+                resolution,
+                size);
 
-        return new ResponseEntity<>("image/" + dataKeyFileService.add(dataKeyFile), HttpStatus.CREATED);
-    }
+        if (!"none".equals(resultOfChecksum)) {
+            return imageService.get(resultOfChecksum);
+        } else {
+            Image image = new Image(fileUtils.getFilename(sourceFile.getName()),
+                    fileUtils.getFilename(file.getOriginalFilename()),
+                    fileUtils.getSize(size),
+                    resolution,
+                    format,
 
-    public ResponseEntity addFile(MultipartFile file,
-                                  String keyFolder) throws IOException, InterruptedException {
-        String format = file.getContentType().split("/")[1];
+                    file.getSize(),
+                    size,
+                    checksumUtils.getChecksumSHA3(file),
+                    checksum);
 
-        if (!fileUtils.isSupportedFormat(file)) {
-            return new ResponseEntity(HttpStatus.CONTINUE);
+            lessInstancesUtils.setLessInstances(image.getKeyFile(),
+                    format,
+                    image.getFilename(),
+                    sourceFile.getName(),
+                    sourceFile.getPath());
+
+            return imageService.add(image);
         }
-
-        File sourceFile = fileUtils.createPicture(getKey(), keyFolder, format, file);
-        setOptimization(sourceFile, format);
-        sourceFile = new File(sourceFile.getPath());
-        DataKeyFile dataKeyFile = new DataKeyFile(sourceFile.getName().substring(0, KEY_LENGTH), fileUtils.getFilename(file.getOriginalFilename()), sourceFile.getPath(), format, fileUtils.getSize(sourceFile.length()), fileUtils.getResolution(ImageIO.read(sourceFile)));
-
-        dataKeyFile.setMinPath(lessInstancesUtils.setMinInstance(keyFolder, sourceFile.getPath(), sourceFile.getName()));
-
-        lessInstancesUtils.setLessInstances(dataKeyFile.getKeyFile(), keyFolder, sourceFile.getPath(), sourceFile.getName(), dataKeyFile.getOriginalFilename(), format);
-
-        return new ResponseEntity<>("image/" + dataKeyFileService.add(dataKeyFile), HttpStatus.CREATED);
-    }
-
-    private void setOptimization(File file,
-                                 String format) throws IOException, InterruptedException {
-        Process optimization = setTypeOptimization(file, format);
-
-        if (optimization != null) {
-            optimization.waitFor();
-        }
-    }
-
-    private Process setTypeOptimization(File file,
-                                        String format) throws IOException {
-        if ("octet-stream".equals(format) || "png".equals(format)) {
-            return new ProcessBuilder("optipng", "-o2", "-strip", "all", file.getPath()).start();
-        } else if ("jpeg".equals(format)) {
-            return new ProcessBuilder("mozjpeg", "-copy", "none", "-outfile", file.getPath(), file.getPath()).start();
-        }
-
-        return null;
     }
 
     private String getFilename(URL url) {
         String[] slashes = url.getPath().split("\\/");
         String lastSlash = slashes[slashes.length - 1];
-        int lastDot = lastSlash.lastIndexOf(".");
-        if (lastDot == -1) {
-            return lastSlash;
-        }
-
-        return lastSlash.substring(0, lastDot);
+        return lastSlash.substring(0, lastSlash.lastIndexOf("."));
     }
 
-    public ResponseEntity<Resource> getDirectImage(String key,
-                                                   boolean isMin) throws FileNotFoundException {
-        DataKeyFile dataKeyFile = dataKeyFileService.get(key);
+    public ResponseEntity<Resource> getDirectImage(String key) throws FileNotFoundException {
+        Image image = imageService.get(key);
 
-        return new ResponseEntity<>(new FileSystemResource(isMin ? dataKeyFile.getMinPath() : dataKeyFile.getPath()), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(new FileSystemResource(fileUtils.getPath(image)), new HttpHeaders(), HttpStatus.OK);
     }
 
     public ResponseEntity<Resource> getZipFolder(String key) throws IOException {
-        return new ResponseEntity<>(new FileSystemResource(fileUtils.createZipArchive(key)), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(new FileSystemResource(zipUtils.createZip(key)), new HttpHeaders(), HttpStatus.OK);
     }
 }

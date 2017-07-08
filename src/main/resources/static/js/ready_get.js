@@ -24,7 +24,7 @@ function addListenerDownload(element, type) {
     var img = $("<img />", {
         "class": type,
         "alt": "Image"
-    }).attr("src", (isPicture ? "/img/" : "/img_min/") + element.data("key") + "." + element.data("format"))
+    }).attr("src", "/img/" + (isPicture ? "" : "400_") + element.data("key") + "." + element.data("format"))
         .on("load", function () {
             if (!this.complete || typeof this.naturalWidth === "undefined" || this.naturalWidth === 0) {
                 element.append($("<span />").text("Broken image"));

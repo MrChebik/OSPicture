@@ -12,12 +12,13 @@
 <head>
     <title>OSPicture - Hosting the images</title>
     <meta name="description"
-          content="To upload images to the Internet. The maximum size of uploads is 10Mb. Supported formats: JPEG, PNG, WebP, BMP, GIF.">
+          content="To upload images to the Internet. The maximum size of uploads is 10Mb. Supported formats: WebP, JPEG, PNG, GIF.">
     <meta name="keywords"
           content="хостинг картинок, загрузить картинку, раздать картинку, hosting images, upload image, share image, ospicture">
     <script async src="/js/actions_min.js"></script>
     <script async src="/js/ajax_min.js"></script>
     <script async src="/js/drop_min.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.6.1/sha3.min.js"></script>
     <meta name="yandex-verification" content="63722a67b19d1b95"/>
     <meta name="google-site-verification" content="lPL5nvLypGsZ8ZDIsV_RjeUZ1SRjrHX9bfLkkaEHsJo"/>
     <meta name="wmail-verification" content="196a7986855ac910b031fd120a241c18">
@@ -110,12 +111,13 @@
             </div>
         </c:if>
     </div>
-    <div class="main" data-key="${key}" data-format="${format}" data-left="${folderLeft}" data-right="${folderRight}">
+    <div class="main" data-key="${key}" data-folder="${isFromFolder}" data-format="${format}" data-left="${folderLeft}"
+         data-right="${folderRight}">
         <c:choose>
             <c:when test="${folder != null}">
                 <c:forEach items="${files}" var="file">
                     <a class="file" data-key="${file.filename}" data-format="${file.format}"
-                       href="/image/${file.filename}"></a>
+                       href="/folder/${folder}/image/${file.filename}"></a>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -134,10 +136,10 @@
         <c:choose>
             <c:when test="${folder == null && key != null}">
                 <div class="types">
-                    <a id="px200" class="type-px" href="/${px200Path}"
-                       tabindex="-1">${px200TRUE == null ? '200px' : 'INITIAL'}</a>
-                    <a id="px500" class="type-px" href="/${px500Path}"
-                       tabindex="-1">${px500TRUE == null ? '500px' : 'INITIAL'}</a>
+                    <a id="px200" class="type-px" href="/image/${px200Path}"
+                       tabindex="-1">${px200TRUE == 0 ? '200px' : 'INITIAL'}</a>
+                    <a id="px500" class="type-px" href="/image/${px500Path}"
+                       tabindex="-1">${px500TRUE == 0 ? '500px' : 'INITIAL'}</a>
                 </div>
                 <div class="info">
                     <span title="File" id="file-info" onclick="actionCopyToClipboard('${name}')">${name}</span>
@@ -202,3 +204,4 @@
 <c:if test="${isFromFolder != null}">
     <script src="/js/arrows_min.js"></script>
 </c:if>
+<script src="/js/checksum_min.js"></script>

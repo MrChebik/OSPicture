@@ -10,37 +10,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.mrchebik.exception.ResourceNotFoundException;
-import ru.mrchebik.model.DataKeyFile;
 import ru.mrchebik.model.FilenameFormat;
+import ru.mrchebik.model.Folder;
+import ru.mrchebik.model.Image;
 import ru.mrchebik.model.InfoImage;
-import ru.mrchebik.service.DataKeyFileService;
-import ru.mrchebik.utils.FileUtils;
-import ru.mrchebik.utils.LessInstancesUtils;
-import ru.mrchebik.utils.Utils;
+import ru.mrchebik.service.FolderService;
+import ru.mrchebik.service.ImageService;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mrchebik on 15.05.17.
  */
 @Controller
 public class LinkController {
-    private final DataKeyFileService dataKeyFileService;
-    private final Utils utils;
-    private final FileUtils fileUtils;
-    private final LessInstancesUtils lessInstancesUtils;
+    private final ImageService imageService;
+    private final FolderService folderService;
 
     @Autowired
-    public LinkController(DataKeyFileService dataKeyFileService,
-                          Utils utils,
-                          FileUtils fileUtils,
-                          LessInstancesUtils lessInstancesUtils) {
-        this.dataKeyFileService = dataKeyFileService;
-        this.utils = utils;
-        this.fileUtils = fileUtils;
-        this.lessInstancesUtils = lessInstancesUtils;
+    public LinkController(ImageService imageService,
+                          FolderService folderService) {
+        this.imageService = imageService;
+        this.folderService = folderService;
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -54,25 +47,24 @@ public class LinkController {
         return "index";
     }
 
-    @GetMapping("/info_image/{key}")
+    @GetMapping("/info_image/{keyFolder}/{keyImg}")
     @ResponseBody
-    public ResponseEntity<InfoImage> handleGetInfoImage(@PathVariable String key) throws IOException {
-        DataKeyFile dataKeyFile = dataKeyFileService.get(key);
-        boolean isOctetStream = "octet-steam".equals(dataKeyFile.getMimeType());
+    public ResponseEntity<InfoImage> handleGetInfoImage(@PathVariable String keyImg,
+                                                        @PathVariable String keyFolder) throws IOException {
+        Image image = imageService.get(keyImg);
+        boolean isOctetStream = "octet-steam".equals(image.getMimeType());
 
-        InfoImage infoImage = new InfoImage(dataKeyFile.getKeyFile(), dataKeyFile.getOriginalFilename(), dataKeyFile.getSize(), isOctetStream ? "png" : dataKeyFile.getMimeType(), String.valueOf(isOctetStream), dataKeyFile.getScale());
+        InfoImage infoImage = new InfoImage(image.getKeyFile(), image.getFilename(), image.getSize(), isOctetStream ? "png" : image.getMimeType(), String.valueOf(isOctetStream), image.getResolution());
 
-        String[] leftRight = fileUtils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
-        if (leftRight[0] != null) {
-            infoImage.setFolderLeft(leftRight[1]);
-            infoImage.setFolderRight(leftRight[2]);
-        }
+        List<Folder> folders = folderService.get(keyFolder);
 
-        String[] pxValues = lessInstancesUtils.getPX(dataKeyFile.getKeyFile());
-        infoImage.setPx500Path(pxValues[0]);
-        infoImage.setPx200Path(pxValues[1]);
-        infoImage.setPx500TRUE(pxValues[2]);
-        infoImage.setPx200TRUE(pxValues[3]);
+        int count = getCountOfImage(folders, keyImg);
+
+        infoImage.setFolderLeft(folders.get(count == 0 ? folders.size() - 1 : (count - 1)).getImage().getKeyFile());
+        infoImage.setFolderRight(folders.get(count == folders.size() - 1 ? 0 : (count + 1)).getImage().getKeyFile());
+
+        infoImage.setPx500Path("500_" + keyImg);
+        infoImage.setPx200Path("200_" + keyImg);
 
         return new ResponseEntity<>(infoImage, HttpStatus.OK);
     }
@@ -80,31 +72,57 @@ public class LinkController {
     @GetMapping("/image/{key}")
     public String handleGetImage(Model model,
                                  @PathVariable String key) throws IOException {
-        DataKeyFile dataKeyFile = dataKeyFileService.get(key);
+        Image image = imageService.get(key);
 
-        if (dataKeyFile == null) {
+        if (image == null) {
             throw new ResourceNotFoundException();
         } else {
-            String[] leftRight = fileUtils.getFolderPaths(dataKeyFile.getKeyFile(), dataKeyFile.getPath());
-            if (leftRight[0] != null) {
-                model.addAttribute("isFromFolder", leftRight[0]);
-                model.addAttribute("folderLeft", leftRight[1]);
-                model.addAttribute("folderRight", leftRight[2]);
-            }
-
-            model.addAttribute("key", dataKeyFile.getKeyFile());
-            model.addAttribute("name", dataKeyFile.getOriginalFilename());
-            model.addAttribute("size", dataKeyFile.getSize());
-            boolean isOctetStream = "octet-stream".equals(dataKeyFile.getMimeType());
-            model.addAttribute("format", isOctetStream ? "png" : dataKeyFile.getMimeType());
+            model.addAttribute("key", image.getKeyFile());
+            model.addAttribute("name", image.getFilename());
+            model.addAttribute("size", image.getSize());
+            boolean isOctetStream = "octet-stream".equals(image.getMimeType());
+            model.addAttribute("format", isOctetStream ? "png" : image.getMimeType());
             model.addAttribute("isOctetStream", isOctetStream);
-            model.addAttribute("resolution", dataKeyFile.getScale());
+            model.addAttribute("resolution", image.getResolution());
 
-            String[] pxValues = lessInstancesUtils.getPX(dataKeyFile.getKeyFile());
-            model.addAttribute("px500Path", pxValues[0]);
-            model.addAttribute("px200Path", pxValues[1]);
-            model.addAttribute("px500TRUE", pxValues[2]);
-            model.addAttribute("px200TRUE", pxValues[3]);
+            boolean contains500px = key.contains("500_");
+            boolean contains200px = key.contains("200_");
+            model.addAttribute("px500Path", contains500px ? key.substring(4) : ("500_" + (contains200px ? key.substring(4) : key)));
+            model.addAttribute("px200Path", contains200px ? key.substring(4) : ("200_" + (contains500px ? key.substring(4) : key)));
+            model.addAttribute("px500TRUE", contains500px ? 1 : 0);
+            model.addAttribute("px200TRUE", contains200px ? 1 : 0);
+
+            return "index";
+        }
+    }
+
+    @GetMapping("/folder/{keyFolder}/image/{keyImg}")
+    public String handleGetImage(Model model,
+                                 @PathVariable String keyImg,
+                                 @PathVariable String keyFolder) throws IOException {
+        Image image = imageService.get(keyImg);
+
+        if (image == null) {
+            throw new ResourceNotFoundException();
+        } else {
+            List<Folder> folders = folderService.get(keyFolder);
+
+            int count = getCountOfImage(folders, keyImg);
+
+            model.addAttribute("isFromFolder", keyFolder);
+            model.addAttribute("folderLeft", folders.get(count == 0 ? folders.size() - 1 : (count - 1)).getImage().getKeyFile());
+            model.addAttribute("folderRight", folders.get(count == folders.size() - 1 ? 0 : (count + 1)).getImage().getKeyFile());
+
+            model.addAttribute("key", image.getKeyFile());
+            model.addAttribute("name", image.getFilename());
+            model.addAttribute("size", image.getSize());
+            boolean isOctetStream = "octet-stream".equals(image.getMimeType());
+            model.addAttribute("format", isOctetStream ? "png" : image.getMimeType());
+            model.addAttribute("isOctetStream", isOctetStream);
+            model.addAttribute("resolution", image.getResolution());
+
+            model.addAttribute("px500Path", "500_" + keyImg);
+            model.addAttribute("px200Path", "200_" + keyImg);
 
             return "index";
         }
@@ -113,26 +131,36 @@ public class LinkController {
     @GetMapping("/folder/{key}")
     public String handleGetFolder(Model model,
                                   @PathVariable String key) throws IOException {
-        File folder = new File(utils.PATH_PICTURES + key);
-        if (folder.exists()) {
-            File[] files = folder.listFiles();
-            ArrayList<FilenameFormat> keyFiles = new ArrayList<>();
+        List<Folder> folders = folderService.get(key);
 
-            for (File file : files) {
-                DataKeyFile dataKeyFile = dataKeyFileService.get(file.getName().substring(0, 10));
-                FilenameFormat filenameFormat = new FilenameFormat(dataKeyFile.getKeyFile(), dataKeyFile.getMimeType());
-                if ("octet-stream".equals(dataKeyFile.getMimeType())) {
-                    filenameFormat.setOctetStream(true);
-                }
+        if (folders.size() != 0) {
+            List<FilenameFormat> keyFiles = new ArrayList<>();
+
+            for (Folder folder : folders) {
+                Image image = folder.getImage();
+                FilenameFormat filenameFormat = new FilenameFormat(image.getKeyFile(), image.getMimeType());
+                filenameFormat.setOctetStream("octet-stream".equals(image.getMimeType()));
+
                 keyFiles.add(filenameFormat);
             }
 
             model.addAttribute("files", keyFiles);
-            model.addAttribute("folder", true);
+            model.addAttribute("folder", key);
 
             return "index";
         } else {
             throw new ResourceNotFoundException();
         }
+    }
+
+    private int getCountOfImage(List<Folder> folders,
+                                String keyImg) {
+        for (int i = 0; i < folders.size(); i++) {
+            if (folders.get(i).getImage().getKeyFile().equals(keyImg)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

@@ -3,121 +3,98 @@ package ru.mrchebik.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.mrchebik.model.DataKeyFile;
-import ru.mrchebik.service.DataKeyFileService;
+import ru.mrchebik.model.Image;
+import ru.mrchebik.service.ImageService;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.security.DigestException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by mrchebik on 6/25/17.
  */
 @Component
 public class LessInstancesUtils {
-    private final DataKeyFileService dataKeyFileService;
     private final FileUtils fileUtils;
+    private final ImageService imageService;
+    private final ChecksumUtils checksumUtils;
+
     @Value("${path.pictures}")
     public String PATH_PICTURES;
     @Value("${key.length}")
     public int KEY_LENGTH;
 
     @Autowired
-    public LessInstancesUtils(DataKeyFileService dataKeyFileService,
-                              FileUtils fileUtils) {
-        this.dataKeyFileService = dataKeyFileService;
+    public LessInstancesUtils(FileUtils fileUtils,
+                              ImageService imageService,
+                              ChecksumUtils checksumUtils) {
         this.fileUtils = fileUtils;
+        this.imageService = imageService;
+        this.checksumUtils = checksumUtils;
     }
 
     protected void setLessInstances(String key,
-                                    String keyFolder,
-                                    String sourcePath,
-                                    String sourceName,
+                                    String format,
                                     String fileName,
-                                    String format) throws InterruptedException, IOException {
-        newFolders(new String[]{"500", "200"}, keyFolder);
-
-        setPxInstance("500", key, keyFolder, sourcePath, sourceName, fileName, format);
-        setPxInstance("200", key, keyFolder, sourcePath, sourceName, fileName, format);
-    }
-
-    protected void setLessInstances(String key,
-                                    String sourcePath,
                                     String sourceName,
-                                    String fileName,
-                                    String format) throws InterruptedException, IOException {
-        setPxInstance("500", key, sourcePath, sourceName, fileName, format);
-        setPxInstance("200", key, sourcePath, sourceName, fileName, format);
+                                    String sourcePath) throws InterruptedException, IOException, NoSuchAlgorithmException, DigestException {
+        setPxInstance(key,
+                "500",
+                format,
+                fileName,
+                sourceName,
+                sourcePath);
+        setPxInstance(key,
+                "400",
+                format,
+                fileName,
+                sourceName,
+                sourcePath);
+        setPxInstance(key,
+                "200",
+                format,
+                fileName,
+                sourceName,
+                sourcePath);
     }
 
-    private void newFolders(String[] types,
-                            String keyFolder) {
-        for (String type : types) {
-            new File(PATH_PICTURES + keyFolder + "_" + type + "/").mkdir();
-        }
-    }
-
-    private void setPxInstance(String type,
-                               String key,
-                               String keyFolder,
-                               String sourcePath,
-                               String sourceName,
+    private void setPxInstance(String key,
+                               String type,
+                               String format,
                                String fileName,
-                               String format) throws IOException, InterruptedException {
-        String pxQuest = PATH_PICTURES + keyFolder + "_" + type + "/" + sourceName;
-
-        Process pxProcess = new ProcessBuilder("convert", sourcePath, "-resize", type + "x" + type + "^", pxQuest).start();
-        pxProcess.waitFor();
-
-        File px = new File(pxQuest);
-        dataKeyFileService.add(new DataKeyFile(type + "_" + key, fileName, px.getPath(), format, fileUtils.getSize(px.length()), fileUtils.getResolution(ImageIO.read(px))));
-    }
-
-    private void setPxInstance(String type,
-                               String key,
-                               String sourcePath,
                                String sourceName,
-                               String fileName,
-                               String format) throws IOException, InterruptedException {
+                               String sourcePath) throws IOException, InterruptedException, NoSuchAlgorithmException, DigestException {
         String pxQuest = PATH_PICTURES + type + "_" + sourceName;
 
-        Process pxProcess = new ProcessBuilder("convert", sourcePath, "-resize", type + "x" + type + "^", pxQuest).start();
+        Process pxProcess = "400".equals(type) ?
+                new ProcessBuilder("convert", sourcePath, "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", pxQuest).start()
+                :
+                new ProcessBuilder("convert", sourcePath, "-resize", type + "x" + type + "^", pxQuest).start();
         pxProcess.waitFor();
 
         File px = new File(pxQuest);
-        dataKeyFileService.add(new DataKeyFile(type + "_" + key, fileName, px.getPath(), format, fileUtils.getSize(px.length()), fileUtils.getResolution(ImageIO.read(px))));
-    }
 
-    public String[] getPX(String key) {
-        String[] returns = new String[4];
+        String checksum = checksumUtils.getChecksumSHA3(px.toPath());
+        String resolution = fileUtils.getResolution(px);
+        long size = px.length();
+        String resultOfChecksum = checksumUtils.findDuplicate(checksum,
+                resolution,
+                size);
 
-        returns[0] = getPx("500", key);
-        returns[1] = getPx("200", key);
+        if (!"none".equals(resultOfChecksum)) {
+            Image image = imageService.get(resultOfChecksum);
+            image.setKeyFile(type + "_" + key);
+            image.setFilename(fileName);
+        } else {
+            imageService.add(new Image(type + "_" + key,
+                    fileName,
+                    fileUtils.getSize(px.length()),
+                    fileUtils.getResolution(px),
+                    format,
 
-        if (key.contains("500_")) {
-            returns[2] = String.valueOf(1);
-        } else if (key.contains("200_")) {
-            returns[3] = String.valueOf(1);
+                    px.length(),
+                    checksumUtils.getChecksumSHA3(px.toPath())));
         }
-
-        return returns;
-    }
-
-    private String getPx(String type,
-                         String key) {
-        boolean isBigger = key.length() > KEY_LENGTH;
-        String newKey = null;
-        if (isBigger) {
-            newKey = key.substring(key.length() - KEY_LENGTH, key.length());
-        }
-
-        return "image/" + (isBigger ? key.contains(type + "_") ? newKey : (type + "_" + newKey) : (type + "_" + key));
-    }
-
-    protected String setMinInstance(String keyFolder,
-                                    String sourcePath,
-                                    String sourceName) throws IOException {
-        new ProcessBuilder("convert", sourcePath, "-resize", "400x320^", "\\", "-gravity", "center", "-extent", "400x320", PATH_PICTURES + keyFolder + "_min/" + sourceName).start();
-        return PATH_PICTURES + keyFolder + "_min/" + sourceName;
     }
 }

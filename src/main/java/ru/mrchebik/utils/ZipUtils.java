@@ -2,8 +2,11 @@ package ru.mrchebik.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.mrchebik.model.Folder;
+import ru.mrchebik.service.FolderService;
 
 import java.io.*;
+import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -13,16 +16,23 @@ import java.util.zip.ZipOutputStream;
  */
 @Component
 public class ZipUtils {
+    private final FolderService folderService;
+
     @Value("${path.pictures}")
     public String PATH_PICTURES;
 
-    protected String checkZip(String key) throws IOException {
+    public ZipUtils(FolderService folderService) {
+        this.folderService = folderService;
+    }
+
+    protected String createZip(String key) throws IOException {
         File zip = new File(PATH_PICTURES + "zip" + File.separator + key + ".zip");
         if (zip.createNewFile()) {
             ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zip));
             zout.setLevel(Deflater.BEST_COMPRESSION);
-            for (File file : new File(PATH_PICTURES + key).listFiles()) {
-                addFileToZip(zout, file);
+            List<Folder> folderOfPictures = folderService.get(key);
+            for (Folder folder : folderOfPictures) {
+                addFileToZip(zout, new File(PATH_PICTURES + folder.getImage().getKeyFile() + ("octet-stream".equals(folder.getImage().getMimeType()) ? "" : ("." + folder.getImage().getMimeType()))));
             }
             zout.close();
         }
