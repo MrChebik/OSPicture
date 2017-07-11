@@ -21,8 +21,6 @@ import java.util.List;
  */
 @Component
 public class FileUtils {
-    /*private File currFolder;*/
-
     private final BigDecimal kb;
     private final List<String> supportedFormats;
 
@@ -55,8 +53,6 @@ public class FileUtils {
                     creator.mkdir();
                 }
             }
-
-            Graph<File> graphOfFolders = new Graph<>();
         }*/
     }
 
