@@ -255,8 +255,8 @@ body {
 
 .url-input:focus {
     outline: none;
-    -webkit-box-shadow: 0 0 8px rgba(236, 240, 241, 0.2);
-    box-shadow: 0 0 8px rgba(236, 240, 241, 0.2);
+    -webkit-box-shadow: 0 0 0 2px rgba(236, 240, 241, 0.2);
+    box-shadow: 0 0 0 2px rgba(236, 240, 241, 0.2);
 }
 
 .url-box:hover {
