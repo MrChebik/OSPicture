@@ -110,29 +110,37 @@ public class KeyUtils {
         }
 
         if (!switcher.isOverflow()) {
-            final BigInteger MAX_VALUES = new BigInteger(String.valueOf((switcher.isNumberCase() ? 10 : 0) +
-                    (switcher.isUpperCase() ? switcher.isShorted() ? 6 : 25 : 0) +
-                    (switcher.isLowerCase() ? switcher.isShorted() ? 6 : 25 : switcher.isNumberCase() || switcher.isUpperCase() ? 0 : switcher.isShorted() ? 6 : 25))
-            ).pow(KEY_LENGTH);
-            final BigInteger CURRENT_VALUES = new BigInteger(String.valueOf(imageService.getAllByKeyLength(KEY_LENGTH)));
-
-            if (MAX_VALUES
-                    .divide(hundred)
-                    .multiply(seventyFive)
-                    .subtract(CURRENT_VALUES)
-                    .compareTo(zero) <= 0) {
-                KEY_LENGTH++;
-            }
+            setUpLengthOfKey();
         } else {
-            if (switcher instanceof LowSwitcher) {
-                switcher = new MediumSwitcher();
-            } else if (switcher instanceof MediumSwitcher) {
-                switcher = new HighSwitcher();
-            } else if (switcher instanceof HighSwitcher) {
-                switcher = new LowSwitcher();
-                KEY_LENGTH++;
-            }
-            switcher.setOverflow(false);
+            setNewLvlOfKey();
         }
+    }
+
+    private void setUpLengthOfKey() {
+        final BigInteger MAX_VALUES = new BigInteger(String.valueOf((switcher.isNumberCase() ? 10 : 0) +
+                (switcher.isUpperCase() ? switcher.isShorted() ? 6 : 25 : 0) +
+                (switcher.isLowerCase() ? switcher.isShorted() ? 6 : 25 : switcher.isNumberCase() || switcher.isUpperCase() ? 0 : switcher.isShorted() ? 6 : 25))
+        ).pow(KEY_LENGTH);
+        final BigInteger CURRENT_VALUES = new BigInteger(String.valueOf(imageService.getAllByKeyLength(KEY_LENGTH)));
+
+        if (MAX_VALUES
+                .divide(hundred)
+                .multiply(seventyFive)
+                .subtract(CURRENT_VALUES)
+                .compareTo(zero) <= 0) {
+            KEY_LENGTH++;
+        }
+    }
+
+    private void setNewLvlOfKey() {
+        if (switcher instanceof LowSwitcher) {
+            switcher = new MediumSwitcher();
+        } else if (switcher instanceof MediumSwitcher) {
+            switcher = new HighSwitcher();
+        } else if (switcher instanceof HighSwitcher) {
+            switcher = new LowSwitcher();
+            KEY_LENGTH++;
+        }
+        switcher.setOverflow(false);
     }
 }

@@ -11,7 +11,7 @@ function getResoulution(reader, file, are, length) {
     img.onload = function () {
         return ajaxSendChecksum(file, sha3_512(reader.result), this.width + "x" + this.height, file.size, are, length);
     };
-    img.src = _URL.createObjectURL(file);
+    $(img).attr("src", _URL.createObjectURL(file));
 }
 
 function checkChecksum(file, are, length) {
@@ -21,6 +21,14 @@ function checkChecksum(file, are, length) {
         return getResoulution(this, file, are, length);
     };
     reader.readAsArrayBuffer(file);
+}
+
+function clearValuesOfChecksum() {
+    formData = new FormData;
+    count = 0;
+    keys = [];
+    oldValue = 0;
+    clearInterval(oldInterval);
 }
 
 function ajaxSendChecksum(file, checksum, resolution, size, are, length) {
@@ -35,7 +43,7 @@ function ajaxSendChecksum(file, checksum, resolution, size, are, length) {
             if (!are) {
                 formData.append("file", file);
                 ajaxSend(formData);
-                formData = new FormData;
+                clearValuesOfChecksum();
             } else {
                 if (e === "none") {
                     formData.append("files", file);
@@ -48,11 +56,7 @@ function ajaxSendChecksum(file, checksum, resolution, size, are, length) {
                     oldInterval = setInterval(function () {
                         if (oldValue === length) {
                             ajaxSends(formData, keys);
-                            formData = new FormData;
-                            count = 0;
-                            keys = [];
-                            oldValue = 0;
-                            clearInterval(oldInterval);
+                            clearValuesOfChecksum();
                         }
                     }, 50);
                 }

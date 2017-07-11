@@ -26,6 +26,7 @@
 
 .nav-header, .nav-icon, .rotate, .drop-down-link, #file-info, #email, .nav-drop, .github, .type-px, .bold {
     -webkit-transition: .2s ease-in;
+    -o-transition: .2s ease-in;
     transition: .2s ease-in;
 }
 
@@ -38,9 +39,9 @@
 }
 
 .nav-icon {
-    margin: 8px 16px 2px;
-    -webkit-filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
-    filter: drop-shadow(0 2px 1px rgba(0,0,0,0.8));
+    margin: 6px 16px 2px;
+    -webkit-filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.8));
 }
 
 .header {
@@ -64,6 +65,7 @@ span, .footer, #percent {
     width: 200px;
     left: calc(50% - 100px);
     -webkit-transition: bottom .2s, opacity .2s;
+    -o-transition: bottom .2s, opacity .2s;
     transition: bottom .2s, opacity .2s;
     bottom: 8px;
 }
@@ -112,11 +114,13 @@ body {
 .footer {
     padding: 15px 25px 10px 25px;
     -webkit-transition: bottom .2s, background-color .2s;
+    -o-transition: bottom .2s, background-color .2s;
     transition: bottom .2s, background-color .2s;
 }
 
 .info {
     -webkit-transition: bottom .2s;
+    -o-transition: bottom .2s;
     transition: bottom .2s;
 }
 
@@ -133,6 +137,7 @@ body {
 
 #circle {
     -webkit-transition: stroke-dasharray .1s ease-in, stroke .1s ease-in;
+    -o-transition: stroke-dasharray .1s ease-in, stroke .1s ease-in;
     transition: stroke-dasharray .1s ease-in, stroke .1s ease-in;
     fill: #34495E;
     stroke-width: 10;
@@ -142,15 +147,18 @@ body {
 #percent {
     fill: #C0392B;
     -webkit-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
     transform: rotate(90deg);
     font-size: 3em;
     text-anchor: middle;
     -webkit-transition: fill .1s ease-in;
+    -o-transition: fill .1s ease-in;
     transition: fill .1s ease-in;
 }
 
 #progress-percent {
     -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
     transform: rotate(-90deg);
     background: #ECF0F1;
     border-radius: 50%;
@@ -183,12 +191,14 @@ body {
     -webkit-animation: spinme 400ms linear infinite;
     animation: spinme 400ms linear infinite;
 }
+
 @-webkit-keyframes spinme {
     100% {
         -webkit-transform: rotate(-360deg);
         transform: rotate(-360deg);
     }
 }
+
 @keyframes spinme {
     100% {
         -webkit-transform: rotate(-360deg);
@@ -208,6 +218,7 @@ body {
     background-color: #2C3E50;
     border-radius: 30px;
     -webkit-transition: opacity .2s ease-in, top .2s ease-in;
+    -o-transition: opacity .2s ease-in, top .2s ease-in;
     transition: opacity .2s ease-in, top .2s ease-in;
 }
 
@@ -221,6 +232,7 @@ body {
     visibility: hidden;
     opacity: 0;
     -webkit-transition: opacity .2s ease, visibility .2s ease;
+    -o-transition: opacity .2s ease, visibility .2s ease;
     transition: opacity .2s ease, visibility .2s ease;
 }
 
@@ -231,6 +243,7 @@ body {
     border: none;
     -webkit-transition: -webkit-box-shadow .2s ease;
     transition: -webkit-box-shadow .2s ease;
+    -o-transition: box-shadow .2s ease;
     transition: box-shadow .2s ease;
     transition: box-shadow .2s ease, -webkit-box-shadow .2s ease;
     height: 54px;
@@ -347,6 +360,7 @@ body {
 
     #percent {
         -webkit-transform: translate(120px, 150px) rotateZ(90deg);
+        -ms-transform: translate(120px, 150px) rotate(90deg);
         transform: translate(120px, 150px) rotateZ(90deg);
         font-size: 120px;
     }
@@ -517,6 +531,7 @@ a, span {
     display: block;
     overflow: hidden;
     white-space: nowrap;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     text-decoration: none;
     color: #ECF0F1;
@@ -528,7 +543,7 @@ a:focus, span:focus {
 }
 
 span, p, .nav-header, a, .nav-drop {
-    text-shadow: 0 2px 1px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.8);
 }
 
 img {
@@ -545,11 +560,13 @@ img {
     right: 0;
     visibility: hidden;
     -webkit-transition: background-color .2s;
+    -o-transition: background-color .2s;
     transition: background-color .2s;
 }
 
 .windw {
     -webkit-transition: opacity .2s;
+    -o-transition: opacity .2s;
     transition: opacity .2s;
 }
 

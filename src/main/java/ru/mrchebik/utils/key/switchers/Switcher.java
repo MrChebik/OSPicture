@@ -15,6 +15,11 @@ public abstract class Switcher implements SwitcherService {
     protected boolean isNumberCase;
 
     @Override
+    public boolean isShorted() {
+        return isShorted;
+    }
+
+    @Override
     public boolean isOverflow() {
         return isOverflow;
     }
@@ -22,5 +27,20 @@ public abstract class Switcher implements SwitcherService {
     @Override
     public void setOverflow(boolean isOverflow) {
         this.isOverflow = isOverflow;
+    }
+
+    @Override
+    public boolean isLowerCase() {
+        return isLowerCase;
+    }
+
+    @Override
+    public boolean isUpperCase() {
+        return isUpperCase;
+    }
+
+    @Override
+    public boolean isNumberCase() {
+        return isNumberCase;
     }
 }
