@@ -19,7 +19,9 @@ import ru.mrchebik.service.ImageService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mrchebik on 15.05.17.
@@ -58,10 +60,9 @@ public class LinkController {
 
         List<Folder> folders = folderService.get(keyFolder);
 
-        int count = getCountOfImage(folders, keyImg);
-
-        infoImage.setFolderLeft(folders.get(count == 0 ? folders.size() - 1 : (count - 1)).getImage().getKeyFile());
-        infoImage.setFolderRight(folders.get(count == folders.size() - 1 ? 0 : (count + 1)).getImage().getKeyFile());
+        Map attributesOfFolder = getAttributesOfFolder(image, folders);
+        infoImage.setFolderLeft((String) attributesOfFolder.get("folderLeft"));
+        infoImage.setFolderRight((String) attributesOfFolder.get("folderRight"));
 
         infoImage.setPx500Path("500_" + keyImg);
         infoImage.setPx200Path("200_" + keyImg);
@@ -77,20 +78,8 @@ public class LinkController {
         if (image == null) {
             throw new ResourceNotFoundException();
         } else {
-            model.addAttribute("key", image.getKeyFile());
-            model.addAttribute("name", image.getFilename());
-            model.addAttribute("size", image.getSize());
-            boolean isOctetStream = "octet-stream".equals(image.getMimeType());
-            model.addAttribute("format", isOctetStream ? "png" : image.getMimeType());
-            model.addAttribute("isOctetStream", isOctetStream);
-            model.addAttribute("resolution", image.getResolution());
-
-            boolean contains500px = key.contains("500_");
-            boolean contains200px = key.contains("200_");
-            model.addAttribute("px500Path", contains500px ? key.substring(4) : ("500_" + (contains200px ? key.substring(4) : key)));
-            model.addAttribute("px200Path", contains200px ? key.substring(4) : ("200_" + (contains500px ? key.substring(4) : key)));
-            model.addAttribute("px500TRUE", contains500px ? 1 : 0);
-            model.addAttribute("px200TRUE", contains200px ? 1 : 0);
+            model.addAllAttributes(getAttributesOfImage(image));
+            model.addAllAttributes(getAttributesOfLessInstances(key, true));
 
             return "index";
         }
@@ -107,22 +96,9 @@ public class LinkController {
         } else {
             List<Folder> folders = folderService.get(keyFolder);
 
-            int count = getCountOfImage(folders, keyImg);
-
-            model.addAttribute("isFromFolder", keyFolder);
-            model.addAttribute("folderLeft", folders.get(count == 0 ? folders.size() - 1 : (count - 1)).getImage().getKeyFile());
-            model.addAttribute("folderRight", folders.get(count == folders.size() - 1 ? 0 : (count + 1)).getImage().getKeyFile());
-
-            model.addAttribute("key", image.getKeyFile());
-            model.addAttribute("name", image.getFilename());
-            model.addAttribute("size", image.getSize());
-            boolean isOctetStream = "octet-stream".equals(image.getMimeType());
-            model.addAttribute("format", isOctetStream ? "png" : image.getMimeType());
-            model.addAttribute("isOctetStream", isOctetStream);
-            model.addAttribute("resolution", image.getResolution());
-
-            model.addAttribute("px500Path", "500_" + keyImg);
-            model.addAttribute("px200Path", "200_" + keyImg);
+            model.addAllAttributes(getAttributesOfFolder(image, folders));
+            model.addAllAttributes(getAttributesOfImage(image));
+            model.addAllAttributes(getAttributesOfLessInstances(keyImg, false));
 
             return "index";
         }
@@ -153,14 +129,52 @@ public class LinkController {
         }
     }
 
-    private int getCountOfImage(List<Folder> folders,
-                                String keyImg) {
+    private Map<String, String> getAttributesOfFolder(Image image,
+                                                      List<Folder> folders) {
+        Map<String, String> map = new HashMap<>();
+
+        map.put("isFromFolder", folders.get(0).getKeyFolder());
+
         for (int i = 0; i < folders.size(); i++) {
-            if (folders.get(i).getImage().getKeyFile().equals(keyImg)) {
-                return i;
+            if (folders.get(i).getImage().getKeyFile().equals(image.getKeyFile())) {
+                map.put("folderLeft", folders.get(i == 0 ? folders.size() - 1 : (i - 1)).getImage().getKeyFile());
+                map.put("folderRight", folders.get(i == folders.size() - 1 ? 0 : (i + 1)).getImage().getKeyFile());
             }
         }
 
-        return -1;
+        return map;
+    }
+
+    private Map<String, java.io.Serializable> getAttributesOfImage(Image image) {
+        Map<String, java.io.Serializable> map = new HashMap<>();
+
+        map.put("key", image.getKeyFile());
+        map.put("name", image.getFilename());
+        map.put("size", image.getSize());
+        boolean isOctetStream = "octet-stream".equals(image.getMimeType());
+        map.put("format", isOctetStream ? "png" : image.getMimeType());
+        map.put("isOctetStream", isOctetStream);
+        map.put("resolution", image.getResolution());
+
+        return map;
+    }
+
+    private Map<String, java.io.Serializable> getAttributesOfLessInstances(String key,
+                                                                           boolean isDirectImage) {
+        Map<String, java.io.Serializable> map = new HashMap<>();
+
+        if (isDirectImage) {
+            boolean contains500px = key.contains("500_");
+            boolean contains200px = key.contains("200_");
+            map.put("px500Path", contains500px ? key.substring(4) : ("500_" + (contains200px ? key.substring(4) : key)));
+            map.put("px200Path", contains200px ? key.substring(4) : ("200_" + (contains500px ? key.substring(4) : key)));
+            map.put("px500TRUE", contains500px ? 1 : 0);
+            map.put("px200TRUE", contains200px ? 1 : 0);
+        } else {
+            map.put("px500Path", "500_" + key);
+            map.put("px200Path", "200_" + key);
+        }
+
+        return map;
     }
 }
