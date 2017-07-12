@@ -1,0 +1,9 @@
+src/main/resources/static/js/actions_min.js
+src/main/resources/static/js/ajax_min.js
+src/main/resources/static/js/arrows_min.js
+src/main/resources/static/js/checksum_min.js
+src/main/resources/static/js/drop_min.js
+src/main/resources/static/js/ready_drop_min.js
+src/main/resources/static/js/ready_get_min.js
+src/main/resources/static/js/ready_min.js
+src/main/resources/static/js/rotate_min.js

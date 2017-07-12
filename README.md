@@ -1,4 +1,9 @@
-# OSPicture [![Build Status](https://travis-ci.org/MrChebik/OSPicture.svg?branch=master)](https://travis-ci.org/MrChebik/OSPicture) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d403a319ed024a21b8db2956c7f97087)](https://www.codacy.com/app/mrchebik/OSPicture?utm_source=github.com&utm_medium=referral&utm_content=MrChebik/OSPicture&utm_campaign=badger)
+# OSPicture
+[![Build Status](https://travis-ci.org/MrChebik/OSPicture.svg?branch=master)](https://travis-ci.org/MrChebik/OSPicture)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d403a319ed024a21b8db2956c7f97087)](https://www.codacy.com/app/mrchebik/OSPicture?utm_source=github.com&utm_medium=referral&utm_content=MrChebik/OSPicture&utm_campaign=badger)
+[![codebeat badge](https://codebeat.co/badges/a41dc171-5bd3-49af-b910-2ec60f18e147)](https://codebeat.co/projects/github-com-mrchebik-ospicture-master)
+[![Code Climate](https://codeclimate.com/github/MrChebik/OSPicture/badges/gpa.svg)](https://codeclimate.com/github/MrChebik/OSPicture)
+[![Issue Count](https://codeclimate.com/github/MrChebik/OSPicture/badges/issue_count.svg)](https://codeclimate.com/github/MrChebik/OSPicture)
 > Hosting the images with multiply uploads, checking of checksum, lossless optimization.
 
 ## Getting Started
@@ -21,15 +26,22 @@ character_set_server = utf8
         [optipng](http://optipng.sourceforge.net)
 
 ## Run
-1. Execute in folder project:
+1. Clone repository:
 ```
-mvn spring-boot:run \
+$ git clone https://github.com/MrChebik/OSPicture.git
+$ cd OSPicture
+```
+2. Launch:
+```
+$ mvn spring-boot:run \
 --Dspring.datasource.username=USERNAME_DB \
 --Dspring.datasource.password=PASSWORD_DB \
 --Dpath.pictures=FOLDER_TO_STORE_IMAGES
 ```
 * You can change properties in [__application.properties__](https://github.com/MrChebik/OSPicture/blob/master/src/main/resources/application.properties) and run without this parameters.
-2. Follow to the link: [_http://localhost:8446/_](http://localhost:8446/)
+3. Follow to the link: [_http://localhost:8446/_](http://localhost:8446/)
+
+
 
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE](https://github.com/MrChebik/OSPicture/blob/master/LICENSE) file for details.
