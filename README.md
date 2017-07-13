@@ -6,9 +6,9 @@
 [![Issue Count](https://codeclimate.com/github/MrChebik/OSPicture/badges/issue_count.svg)](https://codeclimate.com/github/MrChebik/OSPicture)
 > Hosting the images with multiply uploads, checking of checksum, lossless optimization.
 
-## Demonstation
+## Demonstration
 ![OSPicture - WebP animation](https://github.com/MrChebik/OSPicture/blob/master/ospicture-demonstration.webp?raw=true)
-Home - Image - Full Screen Image - Folder
+Home - Image - Full Screen Mode - Folder
 
 ## Getting Started
 1. Setting _utf8_ encoding in _MySQL_:
