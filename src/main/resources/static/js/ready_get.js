@@ -97,6 +97,7 @@ setTimeout(function () {
     if ($(".main").data("format") !== "") {
         addListenerDownload(mainReady, "picture");
     } else {
+        $(".main").css("top", "60px");
         for (var i = 0; i < fileElem.length; i++) {
             addListenerDownload($(fileElem[i]), "image-folder");
         }
